@@ -1,4 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Roles } from 'src/auth/roles';
+import { UserRole } from 'src/users/entities/user';
 import { GameDto } from './dto/game.dto';
 import { Game } from './entities/game';
 import { GamesService } from './games.service';
@@ -8,6 +10,7 @@ export class GamesController {
     // FINDALL - csak admin joggal
     constructor(private _gamesService: GamesService){}
 
+    @Roles(UserRole.Admin)
     @Get()
     async findAll(@Query() gameDto: GameDto): Promise<GameDto[]> {
         const games = await this._gamesService.findAll(gameDto);

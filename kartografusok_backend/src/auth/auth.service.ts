@@ -6,12 +6,14 @@ import { UserDto } from 'src/users/dto/user.dto';
 import { User } from 'src/users/entities/user';
 import { promisify } from 'util';
 import { pbkdf2 } from 'crypto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) 
-        private userRepository: EntityRepository<User>
+        private userRepository: EntityRepository<User>,
+        private jwtService: JwtService,
     ){}
 
     async getUserByUserNameAndPassword(userAuthDto: UserAuthDto): Promise<UserDto>{
@@ -25,6 +27,17 @@ export class AuthService {
         }
         return null;
     }
+    
+    async generateJwt(userDto: UserDto) {
+        return await this.jwtService.signAsync({
+            sub: userDto.id,
+            user: {
+            id: userDto.id,
+            name: userDto.name,
+            role: userDto.role,
+            },
+        });
+    }
 
     async hashPassword(password: string) {
         const hash = await promisify(pbkdf2)(
@@ -35,5 +48,5 @@ export class AuthService {
           'sha512',
         );
         return hash.toString('hex');
-      }
+    }
 }

@@ -1,5 +1,7 @@
 import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { Controller, Body, Post, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { AllowAnonymous } from 'src/auth/allow-anonymous';
+import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { UserParam } from 'src/auth/user-param.decorator';
 import { UserAuthDto } from './dto/user-auth.dto';
@@ -9,10 +11,11 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
     
-    constructor(private usersService: UsersService){
+    constructor(private usersService: UsersService, private authService: AuthService){
 
     }
 
+    @AllowAnonymous()
     @Post('')
     async create(@Body() userAuthDto: UserAuthDto){
         try{
@@ -27,10 +30,14 @@ export class UsersController {
         }
     }
 
+    @AllowAnonymous()
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@UserParam() user: UserDto){
-        return user;
+        return {
+            user,
+            access_token: await this.authService.generateJwt(user),
+          };
     }
 }
 
