@@ -1,6 +1,30 @@
+DIVISION
+-   id:         Id
+-   name:       String
+
+GAME
+-   id:         Id
+-   gameId: Number
+-   user:       User
+-   gameDate:   Date
+-   points:     Number
+-   messages:   Message[]
+
+MESSAGE
+-   id:         Id
+-   game:       Game
+-   user:       User
+-   message:    String
+-   sendDate:   Date
+
+ROLE
+-   id:         Id
+-   name:       String
+
 USER
 -   id:         Id
--   username:   String
+-   name:       String
+-   userName:   String
 -   email:      String
 -   password:   String?
 -   points:     Number
@@ -11,29 +35,9 @@ USER
 -   banned:     Bool
 -   muted:      Bool
 -   game:       Game
--   message:    Message
+-   messages:    Message[]
 
-DIVISION
--   id:         Id
--   name:       String
 
-ROLE
--   id:         Id
--   name:       String
-
-GAME
--   id:         Id
--   user:       User
--   gameDate:   Date
--   points:     Number
--   messages:   Message
-
-MESSAGE
--   id:         Id
--   game:       Game
--   user:       User
--   message:    String
--   sendDate:   Date
 
 -------------------------------------------------
 
@@ -41,6 +45,6 @@ Connections:
 
 User N <=--> 1 Role | Role 1 <--=> N User
 User N <=--> 1 Division | Division 1 <--=> N User
-User N <=-=> M Game | Game M <=-=> N User
+User 1 <--=> N Game | Game N <=--> 1 User
 User 1 <--=> N Message | Message N <=--> 1 User
 Game 1 <--=> N Message | Message N <=--> 1 Game
