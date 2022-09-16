@@ -1,4 +1,4 @@
-import { User } from "../entities/user";
+import { User } from "../entity/user";
 
 export class UserAuthDto{
     name?: string;

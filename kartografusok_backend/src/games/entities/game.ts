@@ -1,6 +1,6 @@
 import { Collection, DateType, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
 import { Message } from "src/messages/entities/message";
-import { User } from "src/users/entities/user";
+import { User } from "src/users/entity/user";
 
 @Entity()
 export class Game{

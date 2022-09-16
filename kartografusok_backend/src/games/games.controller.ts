@@ -1,19 +1,25 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { Roles } from 'src/auth/roles';
-import { UserRole } from 'src/users/entities/user';
+import { UserRole } from 'src/users/entity/user';
+import { MessageDto } from '../messages/dto/message.dto';
+import { MessagesService } from '../messages/messages.service';
 import { GameDto } from './dto/game.dto';
 import { Game } from './entities/game';
 import { GamesService } from './games.service';
 
 @Controller('games')
 export class GamesController {
-    // FINDALL - csak admin joggal
-    constructor(private _gamesService: GamesService){}
-
+    constructor
+    (
+        private _gamesService: GamesService,
+        private messageService: MessagesService
+    ){}
+        
+        // FINDALL - csak admin joggal
     @Roles(UserRole.Admin)
     @Get()
-    async findAll(@Query() gameDto: GameDto): Promise<GameDto[]> {
-        const games = await this._gamesService.findAll(gameDto);
+    async findAll(): Promise<GameDto[]> {
+        const games = await this._gamesService.findAll();
         return games.map(game=>new GameDto(game));
     }
 
@@ -28,9 +34,9 @@ export class GamesController {
         return new GameDto(game);
     }
 
-    @Post()
-    async create(@Body() gameDto: GameDto): Promise<GameDto> {
-        const newGame = await this._gamesService.create(gameDto);
-        return new GameDto(newGame);;
+    @Get(':id/messages')
+    async getMessage(@Param('id', ParseIntPipe) id: number){
+        const messages = await this.messageService.findAllOfGame(id);
+        return messages.map(message=>new MessageDto(message));
     }
 }

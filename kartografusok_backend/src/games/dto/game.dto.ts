@@ -1,12 +1,12 @@
 import { MessageDto } from "src/messages/dto/message.dto";
 import { Message } from "src/messages/entities/message";
-import { User } from "src/users/entities/user";
+import { User } from "src/users/entity/user";
 import { Game } from "../entities/game";
 
 export class GameDto{
     id?: number;
     gameId?: number;
-    // user?: User;
+    user?: User;
     gameDate?: Date;
     points?: number;
     messages?: MessageDto[];
@@ -15,7 +15,7 @@ export class GameDto{
         if(game){
             this.id = game.id;
             this.gameId = game.gameId;
-            //  this.user = game.user;
+            this.user = game.user;
             this.gameDate = game.gameDate;
             this.points = game.points;
             

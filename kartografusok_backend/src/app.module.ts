@@ -1,6 +1,6 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import mikroOrmConfig from 'mikro-orm.config';
+import mikroOrmConfig from '../mikro-orm.config';
 import { GamesModule } from './games/games.module';
 import { MessagesModule } from './messages/messages.module';
 import { DivisionsModule } from './divisions/divisions.module';
@@ -13,7 +13,6 @@ import { RolesGuard } from './auth/roles.guard';
 
 @Module({
   imports: [MikroOrmModule.forRoot(mikroOrmConfig), GamesModule, DivisionsModule, MessagesModule, AuthModule, UsersModule],
-  controllers: [UsersController],
   providers: [
     {
       provide: APP_GUARD,

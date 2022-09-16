@@ -3,7 +3,7 @@ import { EntityRepository } from '@mikro-orm/sqlite';
 import { Injectable } from '@nestjs/common';
 import { UserAuthDto } from 'src/users/dto/user-auth.dto';
 import { UserDto } from 'src/users/dto/user.dto';
-import { User } from 'src/users/entities/user';
+import { User } from 'src/users/entity/user';
 import { promisify } from 'util';
 import { pbkdf2 } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
