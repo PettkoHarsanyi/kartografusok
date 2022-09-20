@@ -39,6 +39,21 @@ export class UsersController {
             }
         }
     }
+    
+    @Get("weekly")
+    async weekly(){
+        return await this.usersService.getWeekly();
+    }
+    
+    @Roles(UserRole.Admin)
+    @Patch('promote')
+    async playerPromotion(){
+        const playersToPromote = await this.usersService.getWeekly(3);
+        const ids = playersToPromote.map(player => {
+            return player.id
+        });
+        return this.usersService.promotePlayers(ids,true);
+    }
 
     @Get('')
     async findAll(){
@@ -55,7 +70,6 @@ export class UsersController {
         const newGame = await this.gamesService.create(gameDto,id);
         return new GameDto(newGame);
     }
-    
 
     @Post(':id/messages')
     async addMessage(@Body() messageDto: MessageDto, @Param('id', ParseIntPipe) id: number){
@@ -91,5 +105,6 @@ export class UsersController {
         const newUser = await this.usersService.update(id, updateUserDto);
         return new UserDto(newUser);
     }
+
 }
 

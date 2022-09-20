@@ -1,7 +1,9 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/sqlite';
 import { Injectable } from '@nestjs/common';
+import { wrap } from '@mikro-orm/core';
 import { AuthService } from 'src/auth/auth.service';
+import { Division } from '../divisions/entities/division';
 import { UserAuthDto } from './dto/user-auth.dto';
 import { UpdateUserDto } from './dto/user-update.dto';
 import { UserDto } from './dto/user.dto';
@@ -10,19 +12,69 @@ import { User, UserRole } from './entity/user';
 @Injectable()
 export class UsersService {
     
-    
     constructor(
         @InjectRepository(User)
         private userRepository: EntityRepository<User>,
+
+        @InjectRepository(Division)
+        private divisionRepository: EntityRepository<Division>,
+
         private authService: AuthService
     ){}
 
+    
+    async promotePlayers(ids: number[],up?: boolean) {
+        const users = await this.userRepository.find({
+            id: ids,
+        });
+
+        const maxDivId = await this.divisionRepository.count();
+
+        users.map(user => {
+            const userDivision = this.divisionRepository.getReference(user.division.id);
+            let q;
+            if(up){
+                if(userDivision.id < maxDivId){
+                    q = 1;
+                }else{
+                    q = 0;
+                }
+            }else{
+                if(userDivision.id > 0){
+                    q = -1;
+                }else{
+                    q = 0;
+                }
+            }
+            wrap(user).assign({
+                division: userDivision.id + q,
+            })
+        })
+
+        await this.userRepository.persistAndFlush(users);
+
+        return users
+    }
+        
+    async getWeekly(howMany?: number) {
+        return await this.userRepository.findAll({
+            orderBy:{
+                weekly: 'DESC'
+            },
+            limit: howMany,
+            disableIdentityMap: true,
+            fields: ['name','weekly']
+        })
+    }
+        
     async find(id: number) {
         return await this.userRepository.findOne(id)
     }
         
     async findAll() {
-        return this.userRepository.findAll();
+        return this.userRepository.findAll({
+            disableIdentityMap: true,
+        });
     }
     
     async update(id: number, updateUserDto: UpdateUserDto) {

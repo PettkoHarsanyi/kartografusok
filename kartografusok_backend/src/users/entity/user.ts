@@ -14,7 +14,7 @@ export class User{
     @Property({ unique: true })
     userName!: string;
 
-    @Property()
+    @Property({hidden: true})
     password!: string;
 
     @Property({nullable:true})

@@ -8,5 +8,6 @@ import { Division } from './entities/division';
   imports: [MikroOrmModule.forFeature({ entities: [Division] })],
   providers: [DivisionsService],
   controllers: [DivisionsController],
+  exports: [DivisionsService],
 })
 export class DivisionsModule {}

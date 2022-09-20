@@ -2,12 +2,19 @@ import { MessageDto } from "src/messages/dto/message.dto";
 import { Message } from "src/messages/entities/message";
 import { User } from "src/users/entity/user";
 import { Game } from "../entities/game";
+import { IsDate, IsInt } from "class-validator";
 
 export class GameDto{
     id?: number;
+
+    @IsInt()
     gameId?: number;
+
     user?: User;
+
     gameDate?: Date;
+
+    @IsInt()
     points?: number;
     messages?: MessageDto[];
 

@@ -11,7 +11,7 @@ export class MessagesController {
     return this.messagesService.create(messageDto);
   }
 
-  @Get()
+  @Get('')
   findAll() {
     return this.messagesService.findAll();
   }

@@ -30,9 +30,17 @@ export class MessagesService {
   }
 
   async findAll(userId?: number) {
-    return this.messageRepository.find({
-      user: userId
-    });
+    if(userId){
+      return this.messageRepository.find({
+        user: userId,
+      },{
+        fields: ['user','user.name','message','sendDate']
+      });
+    }else{
+      return this.messageRepository.findAll({
+        fields: ['user','user.name','message','sendDate']
+      })
+    }
   }
 
   findAllOfGame(id: number) {
