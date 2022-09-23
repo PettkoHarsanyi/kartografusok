@@ -1,33 +1,38 @@
-Az elkészítend? webes verzióban a játékosok online csatlakozhatnak meghívás alapján várószobákhoz, amiket egy kinevezett vezet? fog tudni irányítani.
-A várószobában üzeneteket küldözgethetnek egymásnak a játékosok. 
-A vezet? dobhat ki játékosokat, elnémíthatja ?ket, és indíthatja el a játékot.
-Amennyiben a megfelel? mennyiség? játékos csatlakozott a szobához a játék elkezd?dik.
-Itt továbbra is üzenet küldés formájában tarthatják a kapcsolatot a résztvev?k.
-Minden körben egy alakzatot ad a rendszer, amit minden játékosnak el kell helyezni saját tábláján az általa készített rajzának mintájával kidíszítve.
-Minden körben a játékosok meghatározott szabályok alapján pontokat kapnak, ezért számít, hogy az alakzatokat hogyan helyezik el a táblájukon.
-Játék közben a játékosok adott esetben jelenthetik egy játékos nem odaill? viselkedését, trágár írásmódját a chaten.
-A játék addig tart, míg a játékban négy évszak le nem telik.
-A játék végén kialakult pontszámok egy általános ranglistában kerülnek mentésre, amiben a naptári hét „legjobb kartográfusainak” dics? nevét és pontszámát tekintheti meg minden játékos.
-Minden héten az elért pontszámuk alapján kerülhetnek fentebbi divíziókba a regisztrált felhasználók.
-Ennek a szerepe csak esztékiai szerepet tölt be, ugyanis a játék közben személyüket jelz? profilképük körül az adott divíziójuk jelenik meg.
-Ahhoz, hogy a pontszámokat felhasználókhoz rendeljük, természetesen lehet?ség van regisztrációra, és bejelentkezésre.
-Vendégként is részt tudunk venni a játékban, ilyenkor a játék végén felajánlja a rendszer, hogy regisztráljunk, vagy jelentkezzünk be, különben az elért pontszámunk elveszik.
-A megvalósításhoz frontenden oldalon Reactjs keretrendszert fogok használni. 
-A különböz? játékállapotokat React Redux-szal segítségével fogom implementálni.
-A játékban szerepl? grafikát - kártyákat, játékteret - saját magam fogom elkészíteni, illetve lehet?ség lesz kés?bb is hozzáadni ilyeneket (kés?bb err?l szó lesz).
-Játék közben az online kapcsolat a többi játékossal socket kommunikáción keresztül fog m?ködni. 
-A backendet és a hozzá tartozó háttérlogikát NestJS keretrendszer segítségével fogom implementálni, REST API-n keresztül.
-Az adatok perzisztens tárolásáért az SQLite adatbázis kezel? felel. 
-Az adatbázis legfontosabb eleme a játékosokat és azok adatait eltároló tábla lesz.
-Itt tárolódik a nevük, e-mail címük, a hashelt jelszavuk, az összes pontszámuk, a heti pontszámuk, illetve szerepkörük.
-Ezek alapján a szerepkör táblában az lesz tárolva.
-Ezen kívül lesz egy heti eredményeket tartalmazó tábla, hogy melyik héten ki volt az els? 10 legeredményesebb játékos.
-A divíziók tárolására is lesz egy tábla. 
-Továbbá egy el?zményeket tartalmazó táblában elérhet? lesz a játékosok utolsó néhány mérk?zése, az azokban elért eredményük. 
-Lesz egy admin felület is, ahova a játékkészít?k, hozzájárulók jelentkezhetnek majd be. 
-Itt ?k változtathatják a játék során életbe lép? táblák kinézetét, a kártyákat, amiket a rendszer kihúz. 
-A többszörös figyelmeztetéseket kapott játékosokat és azok üzenetváltásait az adminok felülvizsgálhatják, és a jogosnak talált jelentéseket elfogadhatják, ezzel végleg
-megvonhatják egy játékostól a játék örömét.
-Az adminok itt tudnak kinevezni másokat adminnak vagy hozzájárulónak. 
-A fejlesztésemet Visual Studio Code-ban fogom végezni, adatbázis tallózónak DB Browser for SQLite programot fogok haszálni.
-A fejlesztés folyamatos nyomonkövetését egy online verziókezel? segítségével fogom végezni egy privát repositoryban.
+-  Az elkÃ©szÃ­tendÅ‘ webes verziÃ³ban a jÃ¡tÃ©kosok online csatlakozhatnak meghÃ­vÃ¡s alapjÃ¡n vÃ¡rÃ³szobÃ¡khoz, amiket egy kinevezett vezet? fog tudni irÃ¡nyÃ­tani.
+-  A vÃ¡rÃ³szobÃ¡ban Ã¼zeneteket kÃ¼ldÃ¶zgethetnek egymÃ¡snak a jÃ¡tÃ©kosok. 
+-  A vezet? dobhat ki jÃ¡tÃ©kosokat, elnÃ©mÃ­thatja ?ket, Ã©s indÃ­thatja el a jÃ¡tÃ©kot.
+-  Amennyiben a megfelel? mennyisÃ©g? jÃ¡tÃ©kos csatlakozott a szobÃ¡hoz a jÃ¡tÃ©k elkezd?dik.
+-  Itt tovÃ¡bbra is Ã¼zenet kÃ¼ldÃ©s formÃ¡jÃ¡ban tarthatjÃ¡k a kapcsolatot a rÃ©sztvev?k.
+-  Minden kÃ¶rben egy alakzatot ad a rendszer, amit minden jÃ¡tÃ©kosnak el kell helyezni sajÃ¡t tÃ¡blÃ¡jÃ¡n az Ã¡ltala kÃ©szÃ­tett rajzÃ¡nak mintÃ¡jÃ¡val kidÃ­szÃ­tve.
+-  Minden kÃ¶rben a jÃ¡tÃ©kosok meghatÃ¡rozott szabÃ¡lyok alapjÃ¡n pontokat kapnak, ezÃ©rt szÃ¡mÃ­t, hogy az alakzatokat hogyan helyezik el a tÃ¡blÃ¡jukon.
+-  JÃ¡tÃ©k kÃ¶zben a jÃ¡tÃ©kosok adott esetben jelenthetik egy jÃ¡tÃ©kos nem odaill? viselkedÃ©sÃ©t, trÃ¡gÃ¡r Ã­rÃ¡smÃ³djÃ¡t a chaten.
+-  A jÃ¡tÃ©k addig tart, mÃ­g a jÃ¡tÃ©kban nÃ©gy Ã©vszak le nem telik.
+-  A jÃ¡tÃ©k vÃ©gÃ©n kialakult pontszÃ¡mok egy Ã¡ltalÃ¡nos ranglistÃ¡ban kerÃ¼lnek mentÃ©sre, amiben a naptÃ¡ri hÃ©t â€legjobb kartogrÃ¡fusainakâ€ dics? nevÃ©t Ã©s pontszÃ¡mÃ¡t tekintheti meg minden jÃ¡tÃ©kos.
+o  Minden hÃ©ten az elÃ©rt pontszÃ¡muk alapjÃ¡n kerÃ¼lhetnek fentebbi divÃ­ziÃ³kba a regisztrÃ¡lt felhasznÃ¡lÃ³k.
+-  Ennek a szerepe csak esztÃ©kiai szerepet tÃ¶lt be, ugyanis a jÃ¡tÃ©k kÃ¶zben szemÃ©lyÃ¼ket jelz? profilkÃ©pÃ¼k kÃ¶rÃ¼l az adott divÃ­ziÃ³juk jelenik meg.
+o  Ahhoz, hogy a pontszÃ¡mokat felhasznÃ¡lÃ³khoz rendeljÃ¼k, termÃ©szetesen lehet?sÃ©g van regisztrÃ¡ciÃ³ra, Ã©s bejelentkezÃ©sre.
+-  (ENNEK FRONTENDJE)
+-  VendÃ©gkÃ©nt is rÃ©szt tudunk venni a jÃ¡tÃ©kban, ilyenkor a jÃ¡tÃ©k vÃ©gÃ©n felajÃ¡nlja a rendszer, hogy regisztrÃ¡ljunk, vagy jelentkezzÃ¼nk be, kÃ¼lÃ¶nben az elÃ©rt pontszÃ¡munk elveszik.
+o  A megvalÃ³sÃ­tÃ¡shoz frontenden oldalon Reactjs keretrendszert fogok hasznÃ¡lni. 
+-  A kÃ¼lÃ¶nbÃ¶z? jÃ¡tÃ©kÃ¡llapotokat React Redux-szal segÃ­tsÃ©gÃ©vel fogom implementÃ¡lni.
+-  A jÃ¡tÃ©kban szerepl? grafikÃ¡t - kÃ¡rtyÃ¡kat, jÃ¡tÃ©kteret - sajÃ¡t magam fogom elkÃ©szÃ­teni, illetve lehet?sÃ©g lesz kÃ©s?bb is hozzÃ¡adni ilyeneket (kÃ©s?bb err?l szÃ³ lesz).
+-  JÃ¡tÃ©k kÃ¶zben az online kapcsolat a tÃ¶bbi jÃ¡tÃ©kossal socket kommunikÃ¡ciÃ³n keresztÃ¼l fog m?kÃ¶dni. 
+o  A backendet Ã©s a hozzÃ¡ tartozÃ³ hÃ¡ttÃ©rlogikÃ¡t NestJS keretrendszer segÃ­tsÃ©gÃ©vel fogom implementÃ¡lni, REST API-n keresztÃ¼l.
+o  Az adatok perzisztens tÃ¡rolÃ¡sÃ¡Ã©rt az SQLite adatbÃ¡zis kezel? felel. 
+o  Az adatbÃ¡zis legfontosabb eleme a jÃ¡tÃ©kosokat Ã©s azok adatait eltÃ¡rolÃ³ tÃ¡bla lesz.
+o  Itt tÃ¡rolÃ³dik a nevÃ¼k, e-mail cÃ­mÃ¼k, a hashelt jelszavuk, az Ã¶sszes pontszÃ¡muk, a heti pontszÃ¡muk, illetve szerepkÃ¶rÃ¼k.
+o  Ezen kÃ­vÃ¼l lesz egy heti eredmÃ©nyeket tartalmazÃ³ tÃ¡bla, hogy melyik hÃ©ten ki volt az els? 10 legeredmÃ©nyesebb jÃ¡tÃ©kos.
+-  (ENNEK FRONTENDJE)
+o  A divÃ­ziÃ³k tÃ¡rolÃ¡sÃ¡ra is lesz egy tÃ¡bla. 
+o  TovÃ¡bbÃ¡ egy el?zmÃ©nyeket tartalmazÃ³ tÃ¡blÃ¡ban elÃ©rhet? lesz a jÃ¡tÃ©kosok utolsÃ³ nÃ©hÃ¡ny mÃ©rk?zÃ©se, az azokban elÃ©rt eredmÃ©nyÃ¼k. 
+-  Lesz egy admin felÃ¼let is, ahova a jÃ¡tÃ©kkÃ©szÃ­t?k, hozzÃ¡jÃ¡rulÃ³k jelentkezhetnek majd be. 
+-  Itt Å‘k vÃ¡ltoztathatjÃ¡k a jÃ¡tÃ©k sorÃ¡n Ã©letbe lÃ©p? tÃ¡blÃ¡k kinÃ©zetÃ©t, a kÃ¡rtyÃ¡kat, amiket a rendszer kihÃºz. 
+o  A tÃ¶bbszÃ¶rÃ¶s figyelmeztetÃ©seket kapott jÃ¡tÃ©kosokat Ã©s azok Ã¼zenetvÃ¡ltÃ¡sait az adminok felÃ¼lvizsgÃ¡lhatjÃ¡k, Ã©s a jogosnak talÃ¡lt jelentÃ©seket elfogadhatjÃ¡k, ezzel vÃ©gleg megvonhatjÃ¡k egy jÃ¡tÃ©kostÃ³l a jÃ¡tÃ©k Ã¶rÃ¶mÃ©t.
+-  (ENNEK FRONTENDJE)
+o  Az adminok itt tudnak kinevezni mÃ¡sokat adminnak vagy hozzÃ¡jÃ¡rulÃ³nak. 
+o  A fejlesztÃ©semet Visual Studio Code-ban fogom vÃ©gezni, adatbÃ¡zis tallÃ³zÃ³nak DB Browser for SQLite programot fogok haszÃ¡lni.
+o  A fejlesztÃ©s folyamatos nyomonkÃ¶vetÃ©sÃ©t egy online verziÃ³kezel? segÃ­tsÃ©gÃ©vel fogom vÃ©gezni egy privÃ¡t repositoryban.
+
+Hot ToDos:
+- VisszaÃ¡llÃ­tani a UserParamot
+- CORS policy reactben (PROXY)

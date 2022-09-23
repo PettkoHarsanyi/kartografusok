@@ -22,11 +22,13 @@ export class GamesService {
                     user: id,
                 },
                 {
-                    populate: ['user.name'],
+                    fields: ['user','user.name','gameDate','points','gameId']
                 }
                 );
         }else{
-            return await this.gameRepository.findAll();
+            return await this.gameRepository.findAll({
+                fields: ['user','user.name','gameDate','points','gameId']
+            });
         }
     }
 
