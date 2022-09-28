@@ -14,10 +14,10 @@ import { RolesGuard } from './auth/roles.guard';
 @Module({
   imports: [MikroOrmModule.forRoot(mikroOrmConfig), GamesModule, DivisionsModule, MessagesModule, AuthModule, UsersModule],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

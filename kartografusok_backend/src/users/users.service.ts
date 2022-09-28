@@ -66,6 +66,16 @@ export class UsersService {
             fields: ['name','weekly']
         })
     }
+
+    async getAllTime() {
+        return await this.userRepository.findAll({
+            orderBy:{
+                points: 'DESC'
+            },
+            disableIdentityMap: true,
+            fields: ['name','points']
+        })
+    }
         
     async find(id: number) {
         return await this.userRepository.findOne(id)
@@ -73,6 +83,7 @@ export class UsersService {
         
     async findAll() {
         return this.userRepository.findAll({
+            populate: ['division'],
             disableIdentityMap: true,
         });
     }

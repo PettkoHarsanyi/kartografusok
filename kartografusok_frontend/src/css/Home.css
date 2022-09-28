@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap");
+
+.Home{
+    background-color: #282c34;  
+    background-image: url("../../gfx/bckgrnd.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    /* justify-content: center; */
+    font-size: calc(10px + 2vmin);
+    display: flex;
+}
+
+.Wrapper{
+    display: block;
+    width: 40%;
+    margin-right: 10%;
+    text-align: center;
+}
+
+.Logo{
+    width: 100%;
+    box-shadow: 0 0 32px 16px rgba(0, 21, 117, 0.7),
+    inset 0 0 32px 16px rgba(0,0,0, 0.4);
+    border-radius: 2vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15vh;
+    padding: 1vh 4vh 1vh 4vh;
+    border: 0.5vh solid rgba(0,0,0, 0.8);
+}
+
+.Home-panel {
+    width: 100%;
+    background-color: gainsboro;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    flex-direction: row;
+    box-shadow: 0 0 64px 16px rgba(0, 21, 117, 0.7),
+    inset 0 0 32px 16px rgba(228, 129, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Alfa Slab One", cursive;
+    padding: 5vh 0 5vh 0;
+    text-decoration: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.Home a{
+    height: 10vh;
+    width: auto;
+    background-color: gainsboro;
+    border: 0.5vh solid black;
+    font-family: "Alfa Slab One", cursive;
+    color: black;
+    font-size: 90%;
+    text-align: center;
+    display: block;
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+      0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  
+    margin-bottom: 2vh;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    line-height: 9vh;
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.Home a {
+    transition-duration: 0.4s;
+}
+
+.Home a:hover {
+    background-color: green; /* Green */
+    color: white;
+    font-size: 6vh;
+    border-radius: 2vh;
+}
+
+.Home a:last-of-type:hover {
+    background-color: maroon; /* Green */
+    color: white;
+    font-size: 6vh;
+    border-radius: 2vh;
+}

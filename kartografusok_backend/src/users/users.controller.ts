@@ -30,7 +30,7 @@ export class UsersController {
     async create(@Body() userAuthDto: UserAuthDto){
         try{
             const newUser = await this.usersService.create(userAuthDto);
-            return new UserDto(newUser);   
+            return new UserDto(newUser);
         }catch(e){
             if(e instanceof UniqueConstraintViolationException){
                 throw new HttpException('Username is already taken',HttpStatus.CONFLICT)
@@ -43,6 +43,11 @@ export class UsersController {
     @Get("weekly")
     async weekly(){
         return await this.usersService.getWeekly();
+    }
+
+    @Get("alltime")
+    async alltime(){
+        return await this.usersService.getAllTime();
     }
     
     @Roles(UserRole.Admin)

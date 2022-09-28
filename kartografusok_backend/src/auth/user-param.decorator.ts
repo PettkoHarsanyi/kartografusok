@@ -11,10 +11,10 @@ export function getUserFromRequest(ctx: ExecutionContext) {
 
 export const UserParam = createParamDecorator(
   (_: never, ctx: ExecutionContext) => {
-    const user = new User();
-    user.id = 1;
-    user.role = UserRole.Admin;
-    return user;
-    // return getUserFromRequest(ctx);
+    // const user = new User();
+    // user.id = 1;
+    // user.role = UserRole.Admin;
+    // return user;
+    return getUserFromRequest(ctx);
   },
 );
