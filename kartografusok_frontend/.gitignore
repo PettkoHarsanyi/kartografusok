@@ -10,6 +10,7 @@
 
 # graphics
 /gfx
+/src/assets
 
 # production
 /build

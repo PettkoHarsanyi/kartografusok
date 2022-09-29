@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap");
+
+.Login{
+    background-color: #282c34;  
+    background-image: url("../../gfx/loginregisterscreen.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.Login *{
+    font-family: "Alfa Slab One", cursive;
+    text-decoration: none;
+    font-size: 4vh;
+}
+
+.Panel{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+
+    background-color: gainsboro;
+    box-shadow: 0 0 64px 16px rgba(184, 104, 0, 0.2),
+    inset 0 0 32px 16px rgba(228, 129, 0, 0.2);
+    border: 0.5vh solid black;
+    text-decoration: none;
+    border-radius: 2vh;
+    padding: 2vh 0 2vh 0;
+    width: 35%;
+}
+
+.Form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    padding: 3vh 0 3vh 0;
+}
+
+.Form *{
+    width: 80%;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    text-align: center;
+}
+
+.Form input{
+    box-shadow: inset 0 0 16px 8px rgba(228, 129, 0, 0.2);
+}
+
+.Input{
+    background: lightslategray;
+    color: white;
+}
+
+input[type="text"], textarea {
+
+    background-color: lightslategray; 
+}
+
+.Form button{
+    cursor: pointer;
+    transition-duration: 0.4s;
+    background-color: rgb(147, 255, 137);
+    width: 50%;
+}
+
+
+.Form button:hover{
+    cursor: pointer;
+    background-color: limegreen;
+    font-size: 5vh;
+    width: 70%;
+}
+
+.Button{
+    cursor: pointer;
+    transition-duration: 0.4s;
+    background-color: rgb(147, 255, 137);
+    width: 50%;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    padding: 1vh;
+    color: black;
+    background-color: grey;
+    font-size: 3vh;
+    transition-duration: 0.4s;
+}
+
+.Button:hover{
+    cursor: pointer;
+    background-color: goldenrod;
+    font-size: 4vh;
+    height: 4vh;
+}
+
+.Nav{
+    padding: 3vh 0 3vh 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}

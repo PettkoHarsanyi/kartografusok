@@ -23,10 +23,8 @@ code {
 html,
 body {
   height: 100%;
-  margin: 0;
+  margin: 0 !important;
   padding:0;
-  line-height: 1.5;
-  color: #121212;
 }
 
 #error-page {

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../auth/auth.service';
+import "../css/Login.css";
+
 
 export default function Login() {
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [error,setError] = useState("");
 
     const navigate = useNavigate();
 
@@ -18,7 +21,7 @@ export default function Login() {
                     window.location.reload();
                 },
                 (error)=>{
-                    console.log(error)
+                    setError(error.response.data.message);
                 }
             );
         } catch (err){
@@ -27,33 +30,37 @@ export default function Login() {
     }
 
     return(
-        <div>
-            <form onSubmit={handleLogin}>
-                <h3>Bejelentkezés</h3>
-                <input
-                    type="text"
-                    placeholder='Felhasználó név'
-                    value={userName}
-                    onChange={(e)=>setUserName(e.target.value)}
-                />
-                <input 
-                    type="password"
-                    placeholder="Jelszó"
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
-                />
-                <button type='submit'>Bejelentkezés</button>
-            </form>
-            <nav>
-                <li>
-                    <Link to="/regisztracio">Regisztracio</Link>
-                </li>
-            </nav>
-            <nav>
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-            </nav>
+        <div className='Login'>
+            <div className='Panel'>
+                <h1>Bejelentkezés</h1>
+                
+                {error && <p>{error}</p>}
+                    
+                <form onSubmit={handleLogin} className="Form">
+                    <input
+                        className='Input'
+                        type="text"
+                        placeholder='Felhasználó név'
+                        value={userName}
+                        onChange={(e)=>setUserName(e.target.value)}
+                    />
+                    <input 
+                        type="password"
+                        placeholder="Jelszó"
+                        value={password}
+                        onChange={(e)=>setPassword(e.target.value)}
+                    />
+                    <button type='submit'>Tovább</button>
+                </form>
+                <div className='Nav'>
+                    <nav>
+                        <Link className='Button' to="/regisztracio">Regisztracio</Link>
+                    </nav>
+                    <nav>
+                        <Link className='Button' to="/">Vissza</Link>
+                    </nav>
+                </div>
+            </div>
         </div>
     );
 }

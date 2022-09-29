@@ -31,7 +31,7 @@ export default function Registration() {
         <div>
             <form onSubmit={handleRegister}>
                 <h3>Regisztráció</h3>
-                {errors && errors.map(error=><p>{error}</p>)}
+                {errors && errors.map((error,i)=><p key={i++}>{error}</p>)}
                 <input
                     type="text"
                     placeholder='Felhasználó név'

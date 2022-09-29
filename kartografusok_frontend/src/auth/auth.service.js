@@ -1,4 +1,5 @@
 import axios from "axios"
+import jwt_decode from "jwt-decode";
 
 const signUp = (name, userName, password) => {
     return axios
@@ -35,7 +36,7 @@ const logOut = () => {
 };
 
 const getCurrentUser = () => {
-    return localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).user : null;
+    return localStorage.getItem("user") ? jwt_decode(JSON.parse(localStorage.getItem("user")).access_token).user : null;
 }
 
 const AuthService = {
