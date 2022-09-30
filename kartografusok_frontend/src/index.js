@@ -10,6 +10,9 @@ import Leaderboard from './components/Leaderboard';
 import Rules from './components/Rules';
 import Admin from './components/Admin';
 import authHeader from './auth/auth-header';
+import Profil from './components/Profil';
+import ConnectRoom from './components/ConnectRoom';
+import CreateRoom from './components/CreateRoom';
 // import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -21,6 +24,18 @@ const router = createBrowserRouter([
   {
     path: "bejelentkezes",
     element: <Login />, 
+  },
+  {
+    path: "letrehozas",
+    element: <CreateRoom />, 
+  },
+  {
+    path: "csatlakozas",
+    element: <ConnectRoom />, 
+  },
+  {
+    path: "profil",
+    element: <Profil />, 
   },
   {
     path: "regisztracio",

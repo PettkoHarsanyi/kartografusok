@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap");
 
-.Login{
+.Registration{
     background-color: #282c34;  
     background-image: url("../../gfx/loginregisterscreen.png");
     background-repeat: no-repeat;
@@ -14,13 +14,13 @@
     display: flex;
 }
 
-.Login *{
+.Registration *{
     font-family: "Alfa Slab One", cursive;
     text-decoration: none;
     font-size: 4vh;
 }
 
-.Login .AbsolutePanel{
+.Registration .AbsolutePanel{
     width: 35%;
     height: auto;
     position: relative;
@@ -29,7 +29,7 @@
     justify-content: center;
 }
 
-.Login .Panel{
+.Registration .Panel{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,21 +45,25 @@
     position: absolute;
 }
 
-.Login .ErrorPanel{
-    
+.Registration .RegErrorPanel{
+    width: max-content;
+    max-width: 100%;
     background-color: gainsboro;
     border: 0.5vh solid black;
     border-radius: 2vh;
     position: absolute;
     border: 0.5vh solid black;
     left: 70vh;
-    font-size: 3vh;
     padding: 2vh 5vh 2vh 5vh ;
     color: red;
     box-shadow: 0 0 64px 32px rgba(184, 0, 0, 0.2), inset 0 0 8px 4px rgba(228, 0, 0, 1);
 }
 
-.Login .Form{
+.Registration .RegErrorPanel p{
+    font-size: 2vh;
+}
+
+.Registration .Form{
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -69,18 +73,18 @@
     padding: 3vh 0 3vh 0;
 }
 
-.Login .Form *{
+.Registration .Form *{
     width: 80%;
     border: 0.5vh solid black;
     border-radius: 2vh;
     text-align: center;
 }
 
-.Login .Form input{
+.Registration .Form input{
     box-shadow: inset 0 0 16px 8px rgba(228, 129, 0, 0.2);
 }
 
-.Login .Form button{
+.Registration .Form button{
     cursor: pointer;
     transition-duration: 0.4s;
     background-color: rgb(147, 255, 137);
@@ -88,14 +92,14 @@
 }
 
 
-.Login .Form button:hover{
+.Registration .Form button:hover{
     cursor: pointer;
     background-color: limegreen;
     font-size: 5vh;
     width: 70%;
 }
 
-.Login .Button{
+.Registration .Button{
     cursor: pointer;
     transition-duration: 0.4s;
     background-color: rgb(147, 255, 137);
@@ -110,14 +114,14 @@
     transition-duration: 0.4s;
 }
 
-.Login .Button:hover{
+.Registration .Button:hover{
     cursor: pointer;
     background-color: goldenrod;
     font-size: 4vh;
     height: 4vh;
 }
 
-.Login .Nav{
+.Nav{
     padding: 3vh 0 3vh 0;
     display: flex;
     flex-direction: column;

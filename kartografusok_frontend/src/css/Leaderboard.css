@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap");
+
+.Leaderboard{
+    background-color: #282c34;  
+    background-image: url("../../gfx/bckgrnd.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* justify-content: center; */
+    font-size: calc(10px + 2vmin);
+    display: flex;
+    width: 100%;
+}
+
+.Leaderboard .Button{
+    cursor: pointer;
+    transition-duration: 0.4s;
+    background-color: rgb(147, 255, 137);
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    padding: 1vh 3vh 1vh 3vh;
+    background-color: gainsboro;
+    color: black;
+
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+    inset 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
+    font-size: 3vh;
+    transition-duration: 0.4s;
+    width: max-content;
+}
+
+#allButton{
+    border-radius: 2vh 0 0 2vh;
+    border-right: none;
+}
+
+#weekButton{
+    border-radius: 0 2vh 2vh 0;
+}
+
+.Leaderboard .Button:hover{
+    cursor: pointer;
+    background-color: goldenrod;
+}
+
+.Leaderboard .SpaceholderDiv{
+    width: 30%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.Leaderboard *{
+    font-family: "Alfa Slab One", cursive;
+    text-decoration: none;
+    font-size: 4vh;
+}
+
+.Leaderboard .Panel{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+
+    background-color: gainsboro;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    text-decoration: none;
+    
+    position: absolute;
+    width: 60%;
+    height: 80%;
+    max-height: 80%;
+    
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+    inset 0 -18px 30px 0 rgba(0, 0, 0, 0.9);
+}
+
+.Leaderboard .ButtonDiv .Button{
+    width: 20vh;
+}
+
+.Leaderboard .PanelDiv1{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: max-content;
+    justify-content: space-between;
+    padding: 3vh;
+    align-items: center;
+}
+
+.Leaderboard .PanelDiv2{
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+    border: 0.5vh solid black;
+    border-radius: 2vh 2vh 0 0;
+    border-bottom: none;
+    width: 93%;
+    overflow-y: scroll;
+}
+
+.Leaderboard .PlayerDiv{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 2vh;
+    border-bottom: 0.5vh solid black;
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+    inset 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    justify-content: space-around;
+}
+
+.Leaderboard .PlayerDiv:nth-of-type(1){
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+    inset 0 20px 20px 0 rgb(255, 242, 0);
+}
+
+.Leaderboard .PlayerDiv:nth-of-type(2){
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+    inset 0 20px 20px 0 rgb(97, 97, 97);
+}
+
+.Leaderboard .PlayerDiv:nth-of-type(3){
+    box-shadow: 0 8px 16px 0 rgba(228, 129, 0, 0.2),
+    inset 0 20px 20px 0 rgb(236, 142, 0);
+}

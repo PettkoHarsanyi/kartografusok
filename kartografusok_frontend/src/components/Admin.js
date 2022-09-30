@@ -6,7 +6,7 @@ export default function Admin(){
     const users = useLoaderData();
     return(
         <div>
-            <h1>Welcome to Admin</h1>
+            <h1>Admin Page Is Coming Soon</h1>
             <nav>
                 <Link to="/">Home</Link>
             </nav>
