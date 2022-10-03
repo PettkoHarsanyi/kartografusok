@@ -56,7 +56,7 @@ export default function Login() {
                     </form>
                     <div className='Nav'>
                         <nav>
-                            <Link className='Button' to="/regisztracio">Regisztracio</Link>
+                            <Link className='Button' to="/regisztracio">Regisztráció</Link>
                         </nav>
                         <nav>
                             <Link className='Button' to="/">Vissza</Link>

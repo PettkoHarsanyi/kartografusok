@@ -39,11 +39,22 @@ const getCurrentUser = () => {
     return localStorage.getItem("user") ? jwt_decode(JSON.parse(localStorage.getItem("user")).access_token).user : null;
 }
 
-const AuthService = {
+const isAdmin = () => {
+    const user = getCurrentUser();
+
+    if(user){
+        return (user.role === "ADMIN")
+    }else{
+        return false;
+    }
+}
+
+const authService = {
     signUp,
     logIn,
     logOut,
-    getCurrentUser
+    getCurrentUser,
+    isAdmin
 }
 
-export default AuthService;
+export default authService;

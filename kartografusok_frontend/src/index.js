@@ -13,6 +13,7 @@ import authHeader from './auth/auth-header';
 import Profil from './components/Profil';
 import ConnectRoom from './components/ConnectRoom';
 import CreateRoom from './components/CreateRoom';
+import authService from './auth/auth.service';
 // import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -36,6 +37,15 @@ const router = createBrowserRouter([
   {
     path: "profil",
     element: <Profil />, 
+    loader: async ({ params })=>{
+      let user = authService.getCurrentUser();
+      if(user){
+        return fetch(`api/users/${user.id}/games`,{
+          headers: authHeader()
+        });
+      }
+      return null;
+    }
   },
   {
     path: "regisztracio",
@@ -48,7 +58,6 @@ const router = createBrowserRouter([
       return Promise.all([
         fetch(`/api/users/alltime`,{
           headers: authHeader()
-          
         }).then(resp => resp.json()),
         fetch('/api/users/weekly',{
           headers: authHeader()

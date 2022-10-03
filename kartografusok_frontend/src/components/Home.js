@@ -13,7 +13,7 @@ export default function Home() {
     const [frame,setFrame] = useState();
     const [decoration,setDecoration] = useState({});
     const [user] = useState(authService.getCurrentUser());
-    
+
     useEffect(()=>{
         if(user){
             switch (user.division.id) {
@@ -45,7 +45,7 @@ export default function Home() {
                     {user ? (
                         <div className='Div1'>
                             <div className='Div2'>
-                                <Link to="/adminisztracio">Admin</Link>
+                                {authService.isAdmin() ? <Link to="/adminisztracio">Admin</Link> : <div></div>}
                                 <Link to="/profil">Profil</Link>
                             </div>
                             <div className='Div3'>

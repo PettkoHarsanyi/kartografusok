@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 import "../css/Leaderboard.css";
+import bronz from "../assets/bronze.png";
+import ezust from "../assets/ezust.png"
+import arany from "../assets/arany.png"
+import platina from "../assets/platina.png"
 
 export default function Leaderboard() {
 
@@ -10,6 +14,21 @@ export default function Leaderboard() {
   const [allShown,setAllShown] = useState(true);
 
   const [shownPlayers, setShownPlayers] = useState(allTimeUsers);
+
+  const setDiv = (id) => {
+    if (id===1) {
+      return <img src={bronz} className="Pics" alt="profilpics" />
+    }
+    if (id===2) {
+      return <img src={ezust} className="Pics" alt="profilpics" />
+    }
+    if (id===3) {
+      return <img src={arany} className="Pics" alt="profilpics" />
+    }
+    if (id===4) {
+      return <img src={platina} className="Pics" alt="profilpics" />
+    }
+  }
 
   return (
     <div className='Leaderboard'>
@@ -37,7 +56,7 @@ export default function Leaderboard() {
           {shownPlayers ? (
               shownPlayers.map((user,i) => (
                 <div key={user.id} className='PlayerDiv'>
-                  <div>{i+1}. {user.name}</div>
+                  <div>{i+1}. {setDiv(user.division.id)} {user.name} </div>
                   <div>|</div>
                   <div>{allShown ? (" összes pont: " + user.points) : ("heti pont: " + user.weekly)} </div>
                   <div>|</div>

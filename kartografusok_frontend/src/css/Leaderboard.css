@@ -34,6 +34,12 @@
     width: max-content;
 }
 
+.Leaderboard .Pics{
+    top:1vh;
+    width: 5vh;
+    height: 5vh;
+}
+
 #allButton{
     border-radius: 2vh 0 0 2vh;
     border-right: none;
