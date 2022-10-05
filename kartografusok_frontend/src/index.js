@@ -8,7 +8,7 @@ import Login from './components/Login';
 import Registration from './components/Registration';
 import Leaderboard from './components/Leaderboard';
 import Rules from './components/Rules';
-import Admin from './components/Admin';
+import Admin from './components/Admin/Admin';
 import authHeader from './auth/auth-header';
 import Profil from './components/Profil';
 import ConnectRoom from './components/ConnectRoom';
@@ -24,23 +24,23 @@ const router = createBrowserRouter([
   },
   {
     path: "bejelentkezes",
-    element: <Login />, 
+    element: <Login />,
   },
   {
     path: "letrehozas",
-    element: <CreateRoom />, 
+    element: <CreateRoom />,
   },
   {
     path: "csatlakozas",
-    element: <ConnectRoom />, 
+    element: <ConnectRoom />,
   },
   {
     path: "profil",
-    element: <Profil />, 
-    loader: async ({ params })=>{
+    element: <Profil />,
+    loader: async ({ params }) => {
       let user = authService.getCurrentUser();
-      if(user){
-        return fetch(`api/users/${user.id}/games`,{
+      if (user) {
+        return fetch(`api/users/${user.id}/games`, {
           headers: authHeader()
         });
       }
@@ -49,17 +49,17 @@ const router = createBrowserRouter([
   },
   {
     path: "regisztracio",
-    element: <Registration />, 
+    element: <Registration />,
   },
   {
     path: "rangletra",
     element: <Leaderboard />,
-    loader: async ({ params })=>{
+    loader: async ({ params }) => {
       return Promise.all([
-        fetch(`/api/users/alltime`,{
+        fetch(`/api/users/alltime`, {
           headers: authHeader()
         }).then(resp => resp.json()),
-        fetch('/api/users/weekly',{
+        fetch('/api/users/weekly', {
           headers: authHeader()
         }).then(resp => resp.json())
       ]);
@@ -67,22 +67,30 @@ const router = createBrowserRouter([
   },
   {
     path: "szabalyzat",
-    element: <Rules />, 
+    element: <Rules />,
   },
   {
     path: "adminisztracio",
-    element: <Admin />, 
-    loader: async ({ params })=>{
-      return fetch('api/users',{
-        headers: authHeader()
-      });
+    element: <Admin />,
+    loader: async ({ params }) => {
+      return Promise.all([
+        fetch('api/users', {
+          headers: authHeader()
+        }).then(resp => resp.json()),
+        // fetch('api/maps', {
+        //   headers: authHeader()
+        // }),
+        // fetch('api/cards', {
+        //   headers: authHeader()
+        // }).then(resp => resp.json()),
+      ])
     }
   }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <RouterProvider router = {router} />
+  <RouterProvider router={router} />
 );
 
 // If you want to start measuring performance in your app, pass a function
