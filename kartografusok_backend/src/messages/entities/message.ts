@@ -1,6 +1,6 @@
 import { DateType, Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
-import { Game } from "src/games/entities/game";
-import { User } from "src/users/entity/user";
+import { Game } from "../../games/entities/game";
+import { User } from "../../users/entity/user";
 
 @Entity()
 export class Message{
@@ -10,7 +10,6 @@ export class Message{
     @ManyToOne(()=>Game)
     game: Game;
 
-    // TODO
     @ManyToOne(()=>User)
     user: User;
 

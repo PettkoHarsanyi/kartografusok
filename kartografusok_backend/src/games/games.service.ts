@@ -22,12 +22,12 @@ export class GamesService {
                     user: id,
                 },
                 {
-                    fields: ['user','user.name','gameDate','points','gameId']
+                    fields: ['user','user.name','gameDate','points','gameId','place','duration']
                 }
                 );
         }else{
             return await this.gameRepository.findAll({
-                fields: ['user','user.name','gameDate','points','gameId']
+                fields: ['user','user.name','gameDate','points','gameId','place','duration']
             });
         }
     }
@@ -42,6 +42,8 @@ export class GamesService {
         game.gameId = gameDto.gameId;
         game.gameDate = gameDto.gameDate;
         game.points = gameDto.points;
+        game.duration = gameDto.duration;
+        game.place = gameDto.place;
 
         await this.gameRepository.persistAndFlush(game);
         return game;

@@ -60,6 +60,7 @@ export class UsersController {
         return this.usersService.promotePlayers(ids,true);
     }
 
+    @Roles(UserRole.Admin)
     @Get('')
     async findAll(){
         return await this.usersService.findAll();

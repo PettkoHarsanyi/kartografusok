@@ -1,6 +1,6 @@
 import { Collection, DateType, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
-import { Message } from "src/messages/entities/message";
-import { User } from "src/users/entity/user";
+import { Message } from "../../messages/entities/message";
+import { User } from "../../users/entity/user";
 
 @Entity()
 export class Game{
@@ -17,8 +17,14 @@ export class Game{
     @Property({ type:DateType })
     gameDate!: Date;
 
-    @Property()
+    @Property({nullable:true})
     points!: number;
+
+    @Property({nullable:true})
+    duration!: number;
+
+    @Property({nullable:true})
+    place!: number
 
     @OneToMany(()=>Message, (message)=>message.game)
     messages = new Collection<Message>(this);

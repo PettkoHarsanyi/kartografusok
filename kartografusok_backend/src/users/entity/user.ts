@@ -1,7 +1,7 @@
 import { Collection, Entity, Enum, ManyToOne, OneToMany, PrimaryKey, Property, ReadOnlyException } from "@mikro-orm/core";
-import { Division } from "src/divisions/entities/division";
-import { Game } from "src/games/entities/game";
-import { Message } from "src/messages/entities/message";
+import { Division } from "../../divisions/entities/division";
+import { Game } from "../../games/entities/game";
+import { Message } from "../../messages/entities/message";
 
 @Entity()
 export class User{

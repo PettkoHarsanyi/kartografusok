@@ -14,6 +14,10 @@ export class GameDto{
 
     gameDate?: Date;
 
+    place?: number;
+
+    duration?: number;
+
     @IsInt()
     points?: number;
     messages?: MessageDto[];
@@ -25,6 +29,8 @@ export class GameDto{
             this.user = game.user;
             this.gameDate = game.gameDate;
             this.points = game.points;
+            this.place = game.place;
+            this.duration = game.duration;
             
             if(game.messages?.isInitialized(true)) {
                 this.messages = game.messages.getItems().map((message)=>new MessageDto(message));

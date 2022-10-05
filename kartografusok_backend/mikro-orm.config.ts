@@ -5,7 +5,7 @@ import { Division } from "./src/divisions/entities/division";
 import { User } from "./src/users/entity/user"
 
 export default {
-    entities: [Game, Message, Division, User],
+    entities: [Message, Game, Division, User],
     dbName: 'kartografusok.sqlite3',
     type: 'sqlite',
     migrations:{

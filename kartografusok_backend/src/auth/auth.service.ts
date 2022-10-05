@@ -21,6 +21,8 @@ export class AuthService {
         const user = await this.userRepository.findOne({
             userName: userAuthDto.userName,
             password: password,
+        },{
+            populate: ['division']
         });
         if(user){
             return new UserDto(user);
@@ -32,9 +34,14 @@ export class AuthService {
         return await this.jwtService.signAsync({
             sub: userDto.id,
             user: {
-            id: userDto.id,
-            name: userDto.name,
-            role: userDto.role,
+                id: userDto.id,
+                name: userDto.name,
+                role: userDto.role,
+                division: userDto.division,
+                banned: userDto.banned,
+                muted: userDto.muted,
+                points: userDto.points,
+                weekly: userDto.weekly
             },
         });
     }

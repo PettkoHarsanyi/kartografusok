@@ -63,7 +63,8 @@ export class UsersService {
             },
             limit: howMany,
             disableIdentityMap: true,
-            fields: ['name','weekly']
+            fields: ['name','weekly',"division"],
+            populate: ['division']
         })
     }
 
@@ -73,7 +74,8 @@ export class UsersService {
                 points: 'DESC'
             },
             disableIdentityMap: true,
-            fields: ['name','points']
+            fields: ['name','points',"division"],
+            populate: ['division']
         })
     }
         
@@ -112,6 +114,7 @@ export class UsersService {
         
         user.password = await this.authService.hashPassword(userAuthDto.password);
         user.role = UserRole.User;
+        user.division = this.divisionRepository.getReference(1);
 
         await this.userRepository.persistAndFlush(user);
 

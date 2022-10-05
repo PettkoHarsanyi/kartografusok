@@ -150,16 +150,36 @@
     border: 0.5vh solid black;
     border-radius: 2vh;
     background-color: white;
+    overflow-y: scroll;
 }
 
 .Profil .Div4 h1{
     align-self: flex-start;
 }
-
-.Profil .Match{
+  
+.Profil table {
     width: 100%;
+    border-collapse: separate; /* Don't collapse */
+    border-spacing: 0;
+}
+
+.Profil td {
     border-bottom: 0.5vh solid black;
+    text-align: center;
+}
+
+.Profil th{
+    border-bottom: 0.5vh solid black;
+}
+
+.Profil thead{
+    position: sticky;
+    top: 0;
+    background-color: darkgoldenrod;
+}
+
+.Profil td{
     padding: 2vh;
-    display: flex;
-    justify-content: space-between;
-}   
+}
+
+.Profil .Match:nth-child(odd) {background-color: lightgrey}

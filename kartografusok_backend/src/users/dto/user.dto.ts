@@ -1,3 +1,4 @@
+import { Division } from "src/divisions/entities/division";
 import { User, UserRole } from "../entity/user";
 
 export class UserDto{
@@ -8,6 +9,7 @@ export class UserDto{
     points?: number;
     muted?: boolean;
     banned?: boolean;
+    division?: Division;
 
     constructor(user?: User){
         if(user){
@@ -18,6 +20,7 @@ export class UserDto{
             this.points = user.points;
             this.muted = user.muted;
             this.banned = user.banned;
+            this.division = user.division;
         }
     }
 }
