@@ -98,7 +98,6 @@ export class UsersController {
         return messages.map(message=>new MessageDto(message));
     }
 
-    @Roles(UserRole.Admin)
     @Get(':id/games')
     async getGames(@Param('id', ParseIntPipe) id: number): Promise<GameDto[]> {
         const games = await this.gamesService.findAll(id);

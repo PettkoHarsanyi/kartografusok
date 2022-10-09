@@ -6,7 +6,6 @@ import { Result } from "../entity/result";
 
 export class ResultDto {
     id?: number;
-    game?: GameDto;
     user?: UserDto;
     points?: number;
     place?: number;
@@ -19,10 +18,6 @@ export class ResultDto {
 
             if (result.user && result.user instanceof User) {
                 this.user = new UserDto(result.user);
-            }
-
-            if (result.game && result.game instanceof Game) {
-                this.game = new GameDto(result.game);
             }
         }
     }

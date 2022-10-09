@@ -8,26 +8,19 @@ import { GameDto } from "../../games/dto/game.dto";
 export class MessageDto{
     id?: number;
 
-    @IsString()
     message?: string;
 
     user?: UserDto;
-    
-    game?: GameDto;
 
 
-    constructor(message?: Message){
-        if(message){
-            this.id = message.id;
-            this.message = message.message;
+    constructor(_message?: Message){
+        if(_message){
+            this.id = _message.id;
+            this.message = _message.message;
             
-            if(message.user && message.user instanceof User){
-                this.user = new UserDto(message.user);
+            if(_message.user && _message.user instanceof User){
+                this.user = new UserDto(_message.user);
             }            
-
-            if(message.game && message.game instanceof Game){
-                this.game = new GameDto(message.game);
-            }
         }
     }
 }

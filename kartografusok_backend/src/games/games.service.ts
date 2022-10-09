@@ -23,13 +23,22 @@ export class GamesService {
         private messageRepository: EntityRepository<Message>,
     ){}
 
-    async findAll(id?: number): Promise<Game[]> {
+    async findAll(id?: number){
         return await this.gameRepository.find({
-            users: id
+            users: id,
         },{
-            populate: ['results',"messages"],
-            fields: ['users','users.name',"duration","results.place","results.user"]
-        })
+            populate: ['users','messages','results','createdAt'],
+            fields: ['duration','createdAt'],
+            populateWhere: {
+                results: {
+                    user: id,
+                },
+                messages: {
+                    user: id,
+                }
+            }
+        }
+        )
     }
 
     async findOne(id: number): Promise<Game>{

@@ -37,7 +37,6 @@ export default function Profil() {
                     break;
             }
         }
-        console.log(userMatches);
     }, [user])
 
     return (
@@ -82,7 +81,7 @@ export default function Profil() {
 
                             <tbody>
                             {userMatches.length > 0 && userMatches.map((match, index) => {
-                            let date = new Date(match.gameDate)
+                            let date = new Date(match.createdAt)
                             let dateString = date.toISOString().split('T')[0]
                             return (
                             <tr key={match.id} className="Match">
@@ -90,7 +89,7 @@ export default function Profil() {
                                 <td>{dateString}</td>
                                 <td>{match.duration} perc</td>
                                 <td>{match.points} pont</td>
-                                <td>{match.place}.</td>
+                                <td>{match.results[0].place}.</td>
                             </tr>)
                             })}
 

@@ -95,10 +95,13 @@ export class UsersService {
         return await this.userRepository.findOne(({
             id: id,
         }),{
-            fields: ["name","userName","email","points","weekly","picture","banned","muted","role","division"],
             populate: ["games","games.messages"],
             populateWhere: {
-                messages: {user: id}
+                games: {
+                    messages:{
+                        user: id,
+                    }
+                }
             }
         })
     }

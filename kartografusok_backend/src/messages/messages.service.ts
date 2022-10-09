@@ -21,14 +21,6 @@ export class MessagesService {
   async create(messageDto: MessageDto, userId?: number) {
     const message = new Message();
 
-    if(messageDto.game){
-      const game = await this.gameRepository.findOne(messageDto.game?.id);
-      if (game) {
-        message.game = game;
-        game.messages.add(message);
-      }
-    }
-
     message.user = this.usersRepository.getReference(userId);
     message.message = messageDto.message;
     await this.messageRepository.persistAndFlush(message);

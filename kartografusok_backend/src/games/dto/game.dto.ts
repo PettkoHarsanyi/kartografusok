@@ -17,11 +17,19 @@ export class GameDto{
     
     results?: ResultDto[];
 
+    createdAt?: Date;
+
+    modifiedAt?: Date;
+
     constructor(game?: Game){
         if(game){
             this.id = game.id;
 
             this.duration = game.duration;
+
+            this.createdAt = game.createdAt;
+
+            this.modifiedAt = game.modifiedAt;
 
             if(game.messages?.isInitialized(true)) {
                 this.messages = game.messages.getItems().map((message)=>new MessageDto(message));

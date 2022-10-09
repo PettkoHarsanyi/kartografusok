@@ -136,13 +136,15 @@ export default function Admin() {
 
                                 {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
                                     if(game.messages.length>0){
+                                    let gameDateTemp = new Date(game.createdAt);
+                                    let gameDate = gameDateTemp.toISOString().split("T")[0];
                                     return (<div className='Match' key={game.id}>
-                                        <div className='MatchHeader'>{game.gameDate}</div>
+                                        <div className='MatchHeader'>{gameDate}</div>
 
                                         {game.messages.length > 0 && game.messages.map((message) => {
                                             let date = new Date(message.createdAt)
                                             let dateTemp = date.toISOString().split("T")[1];
-                                            let hoursAndMinutes = dateTemp.split('.')[0];
+                                            let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
 
                                             return (
                                             <div className='MessageBox' key={message.id}>
