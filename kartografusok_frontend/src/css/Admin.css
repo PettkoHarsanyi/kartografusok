@@ -362,6 +362,14 @@ th {
     padding-right: 1vh;
 }
 
+.Nomessages {
+    margin-bottom: 5vh;
+}
+
+.Icon{
+    padding-top: 3vh;
+}
+
 @media screen and (max-width: 800px) {
     .Admin .ModalItem{
         margin: 0;

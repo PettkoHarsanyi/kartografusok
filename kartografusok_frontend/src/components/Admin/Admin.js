@@ -31,12 +31,8 @@ export default function Admin() {
         setOpen(true);
     };
 
-    const handleSelect = async (user) => {
-        const response = await axios.get(`api/users/${user.id}`,{
-            headers: authHeader()
-        });
-
-        setSelectedUser(response.data)
+    const handleSelect = async (id) => {
+        setSelectedUser(users.find(user => user.id === id))
     }
 
     const handleClose = (e) => {
@@ -57,12 +53,13 @@ export default function Admin() {
             (mappedUser.id === user.id) ? ({ ...mappedUser, muted: !mappedUser.muted }) : (mappedUser)
         ))
 
+        setSelectedUser({ ...selectedUser, muted: !selectedUser.muted })
+
         const response = await axios.patch(`api/users/${user.id}`, {
             muted: user.muted ? "0" : "1"
         }, {
             headers: authHeader()
         });
-
 
         return response
     }
@@ -71,6 +68,8 @@ export default function Admin() {
         setUsers(users.map(mappedUser =>
             mappedUser.id === user.id ? ({ ...mappedUser, banned: !mappedUser.banned }) : (mappedUser)
         ))
+
+        setSelectedUser({ ...selectedUser, banned: !selectedUser.banned })
 
         const response = await axios.patch(`api/users/${user.id}`, {
             banned: user.banned ? "0" : "1"
@@ -84,87 +83,91 @@ export default function Admin() {
     return (
         <div className='Admin'>
 
-            {selectedUser && 
-            <div className='ModalBackground' onClick={(e) => handleClose(e)} style={{ display: open ? "" : "none" }}>
-                <div className='Modal'>
-                    <div className='ModalHeader'>
-                        <div>{selectedUser.name} módosítása</div>
-                        <div className='Clickable' onClick={handleClose}>×</div>
-                    </div>
-                    <div className='ModalContent'>
-                        <div className='UserThings'>
-                            <div className='ModalItem'>
-                                <div>Felhasználónév</div>
-                                <input style={{ width: "15vw" }} type="text" defaultValue={selectedUser.userName} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Név</div>
-                                <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.name} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>E-Mail</div>
-                                <input style={{ width: "20vw" }} type="text" defaultValue={selectedUser.email} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Összes Pont</div>
-                                <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.points} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Heti Pont</div>
-                                <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.weekly} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Kép</div>
-                                <input style={{ width: "20vw" }} type="text" defaultValue={selectedUser.picture} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Némítva</div>
-                                <input style={{ width: "5vw" }} type="text" defaultValue={selectedUser.muted} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Kitiltva</div>
-                                <input style={{ width: "5vw" }} type="text" defaultValue={selectedUser.banned} />
-                            </div>
-                            <div className='ModalItem'>
-                                <div>Rang</div>
-                                <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.role} />
-                            </div>
+            {selectedUser &&
+                <div className='ModalBackground' onClick={(e) => handleClose(e)} style={{ display: open ? "" : "none" }}>
+                    <div className='Modal'>
+                        <div className='ModalHeader'>
+                            <div>{selectedUser.name} módosítása</div>
+                            <div className='Clickable' onClick={handleClose}>×</div>
                         </div>
-                        <div className='UserMatches'>
-                            <div>Játékos üzenetei:</div>
-                            <div className='Matches'>
+                        <div className='ModalContent'>
+                            <div className='UserThings'>
+                                <div className='ModalItem'>
+                                    <div>Felhasználónév</div>
+                                    <input style={{ width: "15vw" }} type="text" defaultValue={selectedUser.userName} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Név</div>
+                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.name} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>E-Mail</div>
+                                    <input style={{ width: "20vw" }} type="text" defaultValue={selectedUser.email} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Összes Pont</div>
+                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.points} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Heti Pont</div>
+                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.weekly} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Kép</div>
+                                    <input style={{ width: "20vw" }} type="text" defaultValue={selectedUser.picture} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Némítva</div>
+                                    <div className='Clickable' onClick={() => handleMute(selectedUser)}><img className='Icon' src={selectedUser.muted ? muted : unmuted} alt="muteicon" /></div>
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Kitiltva</div>
+                                    <div className='Clickable' onClick={() => handleBan(selectedUser)}><img className='Icon' src={selectedUser.banned ? banned : unbanned} alt="banicon" /></div>
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Rang</div>
+                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.role} />
+                                </div>
+                            </div>
+                            {open && selectedUser && selectedUser.messages.length > 0 ?
+                            <div className='UserMatches'>
+                                <div>Játékos üzenetei:</div>
+                                <div className='Matches'>
 
-                                {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
-                                    if(game.messages.length>0){
-                                    let gameDateTemp = new Date(game.createdAt);
-                                    let gameDate = gameDateTemp.toISOString().split("T")[0];
-                                    return (<div className='Match' key={game.id}>
-                                        <div className='MatchHeader'>{gameDate}</div>
+                                    {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
+                                        if (selectedUser.messages.length > 0) {
+                                            let gameDateTemp = new Date(game.createdAt);
+                                            let gameDate = gameDateTemp.toISOString().split("T")[0];
+                                            return (<div className='Match' key={game.id}>
+                                                <div className='MatchHeader'>{gameDate}</div>
 
-                                        {game.messages.length > 0 && game.messages.map((message) => {
-                                            let date = new Date(message.createdAt)
-                                            let dateTemp = date.toISOString().split("T")[1];
-                                            let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
+                                                {game.messages.length > 0 && game.messages.map((message) => {
+                                                    if (message.user === selectedUser.id) {
+                                                        let date = new Date(message.createdAt)
+                                                        let dateTemp = date.toISOString().split("T")[1];
+                                                        let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
 
-                                            return (
-                                            <div className='MessageBox' key={message.id}>
-                                                <div className='Message'>{message.message}</div>
-                                                <div className='Time'>{hoursAndMinutes}</div>
+                                                        return (
+                                                            <div className='MessageBox' key={message.id}>
+                                                                <div className='Message'>{message.message}</div>
+                                                                <div className='Time'>{hoursAndMinutes}</div>
+                                                            </div>)
+                                                    }
+                                                })}
+
+
                                             </div>)
-                                        })}
-
-
-                                    </div>)}
-                                })}
-                            </div>
+                                        }
+                                    })}
+                                </div>
+                            </div>:<div className='Nomessages'><h3>A játékosnak nincsenek üzenetei</h3></div>}
                         </div>
-                    </div>
-                    <div className='ModalFooter'>
-                        <div className='Clickable' onClick={handleClose}>Bezár</div>
-                        <div className='Clickable'>Mentés</div>
+                        <div className='ModalFooter'>
+                            <div className='Clickable' onClick={handleClose}>Bezár</div>
+                            <div className='Clickable'>Mentés</div>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
 
             <nav className='SideNavbar' id="navbar">
@@ -198,7 +201,7 @@ export default function Admin() {
                                         <td>{user.role}</td>
                                         <td className='Clickable' onClick={() => handleMute(user)}><img src={user.muted ? muted : unmuted} alt="muteicon" /></td>
                                         <td className='Clickable' onClick={() => handleBan(user)}><img src={user.banned ? banned : unbanned} alt="banicon" /></td>
-                                        <td className='Clickable' onClick={() => {handleSelect(user); handleOpen() }}><img src={edit} alt="editicon" /></td>
+                                        <td className='Clickable' onClick={() => { handleSelect(user.id); handleOpen() }}><img src={edit} alt="editicon" /></td>
                                     </tr>)
                             })}
 

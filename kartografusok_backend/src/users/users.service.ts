@@ -95,7 +95,7 @@ export class UsersService {
         return await this.userRepository.findOne(({
             id: id,
         }),{
-            populate: ["games","games.messages"],
+            populate: ['division',"games","games.messages"],
             populateWhere: {
                 games: {
                     messages:{
@@ -108,8 +108,7 @@ export class UsersService {
         
     async findAll() {
         return this.userRepository.findAll({
-            populate: ['division','games','games.messages','games.messages.game'],
-            populateWhere: PopulateHint.INFER,
+            populate: ['division','games','games.messages','messages'],
         });
     }
     

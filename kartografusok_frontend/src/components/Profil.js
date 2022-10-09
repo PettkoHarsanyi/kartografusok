@@ -85,10 +85,10 @@ export default function Profil() {
                             let dateString = date.toISOString().split('T')[0]
                             return (
                             <tr key={match.id} className="Match">
-                                <td>{++index}</td>
+                                <td>{++index}.</td>
                                 <td>{dateString}</td>
                                 <td>{match.duration} perc</td>
-                                <td>{match.points} pont</td>
+                                <td>{match.results[0].points} pont</td>
                                 <td>{match.results[0].place}.</td>
                             </tr>)
                             })}
