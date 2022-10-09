@@ -18,12 +18,19 @@ export class MessagesService {
     private gameRepository: EntityRepository<Game>
   ){}
 
-  async create(messageDto: MessageDto, userId?: number, gameId?: number) {
+  async create(messageDto: MessageDto, userId?: number) {
     const message = new Message();
-    message.game = this.gameRepository.getReference(gameId);
+
+    if(messageDto.game){
+      const game = await this.gameRepository.findOne(messageDto.game?.id);
+      if (game) {
+        message.game = game;
+        game.messages.add(message);
+      }
+    }
+
     message.user = this.usersRepository.getReference(userId);
     message.message = messageDto.message;
-    message.sendDate = messageDto.sendDate;
     await this.messageRepository.persistAndFlush(message);
 
     return message;
@@ -34,11 +41,11 @@ export class MessagesService {
       return this.messageRepository.find({
         user: userId,
       },{
-        fields: ['user','user.name','message','sendDate']
+        fields: ['user','user.name','message']
       });
     }else{
       return this.messageRepository.findAll({
-        fields: ['user','user.name','message','sendDate']
+        fields: ['user','user.name','message']
       })
     }
   }

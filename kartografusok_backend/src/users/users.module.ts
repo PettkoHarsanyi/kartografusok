@@ -6,13 +6,14 @@ import { Division } from "../divisions/entities/division";
 import { GamesModule } from "../games/games.module";
 import { GamesService } from "../games/games.service";
 import { MessagesModule } from "../messages/messages.module";
+import { ResultsModule } from "../results/results.module";
 import { User } from "./entity/user";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 
 
 @Module({
-  imports: [MikroOrmModule.forFeature({entities: [User, Division]}), AuthModule, GamesModule, MessagesModule, DivisionsModule],
+  imports: [MikroOrmModule.forFeature({entities: [User, Division]}), AuthModule, GamesModule, MessagesModule, DivisionsModule, ResultsModule],
   controllers: [UsersController],
   providers: [UsersService],
 })

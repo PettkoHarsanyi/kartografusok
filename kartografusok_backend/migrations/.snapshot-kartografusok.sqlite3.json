@@ -68,6 +68,62 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "duration": {
+          "name": "duration",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "modified_at": {
+          "name": "modified_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "game",
+      "indexes": [
+        {
+          "keyName": "primary",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -166,6 +222,26 @@
           "primary": false,
           "nullable": true,
           "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "modified_at": {
+          "name": "modified_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
         }
       },
       "name": "user",
@@ -232,7 +308,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "user_id": {
@@ -244,26 +320,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "game_date": {
-          "name": "game_date",
-          "type": "date",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "date"
-        },
         "points": {
           "name": "points",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "duration": {
-          "name": "duration",
           "type": "integer",
           "unsigned": false,
           "autoincrement": false,
@@ -301,14 +359,23 @@
           "mappedType": "datetime"
         }
       },
-      "name": "game",
+      "name": "result",
       "indexes": [
+        {
+          "columnNames": [
+            "game_id"
+          ],
+          "composite": false,
+          "keyName": "result_game_id_index",
+          "primary": false,
+          "unique": false
+        },
         {
           "columnNames": [
             "user_id"
           ],
           "composite": false,
-          "keyName": "game_user_id_index",
+          "keyName": "result_user_id_index",
           "primary": false,
           "unique": false
         },
@@ -324,12 +391,25 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "game_user_id_foreign": {
-          "constraintName": "game_user_id_foreign",
+        "result_game_id_foreign": {
+          "constraintName": "result_game_id_foreign",
+          "columnNames": [
+            "game_id"
+          ],
+          "localTableName": "result",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "game",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "result_user_id_foreign": {
+          "constraintName": "result_user_id_foreign",
           "columnNames": [
             "user_id"
           ],
-          "localTableName": "game",
+          "localTableName": "result",
           "referencedColumnNames": [
             "id"
           ],
@@ -355,7 +435,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "user_id": {
@@ -375,15 +455,6 @@
           "primary": false,
           "nullable": false,
           "mappedType": "text"
-        },
-        "send_date": {
-          "name": "send_date",
-          "type": "date",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "date"
         },
         "created_at": {
           "name": "created_at",
@@ -448,6 +519,7 @@
             "id"
           ],
           "referencedTableName": "game",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         },
         "message_user_id_foreign": {
@@ -460,6 +532,88 @@
             "id"
           ],
           "referencedTableName": "user",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "game_id": {
+          "name": "game_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "game_users",
+      "indexes": [
+        {
+          "columnNames": [
+            "game_id"
+          ],
+          "composite": false,
+          "keyName": "game_users_game_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "game_users_user_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "primary",
+          "columnNames": [
+            "game_id",
+            "user_id"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "game_users_game_id_foreign": {
+          "constraintName": "game_users_game_id_foreign",
+          "columnNames": [
+            "game_id"
+          ],
+          "localTableName": "game_users",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "game",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "game_users_user_id_foreign": {
+          "constraintName": "game_users_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "game_users",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "user",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }

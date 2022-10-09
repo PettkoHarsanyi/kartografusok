@@ -1,7 +1,8 @@
-import { Collection, Entity, Enum, ManyToOne, OneToMany, PrimaryKey, Property, ReadOnlyException } from "@mikro-orm/core";
+import { Collection, Entity, Enum, ManyToMany, ManyToOne, OneToMany, PrimaryKey, Property, ReadOnlyException } from "@mikro-orm/core";
 import { Division } from "../../divisions/entities/division";
 import { Game } from "../../games/entities/game";
 import { Message } from "../../messages/entities/message";
+import { Result } from "../../results/entity/result";
 
 @Entity()
 export class User{
@@ -21,31 +22,40 @@ export class User{
     email?: string;
 
     @Property()
-    points: number = 0;
+    points?: number = 0;
 
     @Property()
-    weekly: number = 0;
+    weekly?: number = 0;
     
     @Property({nullable:true})
     picture?: string;
     
     @Property()
-    banned: boolean = false;
+    banned?: boolean = false;
     
     @Property()
-    muted: boolean = false;
+    muted?: boolean = false;
 
     @Enum()
-    role: UserRole;
+    role?: UserRole;
     
-    @OneToMany(()=>Game, game=> game.user)
-    games = new Collection<Game>(this);
-    
-    @OneToMany(()=>Game, game=> game.user)
-    messages = new Collection<Message>(this);
+    @ManyToMany(()=> Game, (game)=>game.users)
+    games? = new Collection<Game>(this);
+
+    @OneToMany(()=> Message, (message)=>message.user)
+    messages? = new Collection<Message>(this);
+
+    @OneToMany(()=> Result, (result)=>result.user)
+    results? = new Collection<Result>(this);
 
     @ManyToOne(()=>Division,{nullable:true})
     division?: Division;
+
+    @Property({onCreate: ()=> new Date()})
+    createdAt!: Date;
+
+    @Property({onCreate: ()=> new Date(),onUpdate: ()=> new Date()})
+    modifiedAt!: Date;
 }
 
 export enum UserRole{

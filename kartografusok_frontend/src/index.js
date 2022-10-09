@@ -14,6 +14,8 @@ import Profil from './components/Profil';
 import ConnectRoom from './components/ConnectRoom';
 import CreateRoom from './components/CreateRoom';
 import authService from './auth/auth.service';
+import { ProtectedRoute } from './components/Auth/ProtectedRoute';
+import { LoggedRoute } from './components/Auth/LoggedRoute';
 // import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -24,7 +26,7 @@ const router = createBrowserRouter([
   },
   {
     path: "bejelentkezes",
-    element: <Login />,
+    element: <LoggedRoute><Login /></LoggedRoute>,
   },
   {
     path: "letrehozas",
@@ -49,7 +51,7 @@ const router = createBrowserRouter([
   },
   {
     path: "regisztracio",
-    element: <Registration />,
+    element: <LoggedRoute><Registration /></LoggedRoute>,
   },
   {
     path: "rangletra",
@@ -71,7 +73,10 @@ const router = createBrowserRouter([
   },
   {
     path: "adminisztracio",
-    element: <Admin />,
+    element:
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>,
     loader: async ({ params }) => {
       return Promise.all([
         fetch('api/users', {

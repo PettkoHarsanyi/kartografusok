@@ -1,13 +1,14 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/sqlite';
 import { Injectable } from '@nestjs/common';
-import { wrap } from '@mikro-orm/core';
+import { PopulateHint, wrap } from '@mikro-orm/core';
 import { AuthService } from 'src/auth/auth.service';
 import { Division } from '../divisions/entities/division';
 import { UserAuthDto } from './dto/user-auth.dto';
 import { UpdateUserDto } from './dto/user-update.dto';
 import { UserDto } from './dto/user.dto';
 import { User, UserRole } from './entity/user';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -79,14 +80,33 @@ export class UsersService {
         })
     }
         
+    // async find(id: number) {
+    //     return await this.userRepository.findOne(({
+    //         id: id
+    //     }),{
+    //         fields: ["name","userName","email","points","weekly","picture","banned","muted","role","division","games","games.messages","games.gameDate"],
+    //         filters: {
+                
+    //         }
+    //     })
+    // }
+
     async find(id: number) {
-        return await this.userRepository.findOne(id)
+        return await this.userRepository.findOne(({
+            id: id,
+        }),{
+            fields: ["name","userName","email","points","weekly","picture","banned","muted","role","division"],
+            populate: ["games","games.messages"],
+            populateWhere: {
+                messages: {user: id}
+            }
+        })
     }
         
     async findAll() {
         return this.userRepository.findAll({
-            populate: ['division'],
-            disableIdentityMap: true,
+            populate: ['division','games','games.messages','games.messages.game'],
+            populateWhere: PopulateHint.INFER,
         });
     }
     
@@ -113,6 +133,7 @@ export class UsersService {
         user.userName = userAuthDto.userName;
         
         user.password = await this.authService.hashPassword(userAuthDto.password);
+        
         user.role = UserRole.User;
         user.division = this.divisionRepository.getReference(1);
 

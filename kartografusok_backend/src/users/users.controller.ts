@@ -9,6 +9,8 @@ import { GameDto } from "../games/dto/game.dto";
 import { GamesService } from "../games/games.service";
 import { MessageDto } from "../messages/dto/message.dto";
 import { MessagesService } from "../messages/messages.service";
+import { ResultDto } from "../results/dto/result.dto";
+import { ResultsService } from "../results/results.service";
 import { UserAuthDto } from "./dto/user-auth.dto";
 import { UpdateUserDto } from "./dto/user-update.dto";
 import { UserDto } from "./dto/user.dto";
@@ -23,6 +25,7 @@ export class UsersController {
         private authService: AuthService, 
         private gamesService: GamesService,
         private messageService: MessagesService,
+        private resultService: ResultsService
     ){}
 
     @AllowAnonymous()
@@ -73,14 +76,20 @@ export class UsersController {
 
     @Post(':id/games')
     async addGame(@Body() gameDto: GameDto, @Param('id', ParseIntPipe) id: number){
-        const newGame = await this.gamesService.create(gameDto,id);
+        const newGame = await this.gamesService.createFromUser(gameDto,id);
         return new GameDto(newGame);
     }
 
-    @Post(':id/messages')
+    @Post(':id/message')
     async addMessage(@Body() messageDto: MessageDto, @Param('id', ParseIntPipe) id: number){
-        const newMessage = await this.messageService.create(messageDto,id,1);
+        const newMessage = await this.messageService.create(messageDto,id);
         return new MessageDto(newMessage);
+    }
+
+    @Post(':id/result')
+    async addResult(@Body() resultDto: ResultDto, @Param('id', ParseIntPipe) id: number){
+        const newResult = await this.resultService.create(resultDto,id);
+        return new ResultDto(newResult);
     }
 
     @Get(':id/messages')

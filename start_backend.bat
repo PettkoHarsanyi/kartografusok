@@ -1,3 +1,3 @@
 cd "kartografusok_backend"
-npm start
+npm run start
 exit

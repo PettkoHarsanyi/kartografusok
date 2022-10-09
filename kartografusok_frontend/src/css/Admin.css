@@ -1,4 +1,4 @@
-.Admin{
+.Admin {
     min-height: 100vh;
     flex-direction: row;
     align-items: center;
@@ -10,49 +10,50 @@
     background-color: gainsboro;
 }
 
-.Admin *{
-    font-family: -apple-system,BlinkMacSystemFont,segoe ui,Roboto,helvetica neue,Arial,noto sans,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol,noto color emoji;
+.Admin * {
+    font-family: -apple-system, BlinkMacSystemFont, segoe ui, Roboto, helvetica neue, Arial, noto sans, sans-serif, apple color emoji, segoe ui emoji, segoe ui symbol, noto color emoji;
 }
 
-.Admin .SideNavbar{
+.Admin .SideNavbar {
     height: 100vh;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     text-align: center;
     display: flex;
     flex-direction: column;
-    background-image: linear-gradient(blue,dodgerblue);
+    background-image: linear-gradient(blue, dodgerblue);
     color: white;
     gap: 3vh;
-    width: 20%;
-    padding: 2.5vw 2vh;
+    width: 20vw;
+    padding: 2vh 2vh;
     text-align: left;
     list-style: none;
 }
 
-.Admin .Item{
-    padding: 1.5vh 15vh 1.5vh 3vh;
+.Admin .Item {
+    padding: 1.5vh 0 1.5vh 3vh;
     border-radius: 0.5vh;
     width: 100%;
+    font-size: 1vw;
 }
 
-.Admin .Item:hover{
+.Admin .Item:hover {
     background-color: rgba(192, 255, 255, 0.235);
     cursor: pointer;
 }
 
-.Admin .Active{
+.Admin .Active {
     background-color: rgba(192, 255, 255, 0.46);
     font-weight: bold;
 }
 
-.Admin .AdminPanel{
+.Admin .AdminPanel {
     width: 100%;
     border-bottom: 0.5vh solid gainsboro;
 
 }
 
-.Admin .Content{
+.Admin .Content {
     width: 80vw;
     height: 100vh;
     display: flex;
@@ -62,29 +63,75 @@
     padding-top: 2.5vw;
 }
 
-.Admin .Users{
+.Admin .Users {
     width: 75vw;
+    height: 90vh;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 0.5vh;
 }
 
-.Admin .User:hover{
+.Admin .User:hover {
     background-color: rgba(30, 143, 255, 0.294) !important;
 }
 
-.Admin .User:last-of-type{
+.Admin .User:last-of-type {
     border: none;
 }
 
-
-.Admin table {
-    width: 100%;
-    border-collapse: separate; /* Don't collapse */
-    border-spacing: 0;
+.Admin .Button {
+    cursor: pointer;
+    text-align: center;
+    width: 50%;
+    background-color: rgb(147, 255, 137);
+    border-radius: 0.5vh;
+    padding: 1vh 0;
+    background-color: white;
+    color: black;
+    font-size: 2vh;
+    transition-duration: 0.4s;
+    text-decoration: none;
+    z-index: 10;
+    margin-top: auto;
 }
 
-.Admin td, th{
+.Admin .Button:hover {
+    background-color: goldenrod;
+}
+
+.Admin ::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.Admin ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.Admin ::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+.Admin ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.Admin table {
+    width: 75vw;
+    border-collapse: separate;
+    /* Don't collapse */
+    border-spacing: 0;
+    overflow: scroll;
+}
+
+.Admin table * {
+    font-size: 2vh;
+}
+
+.Admin td,
+th {
     padding: 2vh;
 }
 
@@ -92,21 +139,240 @@
     text-align: center;
 }
 
-.Admin th{
-    border-bottom: 0.3vh solid gainsboro
+.Admin th {
+    border-bottom: 0.3vh solid gainsboro;
 }
 
-.Admin .Header{
+.Admin .Header {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    background-color: white;
 }
 
-.Admin thead{
+.Admin thead {
     position: sticky;
     top: 0;
 }
 
-.Admin .Clickable{
+.Admin .Clickable {
     cursor: pointer;
 }
 
-.Admin .User:nth-child(odd) {background-color: rgba(211, 211, 211, 0.261)}
+.Admin .User:nth-child(odd) {
+    background-color: rgba(211, 211, 211, 0.261)
+}
+
+.Admin img {
+    width: 5vh;
+}
+
+.Admin .Users {
+    overflow-y: scroll;
+}
+
+.Admin .Modal{
+    position: absolute;
+    width: 80vw;
+    height: 80%;
+    z-index: 101;
+    align-self: center;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    left: 10vw;
+    box-shadow: rgba(0, 0, 0, 0.897) 0vh 0vh 0vh 30vh;
+
+    border-radius: 0.5vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Admin .ModalBackground{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 400;
+}
+
+.Admin .ModalHeader{
+    width: 100%;
+    height: 10%;
+    border-bottom: 0.3vh solid gainsboro;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2vh;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    font-size: 4vh;
+}
+
+.Admin .ModalContent{
+    padding-top: 5vh;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 80%;
+    flex-wrap: wrap;
+    gap: 1vh;
+    justify-content: center;
+    overflow-y: scroll;
+    align-items: flex-start;
+}
+
+.UserThings{
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    flex-wrap: wrap;
+    gap: 1vh;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5vh;
+}
+
+.Admin .ModalFooter{
+    width: 100%;
+    height: 10%;
+    border-top: 0.3vh solid gainsboro;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: rgba(0, 0, 0, 0.16) 0 -1px 4px;
+    padding: 2vh;
+    font-size: 3vh;
+}
+
+.Admin .ModalFooter div{
+    border: 0.3vh solid black;
+    border-radius: 0.5vh;
+    padding: 0.5vh 3vh;
+    color: white;
+    transition: 0.5s;
+}
+
+.Admin .ModalFooter div:first-of-type{
+    background-color: maroon;
+}
+
+.Admin .ModalFooter div:last-of-type{
+    background-color: forestgreen;
+}
+
+.Admin .ModalFooter div:first-of-type:hover{
+    background-color: rgba(128, 0, 0, 0.39);
+}
+
+.Admin .ModalFooter div:last-of-type:hover{
+    background-color: rgba(34, 139, 34, 0.507);
+}
+
+.Admin .ModalContent .UserItems *{
+    text-align: center;
+    font-size: 3vh;
+}
+
+.ModalContent .UserItems input{
+    border: 0.3vh solid black;
+    border-radius: 0.5vh;
+}
+
+.Admin .ModalItem{
+    margin: 0;
+    padding: 2vh;
+    font-size: 4vh;
+    text-align: center;
+    height: fit-content;
+}
+
+.Admin .ModalItem *{
+    font-size: 4vh;
+    text-align: center;
+}
+
+.Admin .UserItems{
+    width: 100%;
+}
+
+.ModalContent input{
+    border: 0.3vh solid black;
+    border-radius: 0.5vh;
+    margin-top: 2vh;
+}
+
+.UserMatches{
+    width: 90%;
+    height: 100vh;
+    font-size: 4vh;
+}
+
+.UserMatches .Matches{
+    height: 70vh;
+    width: 100%;
+    margin-top: 1.5vh;
+    box-shadow: rgba(0, 0, 0, 0.562) 0vh 3vh 12vh, rgba(0, 0, 0, 0.562) 0vh 3vh 6vh;
+    border-radius: 0.5vh;
+    background-color: lightslategrey;
+    overflow-y: scroll;
+}
+
+.UserMatches .Match{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.UserMatches .MatchHeader{
+    border: 0.5vh solid black;
+    background-color: moccasin;
+    border-radius: 0.5vh;
+    padding: 1vh;
+    width: 100%;
+    align-self: center;
+    margin-bottom: 3vh;
+}
+
+.UserMatches .MessageBox{
+    margin: 0.5vh 2vh;
+    max-width: 70%;
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    font-size: 2vh;
+}
+
+.UserMatches .Message{
+    text-align: right;
+    padding: 1vh 3vh;
+    border: 0.3vh solid black;
+    background-color: #0099FF;
+    border-radius: 3vh;
+    width: 100%;
+    color: white;
+    width: fit-content;
+}
+
+.MessageBox .Time{
+    text-align: right;
+    width: 100%;
+    padding-right: 1vh;
+}
+
+@media screen and (max-width: 800px) {
+    .Admin .ModalItem{
+        margin: 0;
+        padding: 2vh;
+        font-size: 4vh;
+        width: 100%;
+        height: fit-content;
+    }
+
+    .ModalContent input{
+        border: 0.3vh solid black;
+        border-radius: 0.5vh;
+        width: 70% !important;
+    }
+}

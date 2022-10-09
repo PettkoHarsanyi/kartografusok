@@ -23,6 +23,11 @@ export class GamesController {
         return games.map(game=>new GameDto(game));
     }
 
+    @Post()
+    create(@Body() gameDto: GameDto) {
+        return this._gamesService.create(gameDto);
+    }
+
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number): Promise<GameDto>{
         const game = await this._gamesService.findOne(id);

@@ -67,7 +67,7 @@
 }
 
 
-::-webkit-scrollbar {
+.Home ::-webkit-scrollbar {
     display: none;
 }
 

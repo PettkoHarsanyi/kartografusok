@@ -21,7 +21,6 @@
 
 .Profil .Button{
     cursor: pointer;
-    transition-duration: 0.4s;
     background-color: rgb(147, 255, 137);
     border: 0.5vh solid black;
     border-radius: 2vh;
@@ -38,7 +37,6 @@
 }
 
 .Profil .Button:hover{
-    cursor: pointer;
     background-color: goldenrod;
     font-size: 4vh;
     left: 1.5vh;

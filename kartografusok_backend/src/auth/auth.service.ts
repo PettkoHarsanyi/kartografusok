@@ -36,6 +36,7 @@ export class AuthService {
             user: {
                 id: userDto.id,
                 name: userDto.name,
+                userName: userDto.userName,
                 role: userDto.role,
                 division: userDto.division,
                 banned: userDto.banned,
