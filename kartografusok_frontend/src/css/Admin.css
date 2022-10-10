@@ -169,7 +169,7 @@ th {
     overflow-y: scroll;
 }
 
-.Admin .Modal{
+.Admin .Modal {
     position: absolute;
     width: 80vw;
     height: 80%;
@@ -188,7 +188,7 @@ th {
     align-items: center;
 }
 
-.Admin .ModalBackground{
+.Admin .ModalBackground {
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -198,7 +198,7 @@ th {
     z-index: 400;
 }
 
-.Admin .ModalHeader{
+.Admin .ModalHeader {
     width: 100%;
     height: 10%;
     border-bottom: 0.3vh solid gainsboro;
@@ -210,7 +210,7 @@ th {
     font-size: 4vh;
 }
 
-.Admin .ModalContent{
+.Admin .ModalContent {
     padding-top: 5vh;
     display: flex;
     flex-direction: row;
@@ -223,18 +223,27 @@ th {
     align-items: flex-start;
 }
 
-.UserThings{
+.UserThings {
     display: flex;
     flex-direction: row;
     width: 90%;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.UserForm {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 1vh;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
     margin-bottom: 5vh;
 }
 
-.Admin .ModalFooter{
+.Admin .ModalFooter {
     width: 100%;
     height: 10%;
     border-top: 0.3vh solid gainsboro;
@@ -246,7 +255,7 @@ th {
     font-size: 3vh;
 }
 
-.Admin .ModalFooter div{
+.Admin .ModalFooter div, button {
     border: 0.3vh solid black;
     border-radius: 0.5vh;
     padding: 0.5vh 3vh;
@@ -254,62 +263,101 @@ th {
     transition: 0.5s;
 }
 
-.Admin .ModalFooter div:first-of-type{
+.Admin .ModalFooter div:first-of-type {
     background-color: maroon;
 }
 
-.Admin .ModalFooter div:last-of-type{
+.Admin .ModalFooter button:last-of-type {
     background-color: forestgreen;
 }
 
-.Admin .ModalFooter div:first-of-type:hover{
+.Admin .ModalFooter div:first-of-type:hover {
     background-color: rgba(128, 0, 0, 0.39);
 }
 
-.Admin .ModalFooter div:last-of-type:hover{
+.Admin .ModalFooter div:last-of-type:hover {
     background-color: rgba(34, 139, 34, 0.507);
 }
 
-.Admin .ModalContent .UserItems *{
+.Admin .ModalContent .UserItems * {
     text-align: center;
     font-size: 3vh;
 }
 
-.ModalContent .UserItems input{
+.ModalContent .UserItems input {
     border: 0.3vh solid black;
     border-radius: 0.5vh;
 }
 
-.Admin .ModalItem{
+.CustomSelect {
+    position: relative;
+}
+
+.CustomSelect select {
+    /*hide original SELECT element: */
+    appearance: none;
+    margin-top: 2vh;
+    width: 10vw;
+    border: 0.3vh solid black;
+    border-radius: 0.5vh;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+}
+
+.select-selected {
+    background-color: DodgerBlue;
+}
+
+.select-selected:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+}
+
+.select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 7px;
+}
+
+.Admin .ModalItem {
     margin: 0;
     padding: 2vh;
     font-size: 4vh;
     text-align: center;
     height: fit-content;
+    justify-content: center;
+    align-items: center;
 }
 
-.Admin .ModalItem *{
+.Admin .ModalItem * {
     font-size: 4vh;
     text-align: center;
 }
 
-.Admin .UserItems{
+.Admin .UserItems {
     width: 100%;
 }
 
-.ModalContent input{
+.ModalContent input {
     border: 0.3vh solid black;
     border-radius: 0.5vh;
     margin-top: 2vh;
 }
 
-.UserMatches{
+.UserMatches {
     width: 90%;
     height: 100vh;
     font-size: 4vh;
 }
 
-.UserMatches .Matches{
+.UserMatches .Matches {
     height: 70vh;
     width: 100%;
     margin-top: 1.5vh;
@@ -319,14 +367,14 @@ th {
     overflow-y: scroll;
 }
 
-.UserMatches .Match{
+.UserMatches .Match {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     margin-bottom: 5vh;
 }
 
-.UserMatches .MatchHeader{
+.UserMatches .MatchHeader {
     border: 0.5vh solid black;
     background-color: moccasin;
     border-radius: 0.5vh;
@@ -336,7 +384,7 @@ th {
     margin-bottom: 3vh;
 }
 
-.UserMatches .MessageBox{
+.UserMatches .MessageBox {
     margin: 0.5vh 2vh;
     max-width: 70%;
     align-items: flex-end;
@@ -345,7 +393,7 @@ th {
     font-size: 2vh;
 }
 
-.UserMatches .Message{
+.UserMatches .Message {
     text-align: right;
     padding: 1vh 3vh;
     border: 0.3vh solid black;
@@ -356,7 +404,7 @@ th {
     width: fit-content;
 }
 
-.MessageBox .Time{
+.MessageBox .Time {
     text-align: right;
     width: 100%;
     padding-right: 1vh;
@@ -366,12 +414,12 @@ th {
     margin-bottom: 5vh;
 }
 
-.Icon{
+.Icon {
     padding-top: 3vh;
 }
 
 @media screen and (max-width: 800px) {
-    .Admin .ModalItem{
+    .Admin .ModalItem {
         margin: 0;
         padding: 2vh;
         font-size: 4vh;
@@ -379,7 +427,7 @@ th {
         height: fit-content;
     }
 
-    .ModalContent input{
+    .ModalContent input {
         border: 0.3vh solid black;
         border-radius: 0.5vh;
         width: 70% !important;

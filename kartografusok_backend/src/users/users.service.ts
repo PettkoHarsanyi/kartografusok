@@ -122,6 +122,7 @@ export class UsersService {
         user.points = updateUserDto.points || user.points;
         user.role = updateUserDto.role || user.role;
         user.weekly = updateUserDto.weekly || user.weekly;
+        user.picture = updateUserDto.picture || user.picture;
 
         await this.userRepository.persistAndFlush(user);
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { DivisionsService } from './divisions.service';
 import { DivisionDto } from './dto/division.dto';
 
@@ -13,5 +13,10 @@ export class DivisionsController {
     async create(@Body() divisionDto: DivisionDto){
         const newDivision = await this.divisionService.create(divisionDto);
         return new DivisionDto(newDivision);
+    }
+
+    @Get('')
+    async findAll(){
+        return await this.divisionService.findAll();
     }
 }

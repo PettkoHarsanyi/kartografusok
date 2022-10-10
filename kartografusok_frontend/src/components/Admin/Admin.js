@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 import "../../css/Admin.css";
 
@@ -21,11 +21,24 @@ export default function Admin() {
     const loadedData = useLoaderData();
     const [activeLink, setActiveLink] = useState("users");
     const [users, setUsers] = useState(loadedData[0]);
-    const [maps] = useState(loadedData[1]);
-    const [cards] = useState(loadedData[2]);
+    // const [maps] = useState(loadedData[1]);
+    // const [cards] = useState(loadedData[2]);
     const [selectedUser, setSelectedUser] = useState({});
+    const [divisions] = useState(loadedData[1]);
+    const fileInput = createRef();
 
     const [open, setOpen] = React.useState(false);
+
+    const handleInputChange = (event) => {
+        const target = event.target;
+        let value = target.value;
+        const name = target.name;
+
+        setSelectedUser({
+            ...selectedUser,
+            [name]: value
+        })
+    }
 
     const handleOpen = async () => {
         setOpen(true);
@@ -80,94 +93,129 @@ export default function Admin() {
         return response
     }
 
+    const handleSubmit = async (event) =>  {
+        event.preventDefault();
+        handleClose(event);
+
+        await setSelectedUser({...selectedUser,picture: fileInput.current.files.length > 0 ? fileInput.current.files[0].name : ""});
+
+        setUsers(users.map(mappedUser =>
+            mappedUser.id === selectedUser.id ? (selectedUser) : (mappedUser)
+        ))
+
+        const response = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
+            headers: authHeader()
+        });
+
+    }
+
     return (
         <div className='Admin'>
 
-            {selectedUser &&
-                <div className='ModalBackground' onClick={(e) => handleClose(e)} style={{ display: open ? "" : "none" }}>
-                    <div className='Modal'>
-                        <div className='ModalHeader'>
-                            <div>{selectedUser.name} módosítása</div>
-                            <div className='Clickable' onClick={handleClose}>×</div>
-                        </div>
-                        <div className='ModalContent'>
-                            <div className='UserThings'>
-                                <div className='ModalItem'>
-                                    <div>Felhasználónév</div>
-                                    <input style={{ width: "15vw" }} type="text" defaultValue={selectedUser.userName} />
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Név</div>
-                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.name} />
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>E-Mail</div>
-                                    <input style={{ width: "20vw" }} type="text" defaultValue={selectedUser.email} />
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Összes Pont</div>
-                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.points} />
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Heti Pont</div>
-                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.weekly} />
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Kép</div>
-                                    <input style={{ width: "20vw" }} type="text" defaultValue={selectedUser.picture} />
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Némítva</div>
-                                    <div className='Clickable' onClick={() => handleMute(selectedUser)}><img className='Icon' src={selectedUser.muted ? muted : unmuted} alt="muteicon" /></div>
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Kitiltva</div>
-                                    <div className='Clickable' onClick={() => handleBan(selectedUser)}><img className='Icon' src={selectedUser.banned ? banned : unbanned} alt="banicon" /></div>
-                                </div>
-                                <div className='ModalItem'>
-                                    <div>Rang</div>
-                                    <input style={{ width: "10vw" }} type="text" defaultValue={selectedUser.role} />
-                                </div>
+            {open && selectedUser &&
+                <form onSubmit={(e) => {handleSubmit(e);handleClose(e)}} className='ModalBackground' style={{ display: open ? "" : "none" }}>
+                        <div className='Modal'>
+                            <div className='ModalHeader'>
+                                <div>{selectedUser.name} módosítása</div>
+                                <div className='Clickable' onClick={handleClose}>×</div>
                             </div>
-                            {open && selectedUser && selectedUser.messages.length > 0 ?
-                            <div className='UserMatches'>
-                                <div>Játékos üzenetei:</div>
-                                <div className='Matches'>
-
-                                    {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
-                                        if (selectedUser.messages.length > 0) {
-                                            let gameDateTemp = new Date(game.createdAt);
-                                            let gameDate = gameDateTemp.toISOString().split("T")[0];
-                                            return (<div className='Match' key={game.id}>
-                                                <div className='MatchHeader'>{gameDate}</div>
-
-                                                {game.messages.length > 0 && game.messages.map((message) => {
-                                                    if (message.user === selectedUser.id) {
-                                                        let date = new Date(message.createdAt)
-                                                        let dateTemp = date.toISOString().split("T")[1];
-                                                        let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
-
-                                                        return (
-                                                            <div className='MessageBox' key={message.id}>
-                                                                <div className='Message'>{message.message}</div>
-                                                                <div className='Time'>{hoursAndMinutes}</div>
-                                                            </div>)
-                                                    }
-                                                })}
-
-
-                                            </div>)
-                                        }
-                                    })}
+                            <div className='ModalContent'>
+                                <div className='UserThings'>
+                                    <div className='ModalItem'>
+                                        <div>Felhasználónév</div>
+                                        <input name='userName' style={{ width: "15vw" }} type="text" defaultValue={selectedUser.userName} onChange={(e) => handleInputChange(e)} />
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Név</div>
+                                        <input name='name' style={{ width: "10vw" }} type="text" defaultValue={selectedUser.name} onChange={(e) => handleInputChange(e)} />
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>E-Mail</div>
+                                        <input name='email' style={{ width: "20vw" }} type="text" defaultValue={selectedUser.email} onChange={(e) => handleInputChange(e)} />
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Összes Pont</div>
+                                        <input type="number" name='points' style={{ width: "10vw" }} defaultValue={selectedUser.points} onChange={(e) => handleInputChange(e)} />
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Heti Pont</div>
+                                        <input type="number" name='weekly' style={{ width: "10vw" }} defaultValue={selectedUser.weekly} onChange={(e) => handleInputChange(e)} />
+                                    </div>
+                                    <div className='ModalItem' >
+                                        <div>Kép</div>
+                                        <input type="file" name='picture' style={{ width: "15vw", border:"none" }} ref={fileInput} onChange={(e) => handleInputChange(e)} />
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Némítva</div>
+                                        <div className='Clickable' onClick={() => handleMute(selectedUser)}><img className='Icon' src={selectedUser.muted ? muted : unmuted} alt="muteicon" /></div>
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Kitiltva</div>
+                                        <div className='Clickable' onClick={() => handleBan(selectedUser)}><img className='Icon' src={selectedUser.banned ? banned : unbanned} alt="banicon" /></div>
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Rang</div>
+                                        <div className='CustomSelect'>
+                                            <select className='Clickable' name="role" defaultValue={selectedUser.role} onChange={(e) => handleInputChange(e)}>
+                                                <option value={selectedUser.role} disabled hidden>{selectedUser.role}</option>
+                                                <option value="ADMIN" className='ItemStyle'>ADMIN</option>
+                                                <option value="USER" className='ItemStyle'>USER</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className='ModalItem'>
+                                        <div>Divízió</div>
+                                        <div className='CustomSelect'>
+                                            <select className='Clickable' name="division" defaultValue={selectedUser.division.name} onChange={(e) => handleInputChange(e)}>
+                                                <option value={selectedUser.division.name} disabled hidden>{selectedUser.division.name}</option>
+                                                {divisions && divisions.length > 0 &&
+                                                    divisions.map((division) => {
+                                                        return (<option key={division.id} value={division.name} className='ItemStyle'>{division.name}</option>)
+                                                    })
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>:<div className='Nomessages'><h3>A játékosnak nincsenek üzenetei</h3></div>}
+                                {open && selectedUser && selectedUser.messages.length > 0 ?
+                                    <div className='UserMatches'>
+                                        <div>Játékos üzenetei:</div>
+                                        <div className='Matches'>
+
+                                            {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
+                                                if (selectedUser.messages.length > 0) {
+                                                    let gameDateTemp = new Date(game.createdAt);
+                                                    let gameDate = gameDateTemp.toISOString().split("T")[0];
+                                                    return (<div className='Match' key={game.id}>
+                                                        <div className='MatchHeader'>{gameDate}</div>
+
+                                                        {game.messages.length > 0 && game.messages.map((message) => {
+                                                            if (message.user === selectedUser.id) {
+                                                                let date = new Date(message.createdAt)
+                                                                let dateTemp = date.toISOString().split("T")[1];
+                                                                let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
+
+                                                                return (
+                                                                    <div className='MessageBox' key={message.id}>
+                                                                        <div className='Message'>{message.message}</div>
+                                                                        <div className='Time'>{hoursAndMinutes}</div>
+                                                                    </div>)
+                                                            }
+                                                        })}
+
+
+                                                    </div>)
+                                                }
+                                            })}
+                                        </div>
+                                    </div> : <div className='Nomessages'><h3>A játékosnak nincsenek üzenetei</h3></div>}
+                            </div>
+                            <div className='ModalFooter'>
+                                <div className='Clickable' onClick={handleClose}>Bezár</div>
+                                <button type="submit" className='Clickable'>Mentés</button>
+                            </div>
                         </div>
-                        <div className='ModalFooter'>
-                            <div className='Clickable' onClick={handleClose}>Bezár</div>
-                            <div className='Clickable'>Mentés</div>
-                        </div>
-                    </div>
-                </div>
+                </form>
             }
 
             <nav className='SideNavbar' id="navbar">

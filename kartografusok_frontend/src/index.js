@@ -82,6 +82,9 @@ const router = createBrowserRouter([
         fetch('api/users', {
           headers: authHeader()
         }).then(resp => resp.json()),
+        fetch('api/divisions',{
+          headers: authHeader()
+        }).then(resp => resp.json()),
         // fetch('api/maps', {
         //   headers: authHeader()
         // }),

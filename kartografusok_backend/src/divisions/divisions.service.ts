@@ -6,6 +6,9 @@ import { Division } from './entities/division';
 
 @Injectable()
 export class DivisionsService {
+    findAll() {
+        return this.divisionRepository.findAll();
+    }
 
     constructor(
         @InjectRepository(Division)
