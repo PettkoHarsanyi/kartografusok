@@ -269,6 +269,8 @@ th {
 
 .Admin .ModalFooter button:last-of-type {
     background-color: forestgreen;
+    padding: 0.5vh 3vh;
+    font-size: 3vh;
 }
 
 .Admin .ModalFooter div:first-of-type:hover {

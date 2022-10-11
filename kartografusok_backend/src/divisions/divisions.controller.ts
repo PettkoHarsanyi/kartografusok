@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { DivisionsService } from './divisions.service';
 import { DivisionDto } from './dto/division.dto';
 
@@ -19,4 +19,5 @@ export class DivisionsController {
     async findAll(){
         return await this.divisionService.findAll();
     }
+
 }

@@ -1,3 +1,5 @@
+import { DivisionDto } from "../../divisions/dto/division.dto";
+import { Division } from "../../divisions/entities/division";
 import { User, UserRole } from "../entity/user";
 
 export class UpdateUserDto{
@@ -8,6 +10,7 @@ export class UpdateUserDto{
     points?: number;
     weekly?: number;
     picture?: string;
+    division?: DivisionDto;
     banned?: boolean;
     muted?: boolean;
     role?: UserRole;
@@ -25,6 +28,7 @@ export class UpdateUserDto{
             this.banned = user.banned;
             this.muted = user.muted;
             this.role = user.role;
+            this.division = user.division;
         }
     }
 }

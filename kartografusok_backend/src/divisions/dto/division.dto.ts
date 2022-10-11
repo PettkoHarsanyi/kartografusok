@@ -7,6 +7,7 @@ export class DivisionDto{
 
     constructor(division?: Division){
         if(division){
+            this.id = division.id;
             this.name = division.name
         }
     }

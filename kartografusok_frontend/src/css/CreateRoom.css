@@ -1,0 +1,261 @@
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap");
+
+.CreateRoom {
+    min-height: 100vh;
+    background-color: #282c34;
+    background-image: url("../../gfx/loginregisterscreen.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.CreateRoom * {
+    font-family: "Alfa Slab One", cursive;
+    font-size: 3vh;
+}
+
+.CreateRoom .Div2 {
+    height: 90vh;
+    width: 80vw;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    background-color: gainsboro;
+    box-shadow: 0 0 32px 16px rgba(0, 0, 0, 0.3),
+        inset 0 0 32px 16px rgba(228, 129, 0, 0.2);
+    padding: 2vh;
+    gap: 2vh;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.CreateRoom .Div3 {
+    height: 50%;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    background-color: gainsboro;
+    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 4vh;
+    position: relative;
+    overflow-x: scroll;
+    padding: 0 2vh 0 2vh;
+}
+
+.CreateRoom .DivTitle {
+    position: absolute;
+    top: 1vh;
+    left: 1vh;
+    padding: 1vh;
+    border-radius: 2vh;
+    align-self: flex-start;
+    border: 0.5vh solid black;
+    background-color: gainsboro;
+}
+
+.CreateRoom .PlayerDiv {
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2vh;
+    border-radius: 2vh;
+    width: 10vw;
+    min-width: 10vw;
+    box-shadow: 0 0 2vh 0.5vh rgba(0, 0, 0, 0.3);
+}
+
+.CreateRoom .PictureDiv {
+    height: 10vw;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+}
+
+.CreateRoom .Div4 {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+}
+
+.CreateRoom .InfoDiv {
+    text-align: center;
+}
+
+.CreateRoom .ChatDiv {
+    width: 50%;
+    height: 100%;
+    border-radius: 2vh;
+    border: 0.5vh solid black;
+    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.CreateRoom .ServerInfoDiv {
+    width: 50%;
+    height: 100%;
+    border-radius: 2vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;   
+    justify-content: space-between;
+}
+
+.CreateRoom .TextDiv{
+    border: 0.5vh solid black;
+    height: 70%;
+    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
+    width: 100%;
+    border-radius: 2vh;
+    padding: 2vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-x: scroll;
+}
+
+.CreateRoom .TextDiv *{
+    font-size: 1vw;
+}
+
+.CreateRoom .InviteDiv{
+    display: flex;
+    border: 0.5vh solid black;
+    padding: 1vh;
+    border-radius: 2vh;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position:relative;
+}
+
+.CreateRoom .CodeDiv{
+    overflow-x: scroll;
+    width: 70%;
+    border: none !important;
+    outline: none;
+}
+
+.CreateRoom .CopyButton{
+    position: absolute;
+    background-color: gray;
+    z-index: 0;
+    border-radius: 1.5vh;
+    right: 0;
+    height: 100%;
+    cursor: pointer;
+}
+
+.CreateRoom .ButtonDiv{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+}
+
+.CreateRoom .ButtonDiv button{
+    width: 50%;
+    height: 10vh;
+    border: 0.5vh solid black;
+    background-color: gray;
+    color: white;
+    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
+    cursor:pointer;
+}
+
+.CreateRoom .ButtonDiv a{
+    text-decoration: none;
+    width: 50%;
+    height: 10vh;
+    border: 0.5vh solid black;
+    background-color: gray;
+    color: white;
+    cursor:pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
+}
+
+.CreateRoom .ChatDivContent {
+    height: 80%;
+    border-bottom: 0.5vh solid black;
+    display: flex;
+    width: 100%;
+    padding: 4vh 2vh 2vh 2vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 3vh;
+    overflow-y: scroll;
+}
+
+.CreateRoom .Message {
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    width: max-content;
+    padding: 0.5vh 2vh;
+    max-width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.CreateRoom .Message * {
+    font-size: 2vh;
+}
+
+.CreateRoom .MessagerName {
+    position: absolute;
+    top: -3vh;
+    left: 1vh;
+}
+
+.CreateRoom .MessageText {
+    word-break: break-all;
+}
+
+.CreateRoom .ChatDivInput {
+    height: 20%;
+    padding: 1vh;
+    position: relative
+}
+
+.CreateRoom .ChatInput {
+    width: 100%;
+    height: 100%;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+    background-color: white;
+    outline: none;
+    padding: 0 9vw 0 2vh;
+}
+
+.CreateRoom .ChatButton {
+    position: absolute;
+    right: 1vh;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+    background-color: gray;
+    cursor: pointer;
+}

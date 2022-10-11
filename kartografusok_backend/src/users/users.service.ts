@@ -9,6 +9,7 @@ import { UpdateUserDto } from './dto/user-update.dto';
 import { UserDto } from './dto/user.dto';
 import { User, UserRole } from './entity/user';
 import { filter } from 'rxjs';
+import { DivisionDto } from '../divisions/dto/division.dto';
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,10 @@ export class UsersService {
         private authService: AuthService
     ){}
 
+    
+    updateDivision(id: number, divisionDto: DivisionDto) {
+        throw new Error("Method not implemented.");
+    }
     
     async promotePlayers(ids: number[],up?: boolean) {
         const users = await this.userRepository.find({
@@ -123,6 +128,9 @@ export class UsersService {
         user.role = updateUserDto.role || user.role;
         user.weekly = updateUserDto.weekly || user.weekly;
         user.picture = updateUserDto.picture || user.picture;
+        if(updateUserDto.division){
+            user.division = this.divisionRepository.getReference(updateUserDto.division.id);
+        }
 
         await this.userRepository.persistAndFlush(user);
 

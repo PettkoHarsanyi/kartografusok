@@ -5,6 +5,8 @@ import { AuthService } from "../auth/auth.service";
 import { LocalAuthGuard } from "../auth/local-auth.guard";
 import { Roles } from "../auth/roles";
 import { UserParam } from "../auth/user-param.decorator";
+import { DivisionsService } from "../divisions/divisions.service";
+import { DivisionDto } from "../divisions/dto/division.dto";
 import { GameDto } from "../games/dto/game.dto";
 import { GamesService } from "../games/games.service";
 import { MessageDto } from "../messages/dto/message.dto";
@@ -25,7 +27,8 @@ export class UsersController {
         private authService: AuthService, 
         private gamesService: GamesService,
         private messageService: MessagesService,
-        private resultService: ResultsService
+        private resultService: ResultsService,
+        private divisionsService: DivisionsService
     ){}
 
     @AllowAnonymous()
@@ -119,6 +122,5 @@ export class UsersController {
         const newUser = await this.usersService.update(id, updateUserDto);
         return new UserDto(newUser);
     }
-
 }
 

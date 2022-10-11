@@ -34,6 +34,13 @@ export default function Admin() {
         let value = target.value;
         const name = target.name;
 
+        if(name === "division"){
+            value = {
+                id: divisions.filter(division => division.name === target.value)[0].id,
+                name: target.value
+            }
+        }
+
         setSelectedUser({
             ...selectedUser,
             [name]: value
@@ -90,7 +97,7 @@ export default function Admin() {
             headers: authHeader()
         });
 
-        return response
+        return response;
     }
 
     const handleSubmit = async (event) =>  {
@@ -103,7 +110,7 @@ export default function Admin() {
             mappedUser.id === selectedUser.id ? (selectedUser) : (mappedUser)
         ))
 
-        const response = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
+        const response2 = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
             headers: authHeader()
         });
 
