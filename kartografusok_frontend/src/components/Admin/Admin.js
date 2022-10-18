@@ -15,6 +15,9 @@ import banned from "../../assets/banned.png"
 import unbanned from "../../assets/unbanned.png"
 import edit from "../../assets/edit.png"
 import { Backdrop, Box, Fade, makeStyles, Modal } from '@mui/material';
+import authService from '../../auth/auth.service';
+import { getCards } from '../../state/cards/selector';
+import { useSelector } from 'react-redux';
 
 
 export default function Admin() {
@@ -26,6 +29,9 @@ export default function Admin() {
     const [selectedUser, setSelectedUser] = useState({});
     const [divisions] = useState(loadedData[1]);
     const fileInput = createRef();
+    const user = authService.getCurrentUser();
+
+    const cards = useSelector(getCards);
 
     const [open, setOpen] = React.useState(false);
 
@@ -113,7 +119,10 @@ export default function Admin() {
         const response2 = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
             headers: authHeader()
         });
-
+        
+        if(user.id === selectedUser.id){
+            authService.refreshAuthenticatedUser(selectedUser);
+        }
     }
 
     return (
@@ -232,7 +241,7 @@ export default function Admin() {
                 <Link className='Button' to="/">Kilépés</Link>
             </nav>
             <div className='Content'>
-                {activeLink === 'users' && (<div className='Users'>
+                {isActive("users") && (<div className='Users'>
                     <table>
                         <thead>
                             <tr className='Header'>
@@ -263,8 +272,56 @@ export default function Admin() {
                         </tbody>
                     </table>
                 </div>)}
-                {isActive === "maps" && (<div>maps</div>)}
-                {isActive === "cards" && (<div>cards</div>)}
+                {isActive("maps") && (<div>
+                    {/**
+                     * A mapok db-ből jönnek, a state-be createRoomkor kerül be egy random a db-ből
+                     */}
+                </div>)}
+                {isActive("cards") && (
+                <div className='Cards'>
+                    <div className='CardSection'>
+                        <div className='CardType'>Felfedezéskártyák:</div>
+                        <div className='CardsDiv'>
+                            {cards && cards.exploreCards.length>0 && cards.exploreCards.map((card)=>
+                            <div className='Card'>{card.name}<br />{card.shape}</div>
+                            )}
+                            <div className='AddCard'><div>+</div></div>
+                        </div>
+                    </div>
+                    <div className='CardSection'>
+                        <div className='CardType'>Pontkártyák:</div>
+                        <div className='CardsDiv'>
+                            {cards && cards.pointCards.length>0 && cards.pointCards.map((card)=>
+                            <div className='Card'>{card.name}<br />{card.points}</div>
+                            )}
+                        </div>
+                    </div>
+                    <div className='CardSection'>
+                        <div className='CardType'>Rajtaütéskártyák:</div>
+                        <div className='CardsDiv'>
+                            {cards && cards.raidCards.length>0 && cards.raidCards.map((card)=>
+                            <div className='Card'>{card.name}<br />{card.shape}<br />{card.direction}</div>
+                            )}
+                            <div className='AddCard'><div>+</div></div>
+                        </div>
+                    </div>
+                    <div className='CardSection'>
+                        <div className='CardType'>Évszakkártyák:</div>
+                        <div className='CardsDiv'>
+                            {cards && cards.seasonCards.length>0 && cards.seasonCards.map((card)=>
+                            <div className='Card'>{card.name}<br />{card.duration}</div>
+                            )}
+                        </div>
+                    </div>
+                    <div className='CardSection'>
+                        <div className='CardType'>Rendeletkártyák:</div>
+                        <div className='CardsDiv'>
+                            {cards && cards.decreeCards.length>0 && cards.decreeCards.map((card)=>
+                            <div className='Card'>{card.name}</div>
+                            )}
+                        </div>
+                    </div>
+                </div>)}
 
             </div>
 

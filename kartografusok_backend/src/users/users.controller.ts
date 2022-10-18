@@ -16,7 +16,7 @@ import { ResultsService } from "../results/results.service";
 import { UserAuthDto } from "./dto/user-auth.dto";
 import { UpdateUserDto } from "./dto/user-update.dto";
 import { UserDto } from "./dto/user.dto";
-import { UserRole } from "./entity/user";
+import { User, UserRole } from "./entity/user";
 import { UsersService } from "./users.service";
 
 @Controller('users')
@@ -112,9 +112,18 @@ export class UsersController {
     @Post('login')
     async login(@UserParam() user: UserDto){
         return {
-            user,
             access_token: await this.authService.generateJwt(user),
           };
+    }
+
+    @Post('refreshtoken')
+    async refreshToken(@Body() userDto: UserDto, @UserParam() actUser: UserDto){
+        const user = await this.usersService.find(userDto.id) as unknown as UserDto;
+        if(actUser.id === user.id){
+            return {
+                access_token: await this.authService.generateJwt(user),
+                };
+        }else throw new HttpException("Csak a saját tokent lehet frissíteni",HttpStatus.BAD_REQUEST);
     }
 
     @Patch(':id')

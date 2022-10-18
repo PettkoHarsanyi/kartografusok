@@ -4,11 +4,24 @@ import authService from '../../auth/auth.service';
 import axios from 'axios';
 import "../../css/CreateRoom.css";
 import authHeader from '../../auth/auth-header';
+import { useDispatch, useSelector } from 'react-redux';
+import { addMessage } from '../../state/messages/actions';
+import { getMessages } from '../../state/messages/selectors';
+import { addPlayer } from '../../state/players/actions';
+import { getPlayers } from '../../state/players/selectors';
 
 export default function CreateRoom() {
     const [user] = useState(authService.getCurrentUser());
-    const [users,setUsers] = useState([user]);
-    const [messages,setMessages] = useState([]);
+    // const [users,setUsers] = useState([user]);
+    // const [messages, setMessages] = useState([]);
+
+    const dispatch = useDispatch()
+    const users = useSelector(getPlayers);
+    const messages = useSelector(getMessages);
+
+    useEffect(() => {
+        dispatch(addPlayer(user))
+    }, [])
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
@@ -22,58 +35,50 @@ export default function CreateRoom() {
 
         let message = response.data;
 
-        message.user = user;
+        message.user = user; // Azért kell, mert a responseban nem tudom populálni a user-t
 
-        console.log(message);
-
-        await setMessages([...messages, message])
+        dispatch(addMessage(message))
 
         input.value = ""
 
-        input.focus({focusVisible: true});
+        input.focus({ focusVisible: true });
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         var chat = document.getElementById("chat");
         chat.scrollTop = chat.scrollHeight;
-    },[messages])
+    }, [messages])
 
     return (
         <div className='CreateRoom'>
             <div className='Div2'>
                 <div className='Div3'>
-                    <div className='DivTitle'>Csatlakozott játékosok:</div> 
-                    <div className='PlayerDiv'>
-                        <div className='PictureDiv'></div>
-                        <div className='InfoDiv'>Peti<br />Platina</div>
-                    </div>
-                    <div className='PlayerDiv'>
-                        <div className='PictureDiv'></div>
-                        <div className='InfoDiv'>Zsofi<br />Arany</div>
-                    </div>
-                    <div className='PlayerDiv'>
-                        <div className='PictureDiv'></div>
-                        <div className='InfoDiv'>Ádám<br />Arany</div>
-                    </div>
+                    <div className='DivTitle'>Csatlakozott játékosok:</div>
+                    {users && users.length > 0 && users.map((user) => {
+                        return(<div key={user.id} className='PlayerDiv'>
+                            <div className='PictureDiv'></div>
+                            <div className='InfoDiv'>{user.name}<br />{user.division.name}</div>
+                        </div>)
+                    })
+                    }
                 </div>
                 <div className='Div4'>
-                    <form className='ChatDiv' onSubmit={(e)=>handleSendMessage(e)} autocomplete="off">
+                    <form className='ChatDiv' onSubmit={(e) => handleSendMessage(e)} autoComplete="off">
                         <div className='ChatDivContent' id="chat">
                             {messages && messages.length > 0 &&
-                                messages.map((message,index)=>{
-                                    console.log(index);
-                                    return(<div key={message.id} className='Message'><div className='MessagerName'>{message.user.name}</div><div className='MessageText'>{message.message}</div></div>)
+                                messages.map((message, index) => {
+                                    return (<div key={message.id} className='Message'><div className='MessagerName'>{message.user.name}</div><div className='MessageText'>{message.message}</div></div>)
                                 })
                             }
                         </div>
                         <div className='ChatDivInput'>
-                            <input className='ChatInput' id="input" placeholder='Levelezés 😂📯📩✍'/>
+                            <input className='ChatInput' id="input" placeholder='Levelezés 😂📯📩✍' />
                             <button className='ChatButton' type='submit'>Küldés</button>
                         </div>
                     </form>
                     <div className='ServerInfoDiv'>
                         <div className='TextDiv'>
-                            <div>Szoba: Peti szobája</div>
+                            <div>Szoba: {user.name} szobája</div>
                             <div>Pálya nehézsége: könnyű nehéz</div>
                             <div>Csatlakozott játékosok: 3</div>
                             <div>Szobakód:</div>
@@ -83,7 +88,9 @@ export default function CreateRoom() {
                             </div>
                         </div>
                         <div className='ButtonDiv'>
-                            <Link to="/">Kilépés</Link>
+                            <Link to="/" onClick={()=>dispatch({
+                                type: "CLEAR_STATE"
+                            })}>Kilépés</Link>
                             <button>Indítás</button>
                         </div>
                     </div>

@@ -84,17 +84,6 @@ export class UsersService {
             populate: ['division']
         })
     }
-        
-    // async find(id: number) {
-    //     return await this.userRepository.findOne(({
-    //         id: id
-    //     }),{
-    //         fields: ["name","userName","email","points","weekly","picture","banned","muted","role","division","games","games.messages","games.gameDate"],
-    //         filters: {
-                
-    //         }
-    //     })
-    // }
 
     async find(id: number) {
         return await this.userRepository.findOne(({

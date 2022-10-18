@@ -85,6 +85,7 @@
     width: 50%;
     border: none !important;
     display: flex;
+    justify-content: center;
 }
 
 .Home .Div7 a div{

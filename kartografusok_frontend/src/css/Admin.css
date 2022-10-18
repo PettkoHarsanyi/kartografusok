@@ -60,7 +60,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 2.5vw;
 }
 
 .Admin .Users {
@@ -69,6 +68,7 @@
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 0.5vh;
+    margin-top: 2.5vw;;
 }
 
 .Admin .User:hover {
@@ -223,7 +223,7 @@ th {
     align-items: flex-start;
 }
 
-.UserThings {
+.Admin .UserThings {
     display: flex;
     flex-direction: row;
     width: 90%;
@@ -232,7 +232,7 @@ th {
     align-items: flex-start;
 }
 
-.UserForm {
+.Admin .UserForm {
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -286,16 +286,16 @@ th {
     font-size: 3vh;
 }
 
-.ModalContent .UserItems input {
+.Admin .ModalContent .UserItems input {
     border: 0.3vh solid black;
     border-radius: 0.5vh;
 }
 
-.CustomSelect {
+.Admin .CustomSelect {
     position: relative;
 }
 
-.CustomSelect select {
+.Admin .CustomSelect select {
     /*hide original SELECT element: */
     appearance: none;
     margin-top: 2vh;
@@ -308,11 +308,11 @@ th {
     line-height: inherit;
 }
 
-.select-selected {
+.Admin .select-selected {
     background-color: DodgerBlue;
 }
 
-.select-selected:after {
+.Admin .select-selected:after {
     position: absolute;
     content: "";
     top: 14px;
@@ -323,7 +323,7 @@ th {
     border-color: #fff transparent transparent transparent;
 }
 
-.select-selected.select-arrow-active:after {
+.Admin .select-selected.select-arrow-active:after {
     border-color: transparent transparent #fff transparent;
     top: 7px;
 }
@@ -347,19 +347,19 @@ th {
     width: 100%;
 }
 
-.ModalContent input {
+.Admin .ModalContent input {
     border: 0.3vh solid black;
     border-radius: 0.5vh;
     margin-top: 2vh;
 }
 
-.UserMatches {
+.Admin .UserMatches {
     width: 90%;
     height: 100vh;
     font-size: 4vh;
 }
 
-.UserMatches .Matches {
+.Admin .UserMatches .Matches {
     height: 70vh;
     width: 100%;
     margin-top: 1.5vh;
@@ -369,14 +369,14 @@ th {
     overflow-y: scroll;
 }
 
-.UserMatches .Match {
+.Admin .UserMatches .Match {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     margin-bottom: 5vh;
 }
 
-.UserMatches .MatchHeader {
+.Admin .UserMatches .MatchHeader {
     border: 0.5vh solid black;
     background-color: moccasin;
     border-radius: 0.5vh;
@@ -386,7 +386,7 @@ th {
     margin-bottom: 3vh;
 }
 
-.UserMatches .MessageBox {
+.Admin .UserMatches .MessageBox {
     margin: 0.5vh 2vh;
     max-width: 70%;
     align-items: flex-end;
@@ -395,7 +395,7 @@ th {
     font-size: 2vh;
 }
 
-.UserMatches .Message {
+.Admin .UserMatches .Message {
     text-align: right;
     padding: 1vh 3vh;
     border: 0.3vh solid black;
@@ -406,17 +406,17 @@ th {
     width: fit-content;
 }
 
-.MessageBox .Time {
+.Admin .MessageBox .Time {
     text-align: right;
     width: 100%;
     padding-right: 1vh;
 }
 
-.Nomessages {
+.Admin .Nomessages {
     margin-bottom: 5vh;
 }
 
-.Icon {
+.Admin .Icon {
     padding-top: 3vh;
 }
 
@@ -429,9 +429,70 @@ th {
         height: fit-content;
     }
 
-    .ModalContent input {
+    .Admin .ModalContent input {
         border: 0.3vh solid black;
         border-radius: 0.5vh;
         width: 70% !important;
     }
+}
+
+.Admin .Cards{
+    width: 100%;
+    height: 100%;
+    padding: 2.5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4vh;
+    overflow-y: scroll;
+}
+
+.Admin .CardSection{
+    display: flex;
+    flex-direction: column;
+}
+
+.Admin .CardSection .CardType{
+    border: 0.5vh solid black;
+    font-size: 3vh;
+    font-weight: bold;
+    border-radius: 2vh;
+    width: max-content;
+    padding: 1vh 10vh 1vh 10vh;
+    background-color: orange;
+}
+
+.Admin .CardsDiv{
+    margin-top: 4vh;
+    display: flex;
+    gap: 4vh;
+    flex-wrap: wrap;
+}
+
+.Admin .Card{
+    width: 20vh;
+    height: 30vh;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: darkblue;
+    color: white;
+}
+
+.Admin .AddCard{
+    width: 20vh;
+    height: 30vh;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20vh;
+    color:lime;
+    background-color: forestgreen;
+    cursor: pointer;
 }

@@ -1,19 +1,14 @@
-const initialState = [
-    {
-        name: "Peti",
-        age: 23,
-    },
-    {
-        name: "Adi",
-        age: 29
-    }
-]
+import { ADD_PLAYER } from "./actions";
 
-export const playersReducer = (state = initialState, action) => {
+export const playersInitialState = []
+
+// const initialState = []
+
+export const playersReducer = (state = playersInitialState, action) => {
     const { type, payload } = action;
     const players = state;
 
-    if (type === "ADD_PLAYER") {
+    if (type === ADD_PLAYER) {
         return [...players, payload];
     }
 

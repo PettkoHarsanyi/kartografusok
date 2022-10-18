@@ -121,7 +121,7 @@
     height: 4vh;
 }
 
-.Nav{
+.Registration .Nav{
     padding: 3vh 0 3vh 0;
     display: flex;
     flex-direction: column;

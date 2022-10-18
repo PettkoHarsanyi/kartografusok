@@ -1,11 +1,6 @@
-const initialState = {
-    name:"map1",
-    blocks:64,
-    mountains:8,
-    treasures:8,
-}
+export const mapReducerInitialState = {}
 
-export const mapReducer = (state = initialState, action) => {
+export const mapReducer = (state = mapReducerInitialState, action) => {
     const { type, payload } = action;
 
     return state;
