@@ -1,5 +1,6 @@
 import { UniqueConstraintViolationException } from "@mikro-orm/core";
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Patch, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Patch, Query, UseGuards, UseInterceptors, UploadedFile, Res } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { AllowAnonymous } from "../auth/allow-anonymous";
 import { AuthService } from "../auth/auth.service";
 import { LocalAuthGuard } from "../auth/local-auth.guard";
@@ -18,6 +19,9 @@ import { UpdateUserDto } from "./dto/user-update.dto";
 import { UserDto } from "./dto/user.dto";
 import { User, UserRole } from "./entity/user";
 import { UsersService } from "./users.service";
+import { diskStorage } from  'multer';
+import { Observable, of } from "rxjs";
+import { extname, join } from "path";
 
 @Controller('users')
 export class UsersController {
@@ -130,6 +134,28 @@ export class UsersController {
     async muteUpdate(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto){
         const newUser = await this.usersService.update(id, updateUserDto);
         return new UserDto(newUser);
+    }
+
+    @Post(':id/upload')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './assets/profileimages',
+            filename: (req,file,cb) => {
+                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+                return cb(null, `${randomName}${extname(file.originalname)}`)
+            }
+        })
+    }))
+    uploadFile(@UploadedFile() file, @Param('id', ParseIntPipe) userId: number): Observable<Object>{
+        // console.log(file)
+        return of(this.usersService.updatePicture(userId, file.filename))
+        // return {imagePath: file.path}
+    }
+
+    @Get(':id/profileimage')
+    async findProfileImage(@Param('id', ParseIntPipe) userId: number, @Res() res): Promise<Observable<Object>>{
+        const user = await this.usersService.find(userId);
+        return of(res.sendFile(join(process.cwd(), 'assets/profileimages/' + user.picture)))
     }
 }
 

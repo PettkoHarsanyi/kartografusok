@@ -10,6 +10,9 @@ export class Card{
 
     @Property({nullable: true})
     duration?: number;
+    
+    @Property({nullable:true})
+    picture?: string;
 
     @Enum()
     cardType?: CardType;

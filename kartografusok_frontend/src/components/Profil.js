@@ -7,6 +7,8 @@ import ezust from "../assets/ezust.png"
 import profilpics from "../assets/user_130x130px.png"
 import arany from "../assets/arany.png"
 import platina from "../assets/platina.png"
+import axios from 'axios';
+import authHeader from '../auth/auth-header';
 
 
 export default function Profil() {
@@ -38,6 +40,22 @@ export default function Profil() {
             }
         }
     }, [user])
+
+    const [picture,setPicture] = useState({});
+
+    useEffect(()=>{
+        const getPicture = async () => {
+            const response = await axios.get(`api/users/${user.id}/profileimage`, {
+                headers: authHeader()
+            });
+        }
+        const picture = getPicture()
+        setPicture(picture);
+    },[])
+
+    useEffect(()=>{
+        console.log(picture)
+    },[picture])
 
     return (
         <div className='Profil'>

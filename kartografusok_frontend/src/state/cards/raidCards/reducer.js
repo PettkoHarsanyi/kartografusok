@@ -1,28 +1,14 @@
-export const raidCardsInitialState = [
-    {
-        name:"Goblin portya",
-        shape:"1-1-1",
-        direction:-1
-    },
-    {
-        name:"Gnoll fosztogatás",
-        shape:"2-1-2",
-        direction:-1
-    },
-    {
-        name:"Vadember roham",
-        shape:"1 1 - 1 1",
-        direction: 1
-    },
-    {
-        name:"Kobold tombolás",
-        shape:"1-2-1",
-        direction:1
-    },
-]
+import { FILL_RAID_CARDS } from "./actions";
+
+export const raidCardsInitialState = []
 
 export const raidCardsReducer = (state = raidCardsInitialState, action) => {
     const { type, payload } = action;
+    const cards = state;
+
+    if (type === FILL_RAID_CARDS) {
+        return payload;
+    }
 
     return state;
 };

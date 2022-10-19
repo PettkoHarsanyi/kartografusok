@@ -12,6 +12,7 @@ export class CardDto{
     direction?: number;
     blocks1?: string;
     blocks2?: string;
+    picture?: string;
 
     constructor(card?: Card){
         if(card){
@@ -24,6 +25,7 @@ export class CardDto{
             this.direction = card.direction;
             this.blocks1 = card.blocks1;
             this.blocks2 = card.blocks2;
+            this.picture = card.picture;
         }
     }
 }

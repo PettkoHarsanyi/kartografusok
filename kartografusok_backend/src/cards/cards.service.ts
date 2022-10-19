@@ -41,6 +41,8 @@ export class CardsService {
         card.cardType = cardDto.cardType;
         card.fieldType1 = cardDto.fieldType1;
         card.fieldType2 = cardDto.fieldType2;
+        card.direction = cardDto.direction;
+        card.picture = cardDto.picture;
 
         await this.cardRepository.persistAndFlush(card);
 

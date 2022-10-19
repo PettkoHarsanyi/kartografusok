@@ -125,6 +125,16 @@ export class UsersService {
 
         return user;
     }
+
+    async updatePicture(id: number, file: string) {
+        const user = await this.userRepository.findOne({id});
+
+        user.picture = file;
+
+        await this.userRepository.persistAndFlush(user);
+
+        return user;
+    }
         
     async create(userAuthDto: UserAuthDto) {
         const user = new User();

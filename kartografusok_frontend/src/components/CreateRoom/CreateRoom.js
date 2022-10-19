@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import authService from '../../auth/auth.service';
 import axios from 'axios';
 import "../../css/CreateRoom.css";
@@ -9,11 +9,22 @@ import { addMessage } from '../../state/messages/actions';
 import { getMessages } from '../../state/messages/selectors';
 import { addPlayer } from '../../state/players/actions';
 import { getPlayers } from '../../state/players/selectors';
+import { fillExploreCards } from '../../state/cards/exploreCards/actions';
+import { fillRaidCards } from '../../state/cards/raidCards/actions';
 
 export default function CreateRoom() {
     const [user] = useState(authService.getCurrentUser());
     // const [users,setUsers] = useState([user]);
     // const [messages, setMessages] = useState([]);
+    const loadedData = useLoaderData();
+
+    const [exploreCards] = useState(loadedData[0]); // DB-ből jön, mert dinamikus, a többi stateből
+    const [raidCards] = useState(loadedData[1]); // DB-ből jön, mert dinamikus, a többi stateből
+
+    useEffect(()=>{
+        dispatch(fillExploreCards(exploreCards));
+        dispatch(fillRaidCards(raidCards));
+    },[])
 
     const dispatch = useDispatch()
     const users = useSelector(getPlayers);

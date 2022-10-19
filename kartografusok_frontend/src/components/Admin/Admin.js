@@ -17,7 +17,9 @@ import edit from "../../assets/edit.png"
 import { Backdrop, Box, Fade, makeStyles, Modal } from '@mui/material';
 import authService from '../../auth/auth.service';
 import { getCards } from '../../state/cards/selector';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fillExploreCards } from '../../state/cards/exploreCards/actions';
+import { fillRaidCards } from '../../state/cards/raidCards/actions';
 
 
 export default function Admin() {
@@ -25,13 +27,22 @@ export default function Admin() {
     const [activeLink, setActiveLink] = useState("users");
     const [users, setUsers] = useState(loadedData[0]);
     // const [maps] = useState(loadedData[1]);
-    // const [cards] = useState(loadedData[2]);
     const [selectedUser, setSelectedUser] = useState({});
     const [divisions] = useState(loadedData[1]);
     const fileInput = createRef();
     const user = authService.getCurrentUser();
 
+    
+    const [exploreCards] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
+    const [raidCards] = useState(loadedData[3]); // DB-ből jön, mert dinamikus, a többi stateből
     const cards = useSelector(getCards);
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        dispatch(fillExploreCards(exploreCards));
+        dispatch(fillRaidCards(raidCards));
+    },[])
 
     const [open, setOpen] = React.useState(false);
 
@@ -238,7 +249,7 @@ export default function Admin() {
                 <li className={isActive("users") ? "Item Active" : "Item"} onClick={() => { setActive("users"); }}>Felhasználók</li>
                 <li className={isActive("maps") ? "Item Active" : "Item"} onClick={() => setActive("maps")}>Pályák</li>
                 <li className={isActive("cards") ? "Item Active" : "Item"} onClick={() => setActive("cards")}>Kártyák</li>
-                <Link className='Button' to="/">Kilépés</Link>
+                <Link className='Button' onClick={()=>{dispatch({type:"CLEAR_STATE"})}} to="/">Kilépés</Link>
             </nav>
             <div className='Content'>
                 {isActive("users") && (<div className='Users'>
@@ -283,7 +294,7 @@ export default function Admin() {
                         <div className='CardType'>Felfedezéskártyák:</div>
                         <div className='CardsDiv'>
                             {cards && cards.exploreCards.length>0 && cards.exploreCards.map((card)=>
-                            <div className='Card'>{card.name}<br />{card.shape}</div>
+                            <div key={card.id} className='Card'>{card.name}<br />{card.fieldType1} {card.fieldType2} {card.cardType === "RUIN" ? card.cardType : ""}<br />{card.blocks1}</div>
                             )}
                             <div className='AddCard'><div>+</div></div>
                         </div>
@@ -292,7 +303,7 @@ export default function Admin() {
                         <div className='CardType'>Pontkártyák:</div>
                         <div className='CardsDiv'>
                             {cards && cards.pointCards.length>0 && cards.pointCards.map((card)=>
-                            <div className='Card'>{card.name}<br />{card.points}</div>
+                            <div key={card.id} className='Card'>{card.name}<br />{card.points}</div>
                             )}
                         </div>
                     </div>
@@ -300,7 +311,7 @@ export default function Admin() {
                         <div className='CardType'>Rajtaütéskártyák:</div>
                         <div className='CardsDiv'>
                             {cards && cards.raidCards.length>0 && cards.raidCards.map((card)=>
-                            <div className='Card'>{card.name}<br />{card.shape}<br />{card.direction}</div>
+                            <div key={card.id} className='Card'>{card.name}<br />{card.blocks1}<br />{card.direction}</div>
                             )}
                             <div className='AddCard'><div>+</div></div>
                         </div>
@@ -309,7 +320,7 @@ export default function Admin() {
                         <div className='CardType'>Évszakkártyák:</div>
                         <div className='CardsDiv'>
                             {cards && cards.seasonCards.length>0 && cards.seasonCards.map((card)=>
-                            <div className='Card'>{card.name}<br />{card.duration}</div>
+                            <div key={card.id} className='Card'>{card.name}<br />{card.duration}</div>
                             )}
                         </div>
                     </div>
@@ -317,7 +328,7 @@ export default function Admin() {
                         <div className='CardType'>Rendeletkártyák:</div>
                         <div className='CardsDiv'>
                             {cards && cards.decreeCards.length>0 && cards.decreeCards.map((card)=>
-                            <div className='Card'>{card.name}</div>
+                            <div key={card.id} className='Card'>{card.name}</div>
                             )}
                         </div>
                     </div>

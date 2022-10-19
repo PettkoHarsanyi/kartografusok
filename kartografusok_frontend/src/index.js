@@ -33,6 +33,19 @@ const router = createBrowserRouter([
   {
     path: "letrehozas",
     element: <CreateRoom />,
+    loader: async ({ params }) => {
+      return Promise.all([
+        fetch('api/cards/explore', {
+          headers: authHeader()
+        }).then(resp => resp.json()),
+        fetch('api/cards/raid', {
+          headers: authHeader()
+        }).then(resp => resp.json()),
+        // fetch('api/cards', { 
+        //   headers: authHeader()
+        // }).then(resp => resp.json()),
+      ])
+    }
   },
   {
     path: "csatlakozas",
@@ -87,9 +100,12 @@ const router = createBrowserRouter([
         fetch('api/divisions',{
           headers: authHeader()
         }).then(resp => resp.json()),
-        // fetch('api/maps', {
-        //   headers: authHeader()
-        // }),
+        fetch('api/cards/explore', {
+          headers: authHeader()
+        }).then(resp => resp.json()),
+        fetch('api/cards/raid', {
+          headers: authHeader()
+        }).then(resp => resp.json()),
         // fetch('api/cards', {
         //   headers: authHeader()
         // }).then(resp => resp.json()),
