@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 import authService from '../auth/auth.service';
 import "../css/Profil.css";
@@ -9,6 +9,7 @@ import arany from "../assets/arany.png"
 import platina from "../assets/platina.png"
 import axios from 'axios';
 import authHeader from '../auth/auth-header';
+import { Buffer } from 'buffer';
 
 
 export default function Profil() {
@@ -17,6 +18,9 @@ export default function Profil() {
     const [user] = useState(authService.getCurrentUser());
 
     const userMatches = useLoaderData();
+    const fileInput = createRef();
+
+    const [picUR,setPicUrl] = useState(`api/users/${user.id}/profileimage`);
 
     useEffect(() => {
         if (user) {
@@ -41,21 +45,21 @@ export default function Profil() {
         }
     }, [user])
 
-    const [picture,setPicture] = useState({});
-
-    useEffect(()=>{
-        const getPicture = async () => {
-            const response = await axios.get(`api/users/${user.id}/profileimage`, {
-                headers: authHeader()
+    const uploadPicture = async (e) => {
+        console.log(e.target.files[0]);
+        console.log(fileInput.current.files[0]);
+        if (fileInput.current.files.length > 0) {
+            const response = await axios.post(`api/users/${user.id}/upload`, {
+                "file": e.target.files[0]
+            }, {
+                headers: {
+                    ...authHeader(),
+                    "Content-Type": "multipart/form-data",
+                }
             });
+            window.location.reload(false);
         }
-        const picture = getPicture()
-        setPicture(picture);
-    },[])
-
-    useEffect(()=>{
-        console.log(picture)
-    },[picture])
+    }
 
     return (
         <div className='Profil'>
@@ -63,8 +67,10 @@ export default function Profil() {
             <div className='Div1'>
                 <div className='Div2'>
                     <div className='Pics'>
+                        <div className='PicsBg'></div>
                         <img src={frame} className="ProfileFrame" alt="profilframe" style={decoration} />
-                        <img src={profilpics} className="ProfilePics" alt="profilpics" />
+                        <img src={`api/users/${user.id}/profileimage`} className="ProfilePics" alt="profilpics" />
+                        <input type="file" name='picture' className='ImgInput' onChange={(e)=>uploadPicture(e)} ref={fileInput} />
                     </div>
                     <div className='Name'>{user.name}</div>
                 </div>
@@ -98,18 +104,18 @@ export default function Profil() {
                             </thead>
 
                             <tbody>
-                            {userMatches.length > 0 && userMatches.map((match, index) => {
-                            let date = new Date(match.createdAt)
-                            let dateString = date.toISOString().split('T')[0]
-                            return (
-                            <tr key={match.id} className="Match">
-                                <td>{++index}.</td>
-                                <td>{dateString}</td>
-                                <td>{match.duration} perc</td>
-                                <td>{match.results[0].points} pont</td>
-                                <td>{match.results[0].place}.</td>
-                            </tr>)
-                            })}
+                                {userMatches.length > 0 && userMatches.map((match, index) => {
+                                    let date = new Date(match.createdAt)
+                                    let dateString = date.toISOString().split('T')[0]
+                                    return (
+                                        <tr key={match.id} className="Match">
+                                            <td>{++index}.</td>
+                                            <td>{dateString}</td>
+                                            <td>{match.duration} perc</td>
+                                            <td>{match.results[0].points} pont</td>
+                                            <td>{match.results[0].place}.</td>
+                                        </tr>)
+                                })}
 
                             </tbody>
                         </table>

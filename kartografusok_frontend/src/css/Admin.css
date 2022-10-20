@@ -68,7 +68,8 @@
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 0.5vh;
-    margin-top: 2.5vw;;
+    margin-top: 2.5vw;
+    ;
 }
 
 .Admin .User:hover {
@@ -255,7 +256,8 @@ th {
     font-size: 3vh;
 }
 
-.Admin .ModalFooter div, button {
+.Admin .ModalFooter div,
+button {
     border: 0.3vh solid black;
     border-radius: 0.5vh;
     padding: 0.5vh 3vh;
@@ -436,7 +438,7 @@ th {
     }
 }
 
-.Admin .Cards{
+.Admin .Cards {
     width: 100%;
     height: 100%;
     padding: 2.5vh;
@@ -447,12 +449,12 @@ th {
     overflow-y: scroll;
 }
 
-.Admin .CardSection{
+.Admin .CardSection {
     display: flex;
     flex-direction: column;
 }
 
-.Admin .CardSection .CardType{
+.Admin .CardSection .CardType {
     border: 0.5vh solid black;
     font-size: 3vh;
     font-weight: bold;
@@ -462,27 +464,14 @@ th {
     background-color: orange;
 }
 
-.Admin .CardsDiv{
+.Admin .CardsDiv {
     margin-top: 4vh;
     display: flex;
     gap: 4vh;
     flex-wrap: wrap;
 }
 
-.Admin .Card{
-    width: 20vh;
-    height: 30vh;
-    border: 0.5vh solid black;
-    border-radius: 2vh;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: darkblue;
-    color: white;
-}
-
-.Admin .AddCard{
+.Admin .AddCard {
     width: 20vh;
     height: 30vh;
     border: 0.5vh solid black;
@@ -492,7 +481,79 @@ th {
     justify-content: center;
     align-items: center;
     font-size: 20vh;
-    color:lime;
+    color: lime;
     background-color: forestgreen;
     cursor: pointer;
+}
+
+
+.Admin .Card {
+    width: 100%;
+    height: 100%;
+}
+
+.Admin .CardBack {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative
+}
+
+.Admin .CardBackImg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.Admin .CardBackText{
+    z-index: 100;
+}
+
+.FlipCard {
+    width: 20vh;
+    height: 30vh;
+    cursor: pointer;
+    background-color: transparent;
+    perspective: 1000px;
+}
+
+/* This container is needed to position the front and back side */
+.FlipCardInner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.FlipCard:hover .FlipCardInner {
+    transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.FlipCardFront,
+.FlipCardBack {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.FlipCardFront {
+    color: black;
+}
+
+/* Style the back side */
+.FlipCardBack {
+    color: white;
+    transform: rotateY(180deg);
 }

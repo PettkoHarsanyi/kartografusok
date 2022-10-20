@@ -34,7 +34,6 @@
     flex-direction: column;
 }
 
-
 .CreateRoom .Div3 {
     height: 50%;
     border: 0.5vh solid black;
@@ -79,6 +78,11 @@
     height: 10vw;
     border: 0.5vh solid black;
     border-radius: 2vh;
+    
+    object-fit: cover;
+    overflow: hidden;
+    box-shadow: 0 0 2vh 0.5vh rgba(0, 0, 0, 0.3) inset;
+    background-color: black;
 }
 
 .CreateRoom .Div4 {

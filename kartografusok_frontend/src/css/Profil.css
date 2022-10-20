@@ -1,5 +1,5 @@
-.Profil{
-    background-color: #282c34;  
+.Profil {
+    background-color: #282c34;
     background-image: url("../../gfx/loginregisterscreen.png");
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -12,21 +12,21 @@
     display: flex;
 }
 
-.Profil *{
+.Profil * {
     font-family: "Alfa Slab One", cursive;
     text-decoration: none;
     font-size: 6vh;
     text-align: center;
 }
 
-.Profil .Button{
+.Profil .Button {
     cursor: pointer;
     background-color: rgb(147, 255, 137);
     border: 0.5vh solid black;
     border-radius: 2vh;
     padding: 2vh;
     background-color: white;
-    color:black;
+    color: black;
     font-size: 3vh;
     transition-duration: 0.4s;
     position: fixed;
@@ -36,21 +36,50 @@
     top: 2vh;
 }
 
-.Profil .Button:hover{
+.Profil .Button:hover {
     background-color: goldenrod;
     font-size: 4vh;
     left: 1.5vh;
     top: 1.5vh;
 }
 
-.Profil .Pics{
+.Profil .Pics {
     width: 30vh;
     position: relative;
     min-width: 100px;
     min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 13vh;
+    z-index: 50;
+    cursor: pointer;
 }
 
-.Profil .ProfileFrame{
+.Profil .ImgInput{
+    height: 30vh; 
+    width: 30vh ;
+    font-size: 14pt;
+    position: absolute;
+    z-index: 50;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.Profil .PicsBg {
+    width: 30vh;
+    height: 30vh;
+    min-width: 100px;
+    min-height: 100px;
+    border: 0.5vh solid black;
+    background-color: black;
+    border-radius: 2vh;
+    z-index: 0;
+    position: absolute;
+}
+
+.Profil .ProfileFrame {
     width: 30vh;
     height: 30vh;
     min-width: 100px;
@@ -61,22 +90,22 @@
     position: absolute;
 }
 
-.Profil .ProfilePics{
-    width: 30vh;
-    height: 30vh;
-    position: relative;
-    min-width: 100px;
-    min-height: 100px;
+.Profil .ProfilePics {
+    width: 15vh;
+    height: 15vh;
+    min-width: 50px;
+    min-height: 50px;
     z-index: 0;
     border-radius: 2vh;
     background-color: gainsboro;
+    object-fit: contain;
 }
 
-.Profil .Name{
+.Profil .Name {
     font-size: 10vh;
 }
 
-.Profil .Div1{
+.Profil .Div1 {
     background-color: gainsboro;
     width: 100%;
     display: flex;
@@ -88,16 +117,16 @@
     position: relative;
 }
 
-.Profil .Div2{
+.Profil .Div2 {
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: fit-content;
     position: absolute;
-    top:-15vh;
+    top: -15vh;
 }
 
-.Profil .Points{
+.Profil .Points {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -106,12 +135,12 @@
     margin-top: 35vh;
 }
 
-.Profil .Points *{
+.Profil .Points * {
     font-size: 6vh;
 }
 
-.Profil .Info{
-    padding:3vh;
+.Profil .Info {
+    padding: 3vh;
     width: 50%;
     display: flex;
     justify-content: center;
@@ -121,7 +150,7 @@
 }
 
 
-.Profil .Info div{
+.Profil .Info div {
     border: 0.5vh solid black;
     width: 50%;
     min-width: min-content;
@@ -132,7 +161,7 @@
     padding: 0vh 2vh 0 2vh;
 }
 
-.Profil .Div4{
+.Profil .Div4 {
     margin-top: 10vh;
     width: 80%;
     padding: 2vh;
@@ -142,7 +171,7 @@
     align-items: center;
 }
 
-.Profil .Matches{
+.Profil .Matches {
     width: 100%;
     height: 100vh;
     border: 0.5vh solid black;
@@ -151,13 +180,14 @@
     overflow-y: scroll;
 }
 
-.Profil .Div4 h1{
+.Profil .Div4 h1 {
     align-self: flex-start;
 }
-  
+
 .Profil table {
     width: 100%;
-    border-collapse: separate; /* Don't collapse */
+    border-collapse: separate;
+    /* Don't collapse */
     border-spacing: 0;
 }
 
@@ -166,18 +196,27 @@
     text-align: center;
 }
 
-.Profil th{
+.Profil th {
     border-bottom: 0.5vh solid black;
 }
 
-.Profil thead{
+.Profil thead {
     position: sticky;
     top: 0;
     background-color: darkgoldenrod;
 }
 
-.Profil td{
+.Profil td {
     padding: 2vh;
 }
 
-.Profil .Match:nth-child(odd) {background-color: lightgrey}
+.Profil .Match:nth-child(odd) {
+    background-color: lightgrey
+}
+
+@media screen and (max-width: 600px) {
+    .Profil .Name {
+        display: none;
+        font-size: 10vh;
+    }
+}

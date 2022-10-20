@@ -28,7 +28,7 @@ export class User{
     weekly?: number = 0;
     
     @Property({nullable:true})
-    picture?: string;
+    picture?: string = "profileimage.png";
     
     @Property()
     banned?: boolean = false;

@@ -67,7 +67,7 @@ export default function CreateRoom() {
                     <div className='DivTitle'>Csatlakozott játékosok:</div>
                     {users && users.length > 0 && users.map((user) => {
                         return(<div key={user.id} className='PlayerDiv'>
-                            <div className='PictureDiv'></div>
+                            <img src={`api/users/${user.id}/profileimage`} className="PictureDiv" alt="profilpics" />
                             <div className='InfoDiv'>{user.name}<br />{user.division.name}</div>
                         </div>)
                     })

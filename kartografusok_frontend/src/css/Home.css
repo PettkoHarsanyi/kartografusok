@@ -208,6 +208,27 @@
     position: relative;
     width: 20vh;
     height: 20vh;
+    position: relative;
+    min-width: 100px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+
+.Home .PicsBg {
+    width: 20vh;
+    height: 20vh;
+    min-width: 100px;
+    min-height: 100px;
+    border: 0.5vh solid black;
+    background-color: black;
+    border-radius: 2vh;
+    z-index: 0;
+    position: absolute;
 }
 
 .Home .ProfileFrame{
@@ -216,22 +237,28 @@
     margin: 0pt;
     top:0pt;
     padding: 0pt;
-    box-shadow: 0 0 32px 8px rgba(186, 118, 0, 0.852),
-    inset 0 0 64px 32px rgba(186, 118, 0, 0.852);
     border: 0.5vh solid black;
     border-radius: 1vh;
     z-index: 1;
     position: absolute;
     left: 0pt;
+
+    min-width: 100px;
+    min-height: 100px;
+    border: 0.5vh solid black;
+    position: absolute;
 }
 
 .Home .ProfilePics{
-    height: 20vh;
-    width: 20vh;
+    height: 10vh;
+    width: 10vh;
     z-index: 0;
-    left: 0pt;
-    top:0pt;
-    position: absolute;
+    min-width: 50px;
+    min-height: 50px;
+    z-index: 0;
+    border-radius: 2vh;
+    background-color: gainsboro;
+    object-fit: contain;
 }
 
 .Home .Div6{

@@ -22,6 +22,7 @@ import { UsersService } from "./users.service";
 import { diskStorage } from  'multer';
 import { Observable, of } from "rxjs";
 import { extname, join } from "path";
+import * as fs from 'fs';
 
 @Controller('users')
 export class UsersController {
@@ -146,16 +147,20 @@ export class UsersController {
             }
         })
     }))
-    uploadFile(@UploadedFile() file, @Param('id', ParseIntPipe) userId: number): Observable<Object>{
-        // console.log(file)
+    async uploadFile(@UploadedFile() file, @Param('id', ParseIntPipe) userId: number): Promise<Observable<Object>>{
+        const user = await this.usersService.find(userId);
+        if(user.picture !== "profileimage.png" && file){
+            fs.unlink("./assets/profileimages/"+user.picture,(err=>{if(err) console.log(err)}))
+        }
         return of(this.usersService.updatePicture(userId, file.filename))
-        // return {imagePath: file.path}
     }
 
+    @AllowAnonymous()
     @Get(':id/profileimage')
     async findProfileImage(@Param('id', ParseIntPipe) userId: number, @Res() res): Promise<Observable<Object>>{
         const user = await this.usersService.find(userId);
         return of(res.sendFile(join(process.cwd(), 'assets/profileimages/' + user.picture)))
     }
 }
+
 

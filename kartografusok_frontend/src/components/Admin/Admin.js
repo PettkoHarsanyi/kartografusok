@@ -20,7 +20,8 @@ import { getCards } from '../../state/cards/selector';
 import { useDispatch, useSelector } from 'react-redux';
 import { fillExploreCards } from '../../state/cards/exploreCards/actions';
 import { fillRaidCards } from '../../state/cards/raidCards/actions';
-
+import card_png from "../../assets/card.png"
+import card_back_png from "../../assets/card_back.png"
 
 export default function Admin() {
     const loadedData = useLoaderData();
@@ -31,18 +32,18 @@ export default function Admin() {
     const [divisions] = useState(loadedData[1]);
     const fileInput = createRef();
     const user = authService.getCurrentUser();
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    
     const [exploreCards] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[3]); // DB-ből jön, mert dinamikus, a többi stateből
     const cards = useSelector(getCards);
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fillExploreCards(exploreCards));
         dispatch(fillRaidCards(raidCards));
-    },[])
+    }, [])
 
     const [open, setOpen] = React.useState(false);
 
@@ -51,7 +52,7 @@ export default function Admin() {
         let value = target.value;
         const name = target.name;
 
-        if(name === "division"){
+        if (name === "division") {
             value = {
                 id: divisions.filter(division => division.name === target.value)[0].id,
                 name: target.value
@@ -117,21 +118,32 @@ export default function Admin() {
         return response;
     }
 
-    const handleSubmit = async (event) =>  {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         handleClose(event);
-
-        await setSelectedUser({...selectedUser,picture: fileInput.current.files.length > 0 ? fileInput.current.files[0].name : ""});
 
         setUsers(users.map(mappedUser =>
             mappedUser.id === selectedUser.id ? (selectedUser) : (mappedUser)
         ))
 
-        const response2 = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
+        await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
             headers: authHeader()
         });
-        
-        if(user.id === selectedUser.id){
+
+        console.log(selectedFile)
+
+        if(selectedFile){
+            await axios.post(`api/users/${user.id}/upload`, {
+                "file": selectedFile
+            }, {
+                headers: {
+                    ...authHeader(),
+                    "Content-Type": "multipart/form-data",
+                }
+            });
+        }
+
+        if (user.id === selectedUser.id) {
             authService.refreshAuthenticatedUser(selectedUser);
         }
     }
@@ -140,108 +152,108 @@ export default function Admin() {
         <div className='Admin'>
 
             {open && selectedUser &&
-                <form onSubmit={(e) => {handleSubmit(e);handleClose(e)}} className='ModalBackground' style={{ display: open ? "" : "none" }}>
-                        <div className='Modal'>
-                            <div className='ModalHeader'>
-                                <div>{selectedUser.name} módosítása</div>
-                                <div className='Clickable' onClick={handleClose}>×</div>
-                            </div>
-                            <div className='ModalContent'>
-                                <div className='UserThings'>
-                                    <div className='ModalItem'>
-                                        <div>Felhasználónév</div>
-                                        <input name='userName' style={{ width: "15vw" }} type="text" defaultValue={selectedUser.userName} onChange={(e) => handleInputChange(e)} />
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Név</div>
-                                        <input name='name' style={{ width: "10vw" }} type="text" defaultValue={selectedUser.name} onChange={(e) => handleInputChange(e)} />
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>E-Mail</div>
-                                        <input name='email' style={{ width: "20vw" }} type="text" defaultValue={selectedUser.email} onChange={(e) => handleInputChange(e)} />
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Összes Pont</div>
-                                        <input type="number" name='points' style={{ width: "10vw" }} defaultValue={selectedUser.points} onChange={(e) => handleInputChange(e)} />
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Heti Pont</div>
-                                        <input type="number" name='weekly' style={{ width: "10vw" }} defaultValue={selectedUser.weekly} onChange={(e) => handleInputChange(e)} />
-                                    </div>
-                                    <div className='ModalItem' >
-                                        <div>Kép</div>
-                                        <input type="file" name='picture' style={{ width: "15vw", border:"none" }} ref={fileInput} onChange={(e) => handleInputChange(e)} />
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Némítva</div>
-                                        <div className='Clickable' onClick={() => handleMute(selectedUser)}><img className='Icon' src={selectedUser.muted ? muted : unmuted} alt="muteicon" /></div>
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Kitiltva</div>
-                                        <div className='Clickable' onClick={() => handleBan(selectedUser)}><img className='Icon' src={selectedUser.banned ? banned : unbanned} alt="banicon" /></div>
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Rang</div>
-                                        <div className='CustomSelect'>
-                                            <select className='Clickable' name="role" defaultValue={selectedUser.role} onChange={(e) => handleInputChange(e)}>
-                                                <option value={selectedUser.role} disabled hidden>{selectedUser.role}</option>
-                                                <option value="ADMIN" className='ItemStyle'>ADMIN</option>
-                                                <option value="USER" className='ItemStyle'>USER</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className='ModalItem'>
-                                        <div>Divízió</div>
-                                        <div className='CustomSelect'>
-                                            <select className='Clickable' name="division" defaultValue={selectedUser.division.name} onChange={(e) => handleInputChange(e)}>
-                                                <option value={selectedUser.division.name} disabled hidden>{selectedUser.division.name}</option>
-                                                {divisions && divisions.length > 0 &&
-                                                    divisions.map((division) => {
-                                                        return (<option key={division.id} value={division.name} className='ItemStyle'>{division.name}</option>)
-                                                    })
-                                                }
-                                            </select>
-                                        </div>
+                <form onSubmit={(e) => { handleSubmit(e); handleClose(e) }} className='ModalBackground' style={{ display: open ? "" : "none" }}>
+                    <div className='Modal'>
+                        <div className='ModalHeader'>
+                            <div>{selectedUser.name} módosítása</div>
+                            <div className='Clickable' onClick={handleClose}>×</div>
+                        </div>
+                        <div className='ModalContent'>
+                            <div className='UserThings'>
+                                <div className='ModalItem'>
+                                    <div>Felhasználónév</div>
+                                    <input name='userName' style={{ width: "15vw" }} type="text" defaultValue={selectedUser.userName} onChange={(e) => handleInputChange(e)} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Név</div>
+                                    <input name='name' style={{ width: "10vw" }} type="text" defaultValue={selectedUser.name} onChange={(e) => handleInputChange(e)} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>E-Mail</div>
+                                    <input name='email' style={{ width: "20vw" }} type="text" defaultValue={selectedUser.email} onChange={(e) => handleInputChange(e)} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Összes Pont</div>
+                                    <input type="number" name='points' style={{ width: "10vw" }} defaultValue={selectedUser.points} onChange={(e) => handleInputChange(e)} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Heti Pont</div>
+                                    <input type="number" name='weekly' style={{ width: "10vw" }} defaultValue={selectedUser.weekly} onChange={(e) => handleInputChange(e)} />
+                                </div>
+                                <div className='ModalItem' >
+                                    <div>Kép</div>
+                                    <input type="file" name='picture' style={{ width: "15vw", border: "none" }} ref={fileInput} onChange={(e) => setSelectedFile(e.target.files[0])} />
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Némítva</div>
+                                    <div className='Clickable' onClick={() => handleMute(selectedUser)}><img className='Icon' src={selectedUser.muted ? muted : unmuted} alt="muteicon" /></div>
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Kitiltva</div>
+                                    <div className='Clickable' onClick={() => handleBan(selectedUser)}><img className='Icon' src={selectedUser.banned ? banned : unbanned} alt="banicon" /></div>
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Rang</div>
+                                    <div className='CustomSelect'>
+                                        <select className='Clickable' name="role" defaultValue={selectedUser.role} onChange={(e) => handleInputChange(e)}>
+                                            <option value={selectedUser.role} disabled hidden>{selectedUser.role}</option>
+                                            <option value="ADMIN" className='ItemStyle'>ADMIN</option>
+                                            <option value="USER" className='ItemStyle'>USER</option>
+                                        </select>
                                     </div>
                                 </div>
-                                {open && selectedUser && selectedUser.messages.length > 0 ?
-                                    <div className='UserMatches'>
-                                        <div>Játékos üzenetei:</div>
-                                        <div className='Matches'>
-
-                                            {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
-                                                if (selectedUser.messages.length > 0) {
-                                                    let gameDateTemp = new Date(game.createdAt);
-                                                    let gameDate = gameDateTemp.toISOString().split("T")[0];
-                                                    return (<div className='Match' key={game.id}>
-                                                        <div className='MatchHeader'>{gameDate}</div>
-
-                                                        {game.messages.length > 0 && game.messages.map((message) => {
-                                                            if (message.user === selectedUser.id) {
-                                                                let date = new Date(message.createdAt)
-                                                                let dateTemp = date.toISOString().split("T")[1];
-                                                                let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
-
-                                                                return (
-                                                                    <div className='MessageBox' key={message.id}>
-                                                                        <div className='Message'>{message.message}</div>
-                                                                        <div className='Time'>{hoursAndMinutes}</div>
-                                                                    </div>)
-                                                            }
-                                                        })}
-
-
-                                                    </div>)
-                                                }
-                                            })}
-                                        </div>
-                                    </div> : <div className='Nomessages'><h3>A játékosnak nincsenek üzenetei</h3></div>}
+                                <div className='ModalItem'>
+                                    <div>Divízió</div>
+                                    <div className='CustomSelect'>
+                                        <select className='Clickable' name="division" defaultValue={selectedUser.division.name} onChange={(e) => handleInputChange(e)}>
+                                            <option value={selectedUser.division.name} disabled hidden>{selectedUser.division.name}</option>
+                                            {divisions && divisions.length > 0 &&
+                                                divisions.map((division) => {
+                                                    return (<option key={division.id} value={division.name} className='ItemStyle'>{division.name}</option>)
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div className='ModalFooter'>
-                                <div className='Clickable' onClick={handleClose}>Bezár</div>
-                                <button type="submit" className='Clickable'>Mentés</button>
-                            </div>
+                            {open && selectedUser && selectedUser.messages.length > 0 ?
+                                <div className='UserMatches'>
+                                    <div>Játékos üzenetei:</div>
+                                    <div className='Matches'>
+
+                                        {selectedUser.games && selectedUser.games.length > 0 && selectedUser.games.map((game) => {
+                                            if (selectedUser.messages.length > 0) {
+                                                let gameDateTemp = new Date(game.createdAt);
+                                                let gameDate = gameDateTemp.toISOString().split("T")[0];
+                                                return (<div className='Match' key={game.id}>
+                                                    <div className='MatchHeader'>{gameDate}</div>
+
+                                                    {game.messages.length > 0 && game.messages.map((message) => {
+                                                        if (message.user === selectedUser.id) {
+                                                            let date = new Date(message.createdAt)
+                                                            let dateTemp = date.toISOString().split("T")[1];
+                                                            let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
+
+                                                            return (
+                                                                <div className='MessageBox' key={message.id}>
+                                                                    <div className='Message'>{message.message}</div>
+                                                                    <div className='Time'>{hoursAndMinutes}</div>
+                                                                </div>)
+                                                        }
+                                                    })}
+
+
+                                                </div>)
+                                            }
+                                        })}
+                                    </div>
+                                </div> : <div className='Nomessages'><h3>A játékosnak nincsenek üzenetei</h3></div>}
                         </div>
+                        <div className='ModalFooter'>
+                            <div className='Clickable' onClick={handleClose}>Bezár</div>
+                            <button type="submit" className='Clickable'>Mentés</button>
+                        </div>
+                    </div>
                 </form>
             }
 
@@ -249,7 +261,7 @@ export default function Admin() {
                 <li className={isActive("users") ? "Item Active" : "Item"} onClick={() => { setActive("users"); }}>Felhasználók</li>
                 <li className={isActive("maps") ? "Item Active" : "Item"} onClick={() => setActive("maps")}>Pályák</li>
                 <li className={isActive("cards") ? "Item Active" : "Item"} onClick={() => setActive("cards")}>Kártyák</li>
-                <Link className='Button' onClick={()=>{dispatch({type:"CLEAR_STATE"})}} to="/">Kilépés</Link>
+                <Link className='Button' onClick={() => { dispatch({ type: "CLEAR_STATE" }) }} to="/">Kilépés</Link>
             </nav>
             <div className='Content'>
                 {isActive("users") && (<div className='Users'>
@@ -289,50 +301,101 @@ export default function Admin() {
                      */}
                 </div>)}
                 {isActive("cards") && (
-                <div className='Cards'>
-                    <div className='CardSection'>
-                        <div className='CardType'>Felfedezéskártyák:</div>
-                        <div className='CardsDiv'>
-                            {cards && cards.exploreCards.length>0 && cards.exploreCards.map((card)=>
-                            <div key={card.id} className='Card'>{card.name}<br />{card.fieldType1} {card.fieldType2} {card.cardType === "RUIN" ? card.cardType : ""}<br />{card.blocks1}</div>
-                            )}
-                            <div className='AddCard'><div>+</div></div>
+                    <div className='Cards'>
+                        <div className='CardSection'>
+                            <div className='CardType'>Felfedezéskártyák:</div>
+                            <div className='CardsDiv'>
+                                {cards && cards.exploreCards.length > 0 && cards.exploreCards.map((card) =>
+
+                                    <div key={card.id} className="FlipCard">
+                                        <div className="FlipCardInner">
+                                            <div className="FlipCardFront">
+                                                <img src={card_png} className="Card" />
+                                            </div>
+                                            <div className="FlipCardBack">
+                                                <div className='CardBack'>
+                                                    <img className='CardBackImg' src={card_back_png}></img>
+                                                    <div className='CardBackText'>asdasdasd</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    // <div key={card.id} className='Card'>{card.name}<br />{card.fieldType1} {card.fieldType2} {card.cardType === "RUIN" ? card.cardType : ""}<br />{card.blocks1}</div>
+                                )}
+                                <div className='AddCard'><div>+</div></div>
+                            </div>
                         </div>
-                    </div>
-                    <div className='CardSection'>
-                        <div className='CardType'>Pontkártyák:</div>
-                        <div className='CardsDiv'>
-                            {cards && cards.pointCards.length>0 && cards.pointCards.map((card)=>
-                            <div key={card.id} className='Card'>{card.name}<br />{card.points}</div>
-                            )}
+                        <div className='CardSection'>
+                            <div className='CardType'>Pontkártyák:</div>
+                            <div className='CardsDiv'>
+                                {cards && cards.pointCards.length > 0 && cards.pointCards.map((card) =>
+                                    <div key={card.id} className="FlipCard">
+                                        <div className="FlipCardInner">
+                                            <div className="FlipCardFront">
+                                                <img src={card_png} className="Card" />
+                                            </div>
+                                            <div className="FlipCardBack">
+                                                <img src={card_back_png} className="CardBack" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    <div className='CardSection'>
-                        <div className='CardType'>Rajtaütéskártyák:</div>
-                        <div className='CardsDiv'>
-                            {cards && cards.raidCards.length>0 && cards.raidCards.map((card)=>
-                            <div key={card.id} className='Card'>{card.name}<br />{card.blocks1}<br />{card.direction}</div>
-                            )}
-                            <div className='AddCard'><div>+</div></div>
+                        <div className='CardSection'>
+                            <div className='CardType'>Rajtaütéskártyák:</div>
+                            <div className='CardsDiv'>
+                                {cards && cards.raidCards.length > 0 && cards.raidCards.map((card) =>
+                                    <div key={card.id} className="FlipCard">
+                                        <div className="FlipCardInner">
+                                            <div className="FlipCardFront">
+                                                <img src={card_png} className="Card" />
+                                            </div>
+                                            <div className="FlipCardBack">
+                                                <img src={card_back_png} className="CardBack" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className='AddCard'><div>+</div></div>
+                            </div>
                         </div>
-                    </div>
-                    <div className='CardSection'>
-                        <div className='CardType'>Évszakkártyák:</div>
-                        <div className='CardsDiv'>
-                            {cards && cards.seasonCards.length>0 && cards.seasonCards.map((card)=>
-                            <div key={card.id} className='Card'>{card.name}<br />{card.duration}</div>
-                            )}
+                        <div className='CardSection'>
+                            <div className='CardType'>Évszakkártyák:</div>
+                            <div className='CardsDiv'>
+                                {cards && cards.seasonCards.length > 0 && cards.seasonCards.map((card) =>
+                                    <div key={card.id} className="FlipCard">
+                                        <div className="FlipCardInner">
+                                            <div className="FlipCardFront">
+                                                <img src={card_png} className="Card" />
+                                            </div>
+                                            <div className="FlipCardBack">
+                                                <img src={card_back_png} className="CardBack" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    <div className='CardSection'>
-                        <div className='CardType'>Rendeletkártyák:</div>
-                        <div className='CardsDiv'>
-                            {cards && cards.decreeCards.length>0 && cards.decreeCards.map((card)=>
-                            <div key={card.id} className='Card'>{card.name}</div>
-                            )}
+                        <div className='CardSection'>
+                            <div className='CardType'>Rendeletkártyák:</div>
+                            <div className='CardsDiv'>
+                                {cards && cards.decreeCards.length > 0 && cards.decreeCards.map((card) =>
+                                    <div key={card.id} className="FlipCard">
+                                        <div className="FlipCardInner">
+                                            <div className="FlipCardFront">
+                                                <img src={card_png} className="Card" />
+                                            </div>
+                                            <div className="FlipCardBack">
+                                                <img src={card_back_png} className="CardBack" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </div>)}
+                    </div>)}
 
             </div>
 
