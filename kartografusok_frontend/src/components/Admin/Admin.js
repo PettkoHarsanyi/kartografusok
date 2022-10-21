@@ -37,6 +37,7 @@ export default function Admin() {
 
     const [exploreCards] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[3]); // DB-ből jön, mert dinamikus, a többi stateből
+    const [maps] = useState(loadedData[4]); // DB-ből jön, mert dinamikus, a többi stateből
     const cards = useSelector(getCards);
 
     const dispatch = useDispatch();
@@ -44,6 +45,7 @@ export default function Admin() {
     useEffect(() => {
         dispatch(fillExploreCards(exploreCards));
         dispatch(fillRaidCards(raidCards));
+        console.log(maps);
     }, [])
 
     const [open, setOpen] = React.useState(false);
@@ -151,6 +153,18 @@ export default function Admin() {
         }
     }
 
+    const flipCard = (e) => {
+        const inner = e.target.parentElement.closest('div.FlipCardInner');
+        inner.style = "transform: rotateY(180deg)"
+        // e.target.style = "transform: rotateY(180deg)";
+    }
+
+    const flipBackCard = (e) => {
+        const inner = e.target.parentElement.closest('div.FlipCardInner');
+        inner.style = "transform: rotateY(0deg)"
+        // e.target.style = "transform: rotateY(180deg)";
+    }
+
     return (
         <div className='Admin'>
 
@@ -232,7 +246,7 @@ export default function Admin() {
                                                 let gameDateTemp = new Date(game.createdAt);
                                                 let gameDate = gameDateTemp.toISOString().split("T")[0];
                                                 return (<div className='Match' key={game.id}>
-                                                    <div className='MatchHeader'>{gameDate}</div>
+                                                    <div className='MatchHeader'>Játék időpontja: {gameDate}</div>
 
                                                     {game.messages.length > 0 && game.messages.map((message) => {
                                                         if (message.user === selectedUser.id) {
@@ -301,11 +315,23 @@ export default function Admin() {
                         </tbody>
                     </table>
                 </div>)}
-                {isActive("maps") && (<div>
+                {isActive("maps") && (
+                    <div className='Maps'>
+                        <div className='MapsTitle'>Pályák:</div>
+                        <div className='MapsSection'>
+                            {maps && maps.length > 0 &&
+                                maps.map(map=>{
+                                    return(<img key={map.id} src={`api/maps/${map.id}/mapImage`} className="Map"/>)
+                                })
+                            }
+                            <div className='AddMap'><div>+</div></div>
+                        </div>
+                    </div>
+                    )}
+
                     {/**
                      * A mapok db-ből jönnek, a state-be createRoomkor kerül be egy random a db-ből
                      */}
-                </div>)}
                 {isActive("cards") && (
                     <div className='Cards'>
                         <div className='CardSection'>
@@ -313,15 +339,63 @@ export default function Admin() {
                             <div className='CardsDiv'>
                                 {cards && cards.exploreCards.length > 0 && cards.exploreCards.map((card) =>
 
-                                    <div key={card.id} className="FlipCard">
+                                    <div key={card.id} className="FlipCard" >
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={`api/cards/${card.id}/cardimage`} className="Card" />
+                                                <img src={`api/cards/${card.id}/cardimage`} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack">
-                                                <div className='CardBack'>
-                                                    <img className='CardBackImg' src={card_back_png}></img>
-                                                    <div className='CardBackText'>{card.name}<br />{card.fieldType1} {card.fieldType2}<br />{card.blocks1}<br />{card.blocks2}</div>
+                                                <div className='CardBack' onClick={(e) => flipBackCard(e)} >
+                                                    <img className='CardBackImg' src={card_back_png} />
+                                                    <div className='CardBackText'>
+                                                        {card.duration && <div className='Attribute'>{card.duration}</div>}
+
+                                                        <div className='Attribute'>{card.name}</div>
+                                                        {card.fieldType1 && <div className='Attribute'>{card.fieldType1} {card.fieldType2}</div>}
+
+                                                        {(card.blocks1 || card.blocks2) &&
+                                                            <div className='BlocksDiv'>
+                                                                {card.blocks1 && card.blocks1.length > 0 &&
+                                                                    <div className="divTable">
+                                                                        <div className="divTableBody">
+                                                                            {JSON.parse(card.blocks1).map((row, index) => {
+                                                                                return (
+                                                                                    <div key={index} className="divTableRow">
+                                                                                        {row.map((cell, index) => {
+                                                                                            return (
+                                                                                                <div key={index} className="divTableCell" style={{ border: cell === 0 ? "0vh" : "0.1vh solid white" }}></div>
+                                                                                            )
+                                                                                        })}
+                                                                                    </div>
+                                                                                )
+                                                                            })
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                }
+
+                                                                {card.blocks2 && card.blocks2.length > 0 &&
+                                                                    <div className="divTable">
+                                                                        <div className="divTableBody">
+                                                                            {JSON.parse(card.blocks2).map((row, index) => {
+                                                                                return (
+                                                                                    <div key={index} className="divTableRow">
+                                                                                        {row.map((cell, index) => {
+                                                                                            return (
+                                                                                                <div key={index} className="divTableCell" style={{ border: cell === 0 ? "0vh" : "0.1vh solid white" }}></div>
+                                                                                            )
+                                                                                        })}
+                                                                                    </div>
+                                                                                )
+                                                                            })
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                }
+
+                                                            </div>}
+
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -339,10 +413,16 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={card_png} className="Card" />
+                                                <img src={require(`../../assets/cards/pointcards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
-                                            <div className="FlipCardBack">
-                                                <img src={card_back_png} className="CardBack" />
+                                            <div className="FlipCardBack" id="Back">
+
+                                                <div className='CardBack' onClick={(e) => flipBackCard(e)} >
+                                                    <img src={require(`../../assets/cards/pointcards/${card.backPicture}`)} className='CardBackImg' />
+                                                    <div className='CardBackText'>
+                                                        <div className='Attribute'>{card.name}</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -356,10 +436,39 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={`api/cards/${card.id}/cardimage`} className="Card" />
+                                                <img src={`api/cards/${card.id}/cardimage`} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack">
-                                                <img src={card_back_png} className="CardBack" />
+
+                                                <div className='CardBack' onClick={(e) => flipBackCard(e)} >
+                                                    <img src={card_back_png} className="CardBackImg" />
+                                                    <div className='CardBackText'>
+                                                        <div className='Attribute'>{card.name}</div>
+                                                        <div className='Attribute'>{card.direction==1?"Óra járásával megegyezően":"Óra járásával ellentétesen"}</div>
+
+                                                        {(card.blocks1 || card.blocks2) &&
+                                                            <div className='BlocksDiv'>
+                                                                {card.blocks1 && card.blocks1.length > 0 &&
+                                                                    <div className="divTable">
+                                                                        <div className="divTableBody">
+                                                                            {JSON.parse(card.blocks1).map((row, index) => {
+                                                                                return (
+                                                                                    <div key={index} className="divTableRow">
+                                                                                        {row.map((cell, index) => {
+                                                                                            return (
+                                                                                                <div key={index} className="divTableCell" style={{ border: cell === 0 ? "0vh" : "0.1vh solid white" }}></div>
+                                                                                            )
+                                                                                        })}
+                                                                                    </div>
+                                                                                )
+                                                                            })
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -374,10 +483,15 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={card_png} className="Card" />
+                                                <img src={require(`../../assets/cards/seasoncards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack">
-                                                <img src={card_back_png} className="CardBack" />
+                                                <div className='CardBack' onClick={(e) => flipBackCard(e)} >
+                                                    <img src={require(`../../assets/cards/seasoncards/${card.backPicture}`)} className="CardBackImg" onClick={(e) => flipBackCard(e)} />
+                                                    <div className='CardBackText'>
+                                                        <div className='Attribute'>{card.name}</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -391,10 +505,10 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={card_png} className="Card" />
+                                                <img src={require(`../../assets/cards/decreecards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack">
-                                                <img src={card_back_png} className="CardBack" />
+                                                <img src={require(`../../assets/cards/decreecards/${card.backPicture}`)} className="CardBack" onClick={(e) => flipBackCard(e)} />
                                             </div>
                                         </div>
                                     </div>

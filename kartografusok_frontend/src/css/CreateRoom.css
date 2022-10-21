@@ -60,6 +60,7 @@
     align-self: flex-start;
     border: 0.5vh solid black;
     background-color: gainsboro;
+    z-index: 10;
 }
 
 .CreateRoom .PlayerDiv {
@@ -78,7 +79,7 @@
     height: 10vw;
     border: 0.5vh solid black;
     border-radius: 2vh;
-    
+
     object-fit: cover;
     overflow: hidden;
     box-shadow: 0 0 2vh 0.5vh rgba(0, 0, 0, 0.3) inset;
@@ -95,6 +96,7 @@
 
 .CreateRoom .InfoDiv {
     text-align: center;
+    z-index: 5;
 }
 
 .CreateRoom .ChatDiv {
@@ -115,11 +117,11 @@
     border-radius: 2vh;
     position: relative;
     display: flex;
-    flex-direction: column;   
+    flex-direction: column;
     justify-content: space-between;
 }
 
-.CreateRoom .TextDiv{
+.CreateRoom .TextDiv {
     border: 0.5vh solid black;
     height: 70%;
     box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
@@ -133,11 +135,11 @@
     overflow-x: scroll;
 }
 
-.CreateRoom .TextDiv *{
+.CreateRoom .TextDiv * {
     font-size: 1vw;
 }
 
-.CreateRoom .InviteDiv{
+.CreateRoom .InviteDiv {
     display: flex;
     border: 0.5vh solid black;
     padding: 1vh;
@@ -146,27 +148,17 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    position:relative;
+    position: relative;
 }
 
-.CreateRoom .CodeDiv{
+.CreateRoom .CodeDiv {
     overflow-x: scroll;
     width: 70%;
     border: none !important;
     outline: none;
 }
 
-.CreateRoom .CopyButton{
-    position: absolute;
-    background-color: gray;
-    z-index: 0;
-    border-radius: 1.5vh;
-    right: 0;
-    height: 100%;
-    cursor: pointer;
-}
-
-.CreateRoom .ButtonDiv{
+.CreateRoom .ButtonDiv {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -175,7 +167,7 @@
     gap: 2vh;
 }
 
-.CreateRoom .ButtonDiv button{
+.CreateRoom .ButtonDiv button {
     width: 50%;
     height: 10vh;
     border: 0.5vh solid black;
@@ -183,17 +175,17 @@
     color: white;
     box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
         inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.CreateRoom .ButtonDiv a{
+.CreateRoom .ButtonDiv a {
     text-decoration: none;
     width: 50%;
     height: 10vh;
     border: 0.5vh solid black;
     background-color: gray;
     color: white;
-    cursor:pointer;
+    cursor: pointer;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -262,4 +254,39 @@
     border-radius: 1vh;
     background-color: gray;
     cursor: pointer;
+}
+
+
+.CreateRoom .CopyButton {
+    position: absolute;
+    background-color: gray;
+    z-index: 0;
+    border-radius: 1.5vh;
+    right: 0;
+    height: 100%;
+    cursor: pointer;
+    width: 20vh;
+}
+
+.CreateRoom .CopyButton:hover {
+    background-color: peru;
+    border-radius: 3vh;
+}
+
+.CreateRoom .Copied {
+    outline: none;
+    cursor: pointer;
+    transition-duration: 0.5s;
+    position: absolute;
+    background-color: gray;
+    z-index: 0;
+    border-radius: 1.5vh;
+    right: 0;
+    height: 100%;
+    width: 20vh;
+    cursor: pointer;
+}
+
+.CreateRoom .Copied:hover {
+    background-color: lime;
 }

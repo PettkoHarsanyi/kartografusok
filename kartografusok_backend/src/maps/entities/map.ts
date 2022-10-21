@@ -5,8 +5,14 @@ export class Map{
     @PrimaryKey()
     id!: number;
 
+    @Property({nullable: true})
+    name?: string;
+
     @Property()
     blocks?: string;
+
+    @Property({nullable: true})
+    picture?: string;
 
     @Property({onCreate: ()=> new Date()})
     createdAt!: Date;

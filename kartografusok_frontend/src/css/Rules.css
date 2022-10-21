@@ -1,0 +1,58 @@
+.Rules{
+    background-color: #282c34;  
+    background-image: url("../../gfx/loginregisterscreen.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    min-height: 100vh;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    overflow-x: scroll;
+}
+
+.Rules * {
+    font-family: "Alfa Slab One", cursive;
+    text-decoration: none;
+    font-size: 6vh;
+    text-align: center;
+}
+
+.Rules .Images{
+    margin-left: 200vw;
+    
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.Rules .Img{
+    height: 70vh;
+}
+
+.Rules .Button {
+    cursor: pointer;
+    background-color: rgb(147, 255, 137);
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    padding: 2vh;
+    background-color: white;
+    color: black;
+    font-size: 3vh;
+    transition-duration: 0.4s;
+    position: fixed;
+    z-index: 10;
+    align-self: flex-start;
+    left: 2vh;
+    top: 2vh;
+}
+
+.Rules .Button:hover {
+    background-color: goldenrod;
+    font-size: 4vh;
+    left: 1.5vh;
+    top: 1.5vh;
+}

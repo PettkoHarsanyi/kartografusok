@@ -503,6 +503,7 @@ button {
     width: max-content;
     padding: 1vh 10vh 1vh 10vh;
     background-color: orange;
+    color: rgb(0, 0, 0);
 }
 
 .Admin .CardsDiv {
@@ -522,9 +523,18 @@ button {
     justify-content: center;
     align-items: center;
     font-size: 20vh;
-    color: lime;
-    background-color: forestgreen;
+    color: silver;
+    background-color: gray;
     cursor: pointer;
+    padding-bottom: 4vh;
+    transition: 0.5s;
+}
+
+.Admin .AddCard:hover{
+    background-color:silver;
+    color: white;
+    font-size: 25vh;
+    padding-bottom: 5vh;
 }
 
 
@@ -540,7 +550,7 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: relative
+    position: relative;
 }
 
 .Admin .CardBackImg{
@@ -551,7 +561,23 @@ button {
 }
 
 .Admin .CardBackText{
+    width: 100%;
+    height: 100%;
+    border-radius: 2vh;
+    background-color: rgba(0, 0, 0, 0.574);
     z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    font-weight: bold;
+    font-size: 1.5vh;
+}
+
+.Admin .Text{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 }
 
 .FlipCard {
@@ -574,7 +600,7 @@ button {
 
 /* Do an horizontal flip when you move the mouse over the flip box container */
 .FlipCard:hover .FlipCardInner {
-    transform: rotateY(180deg);
+    /* transform: rotateY(180deg); */
 }
 
 /* Position the front and back side */
@@ -597,4 +623,119 @@ button {
 .FlipCardBack {
     color: white;
     transform: rotateY(180deg);
+}
+
+/* DivTable.com */
+.divTable{
+	display: table;
+    border-collapse: collapse;
+}
+.divTableRow {
+	display: table-row;
+}
+.divTableHeading {
+	background-color: #EEE; 
+	display: table-header-group;
+}
+.divTableCell, .divTableHead {
+	border: 0.1vh solid white;
+	display: table-cell;
+    height: 10px !important;
+    width: 10px !important;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+	font-weight: bold;
+}
+.divTableFoot {
+	background-color: #EEE;
+	display: table-footer-group;
+	font-weight: bold;
+}
+.divTableBody {
+	display: table-row-group;
+}
+
+.Admin .BlocksDiv{
+    display: flex;
+    border: 0.2vh solid white;
+    padding: 1vh;
+    width: 90%;
+    border-radius: 0.5vh;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.Admin .Attribute{
+    
+    border: 0.2vh solid white;
+    padding: 1vh;
+    width: 90%;
+    border-radius: 0.5vh;
+}
+
+.Admin .Attribute:first-of-type{
+    
+    border: 0.2vh solid white;
+    padding: 0.5vh 1vh;
+    width: fit-content;
+    border-radius: 3vh;
+}
+
+.Admin .Maps {
+    width: 100%;
+    height: 100%;
+    padding: 2.5vh;
+    overflow-y: scroll;
+}
+
+.Admin .MapsSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 4vh;
+    margin-top: 4vh;
+    align-items: flex-start;
+}
+
+.Admin .MapsTitle{
+    border: 0.5vh solid black;
+    font-size: 3vh;
+    font-weight: bold;
+    border-radius: 2vh;
+    width: max-content;
+    padding: 1vh 10vh 1vh 10vh;
+    background-color: orange;
+    color: rgb(0, 0, 0);
+}
+
+.Admin .Map{
+    width:40vh;
+    height: 57.5vh;
+}
+
+.Admin .AddMap {
+    height: 57.5vh;
+    width: 40vh;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20vh;
+    color: silver;
+    background-color: gray;
+    cursor: pointer;
+    padding-bottom: 4vh;
+    transition: 0.5s;
+}
+
+.Admin .AddMap:hover{
+    background-color:silver;
+    color: white;
+    font-size: 25vh;
+    padding-bottom: 5vh;
 }

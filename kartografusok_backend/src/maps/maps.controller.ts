@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body } from "@nestjs/common";
+import { AllowAnonymous } from "../auth/allow-anonymous";
 import { Roles } from '../auth/roles';
 import { UserRole } from '../users/entity/user';
 import { MapDto } from './dto/map.dto';
 import { MapsService } from './maps.service';
+import { HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query, UseGuards, UseInterceptors, UploadedFile, Res, Controller, Get, Post, Body } from "@nestjs/common";
+import { Observable, of } from "rxjs";
+import { join } from "path";
 
 @Controller('maps')
 export class MapsController {
@@ -20,5 +23,12 @@ export class MapsController {
     @Post('')
     async addMap(@Body() mapDto: MapDto){
         return await this.mapsService.create(mapDto);
+    }
+
+    @AllowAnonymous()
+    @Get(':id/mapImage')
+    async findMapImage(@Param('id', ParseIntPipe) mapId: number, @Res() res): Promise<Observable<Object>>{
+        const map = await this.mapsService.find(mapId);
+        return of(res.sendFile(join(process.cwd(), 'assets/maps/' + map.picture)))
     }
 }

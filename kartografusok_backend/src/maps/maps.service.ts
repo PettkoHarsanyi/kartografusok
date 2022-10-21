@@ -15,10 +15,18 @@ export class MapsService {
         return this.mapRepository.findAll();
     }
 
+    async find(id: number) {
+        return await this.mapRepository.findOne(({
+            id: id,
+        }))
+    }
+
     async create(mapDto: MapDto) {
         const map = new Map();
 
         map.blocks = mapDto.blocks;
+        map.name = mapDto.name;
+        map.picture = mapDto.picture;
 
         await this.mapRepository.persistAndFlush(map);
 

@@ -59,8 +59,10 @@
     background-color: white;
     border: 0.5vh solid black;
     outline: none;
-    padding: 0 2vh 0 2vh;
+    padding: 2vh 2vh 2vh 2vh;
+    font-size: 3vh;
     border-radius: 2vh;
+    text-align: center;
 }
 
 .ConnectRoom .Div6{
