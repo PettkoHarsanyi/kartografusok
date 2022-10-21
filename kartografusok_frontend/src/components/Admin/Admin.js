@@ -22,6 +22,7 @@ import { fillExploreCards } from '../../state/cards/exploreCards/actions';
 import { fillRaidCards } from '../../state/cards/raidCards/actions';
 import card_png from "../../assets/card.png"
 import card_back_png from "../../assets/card_back.png"
+import selectPics from "../../assets/selectpics.png"
 
 export default function Admin() {
     const loadedData = useLoaderData();
@@ -99,6 +100,8 @@ export default function Admin() {
             headers: authHeader()
         });
 
+        authService.refreshAuthenticatedUser(user);
+
         return response
     }
 
@@ -115,6 +118,8 @@ export default function Admin() {
             headers: authHeader()
         });
 
+        authService.refreshAuthenticatedUser(user);
+
         return response;
     }
 
@@ -130,10 +135,8 @@ export default function Admin() {
             headers: authHeader()
         });
 
-        console.log(selectedFile)
-
-        if(selectedFile){
-            await axios.post(`api/users/${user.id}/upload`, {
+        if (selectedFile) {
+            await axios.post(`api/users/${selectedUser.id}/upload`, {
                 "file": selectedFile
             }, {
                 headers: {
@@ -182,7 +185,10 @@ export default function Admin() {
                                 </div>
                                 <div className='ModalItem' >
                                     <div>Kép</div>
-                                    <input type="file" name='picture' style={{ width: "15vw", border: "none" }} ref={fileInput} onChange={(e) => setSelectedFile(e.target.files[0])} />
+                                    <div className='InputRelativeParent'>
+                                        <div className='PicDiv' onClick={() => document.getElementById("picInput").click()}>Kiválaszt 💾</div>
+                                        <input type="file" id="picInput" name='picture' ref={fileInput} onChange={(e) => setSelectedFile(e.target.files[0])} className="PicInput" />
+                                    </div>
                                 </div>
                                 <div className='ModalItem'>
                                     <div>Némítva</div>
@@ -310,12 +316,12 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={card_png} className="Card" />
+                                                <img src={`api/cards/${card.id}/cardimage`} className="Card" />
                                             </div>
                                             <div className="FlipCardBack">
                                                 <div className='CardBack'>
                                                     <img className='CardBackImg' src={card_back_png}></img>
-                                                    <div className='CardBackText'>asdasdasd</div>
+                                                    <div className='CardBackText'>{card.name}<br />{card.fieldType1} {card.fieldType2}<br />{card.blocks1}<br />{card.blocks2}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -350,7 +356,7 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={card_png} className="Card" />
+                                                <img src={`api/cards/${card.id}/cardimage`} className="Card" />
                                             </div>
                                             <div className="FlipCardBack">
                                                 <img src={card_back_png} className="CardBack" />

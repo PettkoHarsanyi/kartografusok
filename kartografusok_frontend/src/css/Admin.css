@@ -338,6 +338,47 @@ button {
     height: fit-content;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.Admin .PicInput{
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    cursor: pointer !important;
+    opacity: 1;
+    opacity: 0.0;
+
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+ 
+    /* IE 5-7 */
+    filter: alpha(opacity=0);
+  
+    /* Netscape or and older firefox browsers */
+    -moz-opacity: 0.0;
+ 
+    /* older Safari browsers */
+    -khtml-opacity: 0.0;
+    display: none;
+}
+
+.Admin .InputRelativeParent{
+    width: 30vh;
+    overflow: hidden;
+    margin-top: 2vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.Admin .PicDiv{
+    border: 0.3vh solid black;
+    cursor: pointer !important;
+    border-radius: 0.5vh;
 }
 
 .Admin .ModalItem * {

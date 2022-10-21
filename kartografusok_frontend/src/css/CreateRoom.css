@@ -82,7 +82,7 @@
     object-fit: cover;
     overflow: hidden;
     box-shadow: 0 0 2vh 0.5vh rgba(0, 0, 0, 0.3) inset;
-    background-color: black;
+    background-color: white;
 }
 
 .CreateRoom .Div4 {

@@ -15,6 +15,12 @@ export class CardsService {
         return this.cardRepository.findAll();
     }
 
+    async find(id: number) {
+        return await this.cardRepository.findOne(({
+            id: id,
+        }))
+    }
+
     async findExploreCards(){
         return this.cardRepository.find({
             $or: [{

@@ -59,15 +59,20 @@ export default function Home() {
                                         <img src={`api/users/${user.id}/profileimage`} className="ProfilePics" alt="profilpics" />
                                     </div>
 
-                                    <div>
+                                    <div className='UserNameDiv'>
                                         {user && user.name}
                                     </div>
                                 </div>
                             </div>
-                            <div className='Div6'>
-                                <Link to="/letrehozas">Létrehozás</Link>
-                                <Link to="/csatlakozas">Csatlakozás</Link>
-                            </div>
+                            {!user.banned &&
+                                <div className='Div6'>
+                                    <Link to="/letrehozas">Létrehozás</Link>
+                                    <Link to="/csatlakozas">Csatlakozás</Link>
+                                </div>
+                            }
+                            {user.banned &&
+                                <div className='BanMessage'>Sajnáljuk, a magatartásod miatt a játékban való részvételtől megvontuk profilodat!</div>
+                            }
                             <div className='DivPlaceholder'></div>
                         </div>
                         <div className='Div4'>

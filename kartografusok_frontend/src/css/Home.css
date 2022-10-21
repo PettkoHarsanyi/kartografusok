@@ -130,6 +130,7 @@
     justify-content: space-between;
     margin: 0pt;
     padding: 1vh 1vh 1vh 1vh;
+    z-index: 20;
 }
 
 .Home .Div2 a{
@@ -215,7 +216,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 50;
+    z-index: 10;
 }
 
 
@@ -239,26 +240,30 @@
     padding: 0pt;
     border: 0.5vh solid black;
     border-radius: 1vh;
-    z-index: 1;
+    z-index: 5;
     position: absolute;
     left: 0pt;
 
     min-width: 100px;
     min-height: 100px;
     border: 0.5vh solid black;
+    object-fit: contain;
     position: absolute;
 }
 
 .Home .ProfilePics{
     height: 10vh;
     width: 10vh;
-    z-index: 0;
+    z-index: 3;
     min-width: 50px;
     min-height: 50px;
-    z-index: 0;
     border-radius: 2vh;
     background-color: gainsboro;
-    object-fit: contain;
+    object-fit: cover;
+}
+
+.Home .UserNameDiv{
+    z-index: 10;
 }
 
 .Home .Div6{
@@ -268,7 +273,26 @@
     align-items: flex-start;
     justify-content: center;
     gap: 2vh;
+    z-index: 10;
     padding-left: 2vh;
+}
+
+.Home .BanMessage{
+    font-size: 2vh;
+    color:white;
+    width: 50%;
+    height: min-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: darkred;
+    align-self: center;
+    border-radius: 2vh;
+    padding: 2vh;
+    border: 0.5vh solid black;
+    z-index: 10;
+    cursor: not-allowed;
 }
 
 .Home .Div6 a{

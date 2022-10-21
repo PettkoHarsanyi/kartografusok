@@ -32,27 +32,44 @@ export default function CreateRoom() {
 
     useEffect(() => {
         dispatch(addPlayer(user))
+        dispatch(addPlayer({id: 3,
+            name: 'Adam',
+            userName: 'adam',
+            role: 'USER',
+            division: {
+              id: 3,
+              name: 'Arany',
+              createdAt: '2022-10-08T17:22:22.470Z',
+              modifiedAt: '2022-10-08T17:22:22.470Z'
+            },
+            banned: false,
+            muted: false,
+            points: 2500,
+            weekly: 2200}))
     }, [])
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
         const input = document.getElementById('input')
 
-        const response = await axios.post(`api/users/${user.id}/message`, {
-            message: input.value,
-        }, {
-            headers: authHeader()
-        });
+        if(input.value !== ""){
+            const response = await axios.post(`api/users/${user.id}/message`, {
+                message: input.value,
+            }, {
+                headers: authHeader()
+            });
+    
+            let message = response.data;
+    
+            message.user = user; // Azért kell, mert a responseban nem tudom populálni a user-t
+    
+            dispatch(addMessage(message))
+    
+            input.value = ""
+    
+            input.focus({ focusVisible: true });
+        }
 
-        let message = response.data;
-
-        message.user = user; // Azért kell, mert a responseban nem tudom populálni a user-t
-
-        dispatch(addMessage(message))
-
-        input.value = ""
-
-        input.focus({ focusVisible: true });
     }
 
     useEffect(() => {
@@ -83,8 +100,8 @@ export default function CreateRoom() {
                             }
                         </div>
                         <div className='ChatDivInput'>
-                            <input className='ChatInput' id="input" placeholder='Levelezés 😂📯📩✍' />
-                            <button className='ChatButton' type='submit'>Küldés</button>
+                            <input disabled={user.muted} style={{cursor: user.muted?"not-allowed":"text"}} className='ChatInput' id="input" placeholder={user.muted?'Némítva vagy🤐':'Levelezés 😂📯📩✍'} />
+                            <button disabled={user.muted} style={{cursor: user.muted?"not-allowed":"pointer"}} className='ChatButton' type='submit'>{user.muted?'🚫':"Küldés"}</button>
                         </div>
                     </form>
                     <div className='ServerInfoDiv'>

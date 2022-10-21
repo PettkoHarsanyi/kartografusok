@@ -3,6 +3,10 @@ import { Controller, Get, Post, Body } from "@nestjs/common";
 import { CardDto } from './dto/card.dto';
 import { Roles } from '../auth/roles';
 import { UserRole } from '../users/entity/user';
+import { AllowAnonymous } from '../auth/allow-anonymous';
+import { HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query, UseGuards, UseInterceptors, UploadedFile, Res } from "@nestjs/common";
+import { Observable, of } from 'rxjs';
+import { join } from 'path';
 
 
 @Controller('cards')
@@ -33,5 +37,12 @@ export class CardsController {
     async addCard(@Body() cardDto: CardDto){
         const newCard = await this.cardsService.create(cardDto);
         return new CardDto(newCard);
+    }
+
+    @AllowAnonymous()
+    @Get(':id/cardimage')
+    async findProfileImage(@Param('id', ParseIntPipe) cardId: number, @Res() res): Promise<Observable<Object>>{
+        const card = await this.cardsService.find(cardId);
+        return of(res.sendFile(join(process.cwd(), 'assets/cards/explorecards/' + card.picture)))
     }
 }

@@ -18,6 +18,7 @@ import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { LoggedRoute } from './components/Auth/LoggedRoute';
 import { Provider } from 'react-redux';
 import store from './state/store';
+import { BannedRoute } from './components/Auth/BannedRoute';
 // import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
   },
   {
     path: "letrehozas",
-    element: <CreateRoom />,
+    element: <BannedRoute><CreateRoom /></BannedRoute>,
     loader: async ({ params }) => {
       return Promise.all([
         fetch('api/cards/explore', {
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
   },
   {
     path: "csatlakozas",
-    element: <ConnectRoom />,
+    element: <BannedRoute><ConnectRoom /></BannedRoute>,
   },
   {
     path: "profil",

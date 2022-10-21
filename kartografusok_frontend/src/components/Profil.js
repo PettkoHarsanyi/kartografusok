@@ -9,6 +9,7 @@ import arany from "../assets/arany.png"
 import platina from "../assets/platina.png"
 import axios from 'axios';
 import authHeader from '../auth/auth-header';
+import selectPics from "../assets/selectpics.png"
 import { Buffer } from 'buffer';
 
 
@@ -66,11 +67,18 @@ export default function Profil() {
             <Link className='Button' to="/">Vissza</Link>
             <div className='Div1'>
                 <div className='Div2'>
-                    <div className='Pics'>
+                    <div className='Pics' onClick={()=>document.getElementById("picInput").click()} onMouseOver={()=>{
+                        document.getElementById("profilPic").style.opacity = 0.5
+                        document.getElementById("selectPics").style.opacity = 1
+                    }} onMouseLeave={()=>{
+                        document.getElementById("selectPics").style.opacity = 0
+                        document.getElementById("profilPic").style.opacity = 1
+                    }}>
                         <div className='PicsBg'></div>
                         <img src={frame} className="ProfileFrame" alt="profilframe" style={decoration} />
-                        <img src={`api/users/${user.id}/profileimage`} className="ProfilePics" alt="profilpics" />
-                        <input type="file" name='picture' className='ImgInput' onChange={(e)=>uploadPicture(e)} ref={fileInput} />
+                        <img src={`api/users/${user.id}/profileimage`} id="profilPic" className="ProfilePics" alt="profilpics" />
+                        <img src={selectPics} className="SelectPics" alt='select' id='selectPics'/>
+                        <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e)=>uploadPicture(e)} ref={fileInput} />
                     </div>
                     <div className='Name'>{user.name}</div>
                 </div>
