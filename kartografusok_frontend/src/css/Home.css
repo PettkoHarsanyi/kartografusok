@@ -343,3 +343,31 @@
     color: white;
     border-radius: 2vh;
 }
+
+.Home .GuestLogin{
+    margin-top: 3vh;
+    padding: 1vh 2vh;
+    background-color: gainsboro;
+    border-radius: 1vh;
+    font-size: 2vh;
+    border: 0.5vh solid black;
+    width: max-content;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.Home .GuestLogin a{
+    all: unset;
+}
+
+.Home .GuestLogin:hover{
+    background-color: grey !important;
+    color: white;
+}
+
+.Home .HomeDiv{
+    display: flex;
+    flex-direction: column;
+    font-family: "Alfa Slab One", cursive;
+    align-items: center;
+}

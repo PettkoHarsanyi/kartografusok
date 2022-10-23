@@ -11,9 +11,10 @@
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 5vh;
 }
 
 
@@ -25,7 +26,7 @@
 
 .ConnectRoom .Div2 {
     width: 50vw;
-    height: 50vh;
+    height: max-content;
     border: 0.5vh solid black;
     border-radius: 2vh;
     box-shadow: 0 0 32px 16px rgba(0, 0, 0, 0.3),
@@ -71,6 +72,8 @@
     justify-content: center;
     align-items: center;
     gap:2vh;
+    width: 90%;
+    flex-wrap: wrap;
 }
 
 .ConnectRoom .Div6 a{
@@ -79,4 +82,13 @@
     background-color: gray;
     color: white;
     border-radius: 2vh;
+}
+
+.ConnectRoom .CreateButton{
+    padding: 1vh 2vh;
+    border:0.5vh solid black;
+    background-color: gray;
+    color: white;
+    border-radius: 2vh;
+    font-size: 3vh;
 }

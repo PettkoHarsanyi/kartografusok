@@ -21,11 +21,13 @@ export class CardsController {
         return await this.cardsService.findAll();
     }
 
+    @AllowAnonymous()
     @Get('explore')
     async getExploreCards(){
         return await this.cardsService.findExploreCards();
     }
 
+    @AllowAnonymous()
     @Get('raid')
     async getRaidCards(){
         return await this.cardsService.findRaidCards();

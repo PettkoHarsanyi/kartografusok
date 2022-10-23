@@ -82,12 +82,15 @@ export default function Home() {
                         </div>
                     </div>
                 ) : (
-                    <div className='Div11'>
-                        <div className='Div10' id='div10'><h3>Kartográfusok</h3><p>Üdv a kartográfusok magyar online játékában.</p><p>A királyság térképészeként a feladatod feltárni a távoli, vad vidéket.</p><p>Rajzold meg az alakzatot, töltsd fel mintával és igazodj a királynő rendeleteihez, hiszen csak ezek hoznak hírnevet.</p><p>Ha az év végére pedig neked lesz a legnagyobb hírneved, maga a királynő emel királyi kartográfus rangra!</p></div>
-                        <div className='Div7'>
-                            <Link to="/bejelentkezes"><div>Belépés</div></Link>
-                            <Link to="/regisztracio"><div>Regisztráció</div></Link>
+                    <div className='HomeDiv'>
+                        <div className='Div11'>
+                            <div className='Div10' id='div10'><h3>Kartográfusok</h3><p>Üdv a kartográfusok magyar online játékában.</p><p>A királyság térképészeként a feladatod feltárni a távoli, vad vidéket.</p><p>Rajzold meg az alakzatot, töltsd fel mintával és igazodj a királynő rendeleteihez, hiszen csak ezek hoznak hírnevet.</p><p>Ha az év végére pedig neked lesz a legnagyobb hírneved, maga a királynő emel királyi kartográfus rangra!</p></div>
+                            <div className='Div7'>
+                                <Link to="/bejelentkezes"><div>Belépés</div></Link>
+                                <Link to="/regisztracio"><div>Regisztráció</div></Link>
+                            </div>
                         </div>
+                        <div className='GuestLogin'><Link to="/csatlakozas">Játék vendégként</Link></div>
                     </div>
                 )}
             </div>

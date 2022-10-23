@@ -11,12 +11,14 @@ import { addPlayer } from '../../state/players/actions';
 import { getPlayers } from '../../state/players/selectors';
 import { fillExploreCards } from '../../state/cards/exploreCards/actions';
 import { fillRaidCards } from '../../state/cards/raidCards/actions';
+import guestpic from "../../assets/profileimage.png"
 
 export default function CreateRoom() {
-    const [user] = useState(authService.getCurrentUser());
+    const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
     // const [users,setUsers] = useState([user]);
     // const [messages, setMessages] = useState([]);
     const loadedData = useLoaderData();
+
 
     const [exploreCards] = useState(loadedData[0]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[1]); // DB-ből jön, mert dinamikus, a többi stateből
@@ -91,9 +93,14 @@ export default function CreateRoom() {
                     boxShadow: "0 0 3vh 1vh rgba(170, 209, 222, 0.918), inset 0 0 32px 3vh rgba(170, 209, 222, 0.918)",
                     zIndex: 2
                 }
-            default:
+            case 1:
                 return {
                     boxShadow: "0 0 3vh 1vh rgba(186, 118, 0, 0.852),inset 0 0 32px 3vh rgba(186, 118, 0, 0.852)",
+                    zIndex: 1
+                }
+            default:
+                return {
+                    boxShadow: "none",
                     zIndex: 1
                 }
         }
@@ -111,7 +118,7 @@ export default function CreateRoom() {
 
         document.execCommand("copy");
 
-        if(b){
+        if (b) {
             document.getElementById("copyButton").innerHTML = "Másolva ✔";
             document.getElementById("copyButton").setAttribute("class", "Copied")
         }
@@ -129,7 +136,7 @@ export default function CreateRoom() {
                     <div className='DivTitle'>Csatlakozott játékosok:</div>
                     {users && users.length > 0 && users.map((user) => {
                         return (<div key={user.id} className='PlayerDiv'>
-                            <img src={`api/users/${user.id}/profileimage`} style={getBorderAndBoxShadow(user.division)} className="PictureDiv" alt="profilpics" />
+                            <img src={user.id === 0 ? guestpic : `api/users/${user.id}/profileimage`} style={getBorderAndBoxShadow(user.division)} className="PictureDiv" alt="profilpics" />
                             <div className='InfoDiv'>{user.name}<br />{user.division.name}</div>
                         </div>)
                     })
