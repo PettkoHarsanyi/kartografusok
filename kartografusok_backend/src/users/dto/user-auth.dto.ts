@@ -2,19 +2,37 @@ import { IsNotEmpty, IsAlpha, Length, IsString } from "class-validator";
 import { User } from "../entity/user";
 
 export class UserAuthDto{
-    @Length(4, 20)
-    @IsNotEmpty()
-    @IsString()
+    @Length(4, 20,{
+        message: "A felhasználónév legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A felhasználónév nem lehet üres"
+    })
+    @IsString({
+        message: "A felhasználónév szöveges legyen"
+    })
     name?: string;
 
-    @Length(4, 20)
-    @IsNotEmpty()
-    @IsString()
+    @Length(4, 20,{
+        message: "A játékosnév legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A játékosnév nem lehet üres"
+    })
+    @IsString({
+        message: "A játékosnév szöveges legyen"
+    })
     userName?: string;
 
-    @Length(4, 20)
-    @IsNotEmpty()
-    @IsString()
+    @Length(4, 20,{
+        message: "A jelszó legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A jelszó nem lehet üres"
+    })
+    @IsString({
+        message: "A jelszó szöveges legyen"
+    })
     password?: string;
 
     constructor(user?: User){

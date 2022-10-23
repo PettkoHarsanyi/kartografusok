@@ -74,7 +74,7 @@ export default function Registration() {
                             <Link className='Button' to="/bejelentkezes">Bejelentkezés</Link>
                         </nav>
                         <nav>
-                            <Link className='Button' to="/">Home</Link>
+                            <Link className='Button' to="/">Vissza</Link>
                         </nav>
                     </div>
                     {errors.length>0 && <div className='RegErrorPanel'>{errors.map((error,i)=><p key={i++}>{error}</p>)}</div>}

@@ -44,7 +44,7 @@ export class UsersController {
             return new UserDto(newUser);
         }catch(e){
             if(e instanceof UniqueConstraintViolationException){
-                throw new HttpException('Username is already taken',HttpStatus.CONFLICT)
+                throw new HttpException('Már van ilyen nevű felhasználó',HttpStatus.CONFLICT)
             }else{
                 throw e;
             }
