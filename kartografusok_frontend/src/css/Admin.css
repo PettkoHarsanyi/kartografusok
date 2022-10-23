@@ -179,8 +179,7 @@ th {
     justify-self: center;
     margin-left: auto;
     margin-right: auto;
-    left: 10vw;
-    box-shadow: rgba(0, 0, 0, 0.897) 0vh 0vh 0vh 30vh;
+    /* box-shadow: rgba(0, 0, 0, 0.897) 0vh 0vh 0vh 30vh; */
 
     border-radius: 0.5vh;
     background-color: white;
@@ -189,12 +188,21 @@ th {
     align-items: center;
 }
 
+.Admin #MapModal{
+    width: 50vw;
+    height: 90%;
+}
+
 .Admin .ModalBackground {
     width: 100vw;
     height: 100vh;
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.897);
+    left: 0;
+    top: 0;
     position: absolute;
     z-index: 400;
 }
@@ -212,7 +220,6 @@ th {
 }
 
 .Admin .ModalContent {
-    padding-top: 5vh;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -222,6 +229,137 @@ th {
     justify-content: center;
     overflow-y: scroll;
     align-items: flex-start;
+}
+
+.Admin .MapEditor{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Admin .MapPic{
+    width: 23vw;
+}
+
+.Admin .MapTable{
+    position: absolute;
+    left: 9.7%;
+    top: 20.4%;
+    width: 81.2%;
+    height: 56.6%;
+    display: table;
+}
+
+.Admin .MapTableRow{
+	display: table-row;
+}
+
+.Admin .MapTableBody {
+	display: table-row-group;
+}
+
+.Admin .MapTableCell, .MapTableHead{
+    width: 9.09090909%;
+    max-width: 9.09090909%;
+    display: table-cell;
+    border-collapse: collapse;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    vertical-align: middle;
+    overflow: hidden !important;
+}
+
+.Admin .OfficialMapTableHovered{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.502);
+    opacity: 0;
+    display: flex;
+    vertical-align: center;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    color: white;
+}
+
+.Admin .OfficialMapTableHovered div{
+    color: white;
+    padding: 1vh 2vh;
+    border: 0.3vh solid white;
+    font-weight: bold;
+    border-radius: 2vh;
+}
+
+.Admin .UserMapTableHovered{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    border: 0.5vh solid black;
+    background-color: rgba(0, 0, 0, 0.502);
+    z-index: 10;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Admin .UserMapTableHovered img{
+    width: 15vh;
+    margin: 1vh;
+    color: white;
+    font-weight: bolder;
+    text-align: center;
+    cursor: pointer;
+}
+
+.Admin .OfficialMapTableHovered:hover, .UserMapTableHovered:hover{
+    display: flex;
+    opacity: 1;
+}
+
+.Admin .MapLayer{
+    width: 100%;
+    height: 100%;
+}
+
+.Admin .MapLayer:hover{
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.478);
+    height: 100%;
+}
+
+.Admin #MapModalContent {
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.Admin .MapButtons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5vh;
+}
+
+.Admin #MapButtonClicked{
+    border: 0.5vh solid #0099FF !important;
+}
+
+.Admin .MapButton{
+    width: 10vh;
+    border-radius: 2vh;
+    border: 0.5vh solid rgba(128, 128, 128, 0.45);
+    padding: 1vh;
+    cursor: pointer;
 }
 
 .Admin .UserThings {
@@ -698,6 +836,7 @@ button {
     gap: 4vh;
     margin-top: 4vh;
     align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .Admin .MapsTitle{
@@ -717,8 +856,8 @@ button {
 }
 
 .Admin .AddMap {
-    height: 57.5vh;
-    width: 40vh;
+    width: 47vh;
+    height: 60vh;
     border: 0.5vh solid black;
     border-radius: 2vh;
     text-align: center;

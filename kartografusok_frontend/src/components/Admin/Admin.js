@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, Outlet, useLoaderData } from 'react-router-dom';
 import "../../css/Admin.css";
 
 import Accordion from '@mui/material/Accordion';
@@ -23,6 +23,16 @@ import { fillRaidCards } from '../../state/cards/raidCards/actions';
 import card_png from "../../assets/card.png"
 import card_back_png from "../../assets/card_back.png"
 import selectPics from "../../assets/selectpics.png"
+import scheme from "../../assets/maps/scheme.png"
+import gap from "../../assets/maps/gap.png"
+import mountain from "../../assets/maps/mountain.png"
+import ruin from "../../assets/maps/ruin.png"
+import empty from "../../assets/maps/empty.png"
+import ruin_transparent from "../../assets/maps/ruin_transparent.png"
+import gap_transparent from "../../assets/maps/gap_transparent.png"
+import mountain_transparent from "../../assets/maps/mountain_transparent.png"
+import deleteIcon from "../../assets/delete.png"
+import Map from './Map';
 
 export default function Admin() {
     const loadedData = useLoaderData();
@@ -37,15 +47,54 @@ export default function Admin() {
 
     const [exploreCards] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[3]); // DB-ből jön, mert dinamikus, a többi stateből
-    const [maps] = useState(loadedData[4]); // DB-ből jön, mert dinamikus, a többi stateből
+    const [maps, setMaps] = useState(loadedData[4]); // DB-ből jön, mert dinamikus, a többi stateből
     const cards = useSelector(getCards);
 
     const dispatch = useDispatch();
 
+    const emptyMap = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
+
+    const [mapTable, setMapTable] = useState([
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ])
+
+    const handleSetMapTable = (map) => {
+        setMapTable(map);
+    }
+    const FieldTypes = {
+        Empty: "",
+        Ruin: ruin_transparent,
+        Mountain: mountain_transparent,
+        Gap: gap_transparent,
+    }
+
+    const [selectedFieldType, setSelectedFieldType] = useState(FieldTypes.Empty);
+
     useEffect(() => {
         dispatch(fillExploreCards(exploreCards));
         dispatch(fillRaidCards(raidCards));
-        console.log(maps);
     }, [])
 
     const [open, setOpen] = React.useState(false);
@@ -153,6 +202,33 @@ export default function Admin() {
         }
     }
 
+    const handleAddMap = async (event) => {
+        event.preventDefault();
+        handleClose(event);
+
+        const response = await axios.post(`api/maps/`, {
+            "blocks": mapTable,
+        }, {
+            headers: {
+                ...authHeader(),
+            }
+        }).then(res=>{
+            const newMap = res.data;
+            newMap.blocks = JSON.stringify(newMap.blocks);
+            setMaps([...maps,newMap])
+        });
+    }
+
+    const handleDeleteMap = async (map) => {
+        const response = await axios.delete(`api/maps/${map.id}`,{
+            headers: {
+                ...authHeader(),
+            }
+        }).then(res=>{
+            setMaps(maps.filter(_map=>_map.id!==map.id))
+        });
+    }
+
     const flipCard = (e) => {
         const inner = e.target.parentElement.closest('div.FlipCardInner');
         inner.style = "transform: rotateY(180deg)"
@@ -165,11 +241,19 @@ export default function Admin() {
         // e.target.style = "transform: rotateY(180deg)";
     }
 
+    const selectFieldType = (e) => {
+        const element = e.target;
+        document.querySelectorAll('.MapButtonClicked').forEach(elem => elem.setAttribute("class", "MapButton"))
+        element.setAttribute("class", "MapButtonClicked")
+    }
+
+
+
     return (
         <div className='Admin'>
 
-            {open && selectedUser &&
-                <form onSubmit={(e) => { handleSubmit(e); handleClose(e) }} className='ModalBackground' style={{ display: open ? "" : "none" }}>
+            {open && selectedUser && isActive("users") &&
+                <form onSubmit={(e) => { handleSubmit(e); handleClose(e) }} onClick={(e) => { handleClose(e) }} className='ModalBackground' style={{ display: open ? "" : "none" }}>
                     <div className='Modal'>
                         <div className='ModalHeader'>
                             <div>{selectedUser.name} módosítása</div>
@@ -277,6 +361,54 @@ export default function Admin() {
                 </form>
             }
 
+            {open && isActive("maps") &&
+                <form onSubmit={(e) => { handleAddMap(e) }} className='ModalBackground' onClick={(e) => { handleClose(e) }} style={{ display: open ? "" : "none" }}>
+                    <div className='Modal' id='MapModal'>
+                        <div className='ModalHeader'>
+                            <div>Pálya hozzáadása</div>
+                            <div className='Clickable' onClick={(e) => { handleClose(e); handleSetMapTable(emptyMap) }}>×</div>
+                        </div>
+                        <div className='ModalContent' id="MapModalContent">
+                            {/* jatekter bal felső sarka: width:10% height:20.6 %*/}
+                            {/* blokk width:7.3% height:5.1% */}
+                            <div className='MapEditor'>
+                                <img src={scheme} className="MapPic" alt='Map' />
+                                <div className='MapTable'>
+                                    <div className='MapTableBody'>
+                                        {mapTable.map((row, rowindex) =>
+                                            <div key={rowindex} className='MapTableRow'>
+                                                {row.map((cell, cellindex) =>
+                                                    <div key={cellindex} className='MapTableCell' onClick={(e) => {
+                                                        let newMapTable = [...mapTable];
+                                                        e.target.parentElement.style.backgroundImage = `url('${selectedFieldType}')`;
+                                                        newMapTable[rowindex][cellindex] = Object.values(FieldTypes).indexOf(selectedFieldType);
+                                                        handleSetMapTable(newMapTable);
+                                                    }} style={{ backgroundPosition: "center", backgroundSize: "cover" }}>
+                                                        <div className='MapLayer'>
+                                                        </div>
+                                                    </div>)}
+                                            </div>
+                                        )}
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='MapButtons'>
+                                <img src={empty} onClick={() => setSelectedFieldType(FieldTypes.Empty)} className="MapButton" id={selectedFieldType === FieldTypes.Empty ? "MapButtonClicked" : ""} alt='Map' />
+                                <img src={ruin} onClick={() => setSelectedFieldType(FieldTypes.Ruin)} className="MapButton" id={selectedFieldType === FieldTypes.Ruin ? "MapButtonClicked" : ""} alt='Map' />
+                                <img src={mountain} onClick={() => setSelectedFieldType(FieldTypes.Mountain)} className="MapButton" id={selectedFieldType === FieldTypes.Mountain ? "MapButtonClicked" : ""} alt='Map' />
+                                <img src={gap} onClick={() => setSelectedFieldType(FieldTypes.Gap)} className="MapButton" id={selectedFieldType === FieldTypes.Gap ? "MapButtonClicked" : ""} alt='Map' />
+                            </div>
+
+                        </div>
+                        <div className='ModalFooter'>
+                            <div className='Clickable' onClick={(e) => { handleClose(e); handleSetMapTable(emptyMap) }}>Bezár</div>
+                            <button type="submit" className='Clickable'>Hozzáadás</button>
+                        </div>
+                    </div>
+                </form>
+            }
+
             <nav className='SideNavbar' id="navbar">
                 <li className={isActive("users") ? "Item Active" : "Item"} onClick={() => { setActive("users"); }}>Felhasználók</li>
                 <li className={isActive("maps") ? "Item Active" : "Item"} onClick={() => setActive("maps")}>Pályák</li>
@@ -320,16 +452,23 @@ export default function Admin() {
                         <div className='MapsTitle'>Pályák:</div>
                         <div className='MapsSection'>
                             {maps && maps.length > 0 &&
-                                maps.map(map=>{
-                                    return(<img key={map.id} src={`api/maps/${map.id}/mapImage`} className="Map"/>)
+                                maps.map((map, index) => {
+                                    return (<Map key={index} mapTable={JSON.parse(map.blocks)}
+                                        children={
+                                            map.official?
+                                            <div className='OfficialMapTableHovered'><div>Hivatalos</div></div>
+                                            :
+                                            <div className='UserMapTableHovered'><img src={deleteIcon} alt="delete" onClick={()=>handleDeleteMap(map)}/></div>
+                                        }
+                                    />)
                                 })
                             }
-                            <div className='AddMap'><div>+</div></div>
+                            <div className='AddMap' onClick={handleOpen}><div>+</div></div>
                         </div>
                     </div>
-                    )}
+                )}
 
-                    {/**
+                {/**
                      * A mapok db-ből jönnek, a state-be createRoomkor kerül be egy random a db-ből
                      */}
                 {isActive("cards") && (
@@ -403,7 +542,7 @@ export default function Admin() {
 
                                     // <div key={card.id} className='Card'>{card.name}<br />{card.fieldType1} {card.fieldType2} {card.cardType === "RUIN" ? card.cardType : ""}<br />{card.blocks1}</div>
                                 )}
-                                <div className='AddCard'><div>+</div></div>
+                                <div className='AddCard' onClick={handleOpen}><div>+</div></div>
                             </div>
                         </div>
                         <div className='CardSection'>
@@ -444,7 +583,7 @@ export default function Admin() {
                                                     <img src={card_back_png} className="CardBackImg" />
                                                     <div className='CardBackText'>
                                                         <div className='Attribute'>{card.name}</div>
-                                                        <div className='Attribute'>{card.direction==1?"Óra járásával megegyezően":"Óra járásával ellentétesen"}</div>
+                                                        <div className='Attribute'>{card.direction == 1 ? "Óra járásával megegyezően" : "Óra járásával ellentétesen"}</div>
 
                                                         {(card.blocks1 || card.blocks2) &&
                                                             <div className='BlocksDiv'>

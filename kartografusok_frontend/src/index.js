@@ -19,6 +19,7 @@ import { LoggedRoute } from './components/Auth/LoggedRoute';
 import { Provider } from 'react-redux';
 import store from './state/store';
 import { BannedRoute } from './components/Auth/BannedRoute';
+import Map from './components/Admin/Map';
 // import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -109,7 +110,7 @@ const router = createBrowserRouter([
         }).then(resp => resp.json()),
       ])
     }
-  }
+  },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

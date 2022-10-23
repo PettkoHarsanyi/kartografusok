@@ -6,13 +6,16 @@ export class Map{
     id!: number;
 
     @Property({nullable: true})
-    name?: string;
+    name?: string = "usermap";
 
     @Property()
     blocks?: string;
 
     @Property({nullable: true})
     picture?: string;
+
+    @Property({nullable: true})
+    official?: boolean = false;
 
     @Property({onCreate: ()=> new Date()})
     createdAt!: Date;

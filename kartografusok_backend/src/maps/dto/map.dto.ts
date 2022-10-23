@@ -7,6 +7,7 @@ export class MapDto{
     blocks?: string;
     name?: string;
     picture?: string;
+    official?: boolean;
 
     constructor(map?: Map){
         if(map){

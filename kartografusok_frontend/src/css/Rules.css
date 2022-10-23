@@ -21,12 +21,14 @@
 }
 
 .Rules .Images{
-    margin-left: 200vw;
-    
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
     display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.638);
+    box-shadow: rgba(0, 0, 0, 0.638) 0vh 4vh 16vh 20vh;
+    padding: 0 20vw;
 }
 
 .Rules .Img{
