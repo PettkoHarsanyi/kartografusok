@@ -32,6 +32,8 @@ import ruin_transparent from "../../assets/maps/ruin_transparent.png"
 import gap_transparent from "../../assets/maps/gap_transparent.png"
 import mountain_transparent from "../../assets/maps/mountain_transparent.png"
 import deleteIcon from "../../assets/delete.png"
+import megegyezo from "../../assets/megegyezo.png"
+import ellentetes from "../../assets/ellentetes.png"
 import Map from './Map';
 
 export default function Admin() {
@@ -98,6 +100,9 @@ export default function Admin() {
     }, [])
 
     const [open, setOpen] = React.useState(false);
+    const [addCardObject, setAddCardObject] = React.useState({ open: false, component: "", hunComponent: "" });
+    const [addCardSelectedFieldType, setAddCardSelectedFieldType] = React.useState("");
+    const [cardObject,setCardObject] = React.useState({});
 
     const handleInputChange = (event) => {
         const target = event.target;
@@ -113,12 +118,104 @@ export default function Admin() {
 
         setSelectedUser({
             ...selectedUser,
-            [name]: value
+            [name]: value,
         })
+
+
     }
+
+    const [isBlocks1ValidJSON, setIsBlocks1ValidJSON] = React.useState(false);
+    const [isBlocks2ValidJSON, setIsBlocks2ValidJSON] = React.useState(true);
+
+    const handleCardAdderInputChange = (event) => {
+        const target = event.target;
+        let value = target.value;
+        const name = target.name;
+
+        if (name === "fieldtype1") {
+            if (value === "ANY") {
+                setAddCardSelectedFieldType("ANY");
+            } else {
+                setAddCardSelectedFieldType("");
+            }
+        }
+
+        if (name === "cardtype") {
+            setAddCardObject({ ...addCardObject, component: value, hunComponent: target.huncomponent })
+            if(value==="RAID"){
+                setCardObject({direction:1,cardType:"RAID"});
+            }
+            if(value==="EXPLORE"){
+                setCardObject({duration:1,fieldType1:"VILLAGE",cardType:"EXPLORE"});
+            }
+            if(value==="RUIN"){
+                setCardObject({cardType:"RUIN"});
+            }
+            console.log(value);
+        }
+
+        if (name === "blocks1") {
+            try {
+                let l = JSON.parse(value);
+
+                if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
+                    setIsBlocks1ValidJSON(true);
+                } else {
+                    setIsBlocks1ValidJSON(false)
+                }
+            }
+            catch (e) { setIsBlocks1ValidJSON(false) }
+
+        }
+
+        if (name === "blocks2") {
+            try {
+                let l = JSON.parse(value);
+
+                if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
+                    setIsBlocks2ValidJSON(true);
+                } else {
+                    setIsBlocks2ValidJSON(false)
+                }
+            }
+            catch (e) { setIsBlocks2ValidJSON(false) }
+            if (value === "") {
+                setIsBlocks2ValidJSON(true);
+            }
+        }
+
+        if(name !== "cardtype"){
+            setCardObject({
+                ...cardObject,
+                [name]: value,
+            })
+        }
+    }
+
+    useEffect(()=>{
+        console.log(cardObject);
+    },[cardObject])
 
     const handleOpen = async () => {
         setOpen(true);
+    };
+
+    const handleOpenCardAdder = (cardType, hunName) => {
+        setAddCardObject({ component: cardType, open: true, hunComponent: hunName })
+        if(cardType==="RAID"){
+            setCardObject({direction:1,cardType:"RAID"});
+        }
+        if(cardType==="EXPLORE"){
+            setCardObject({duration:1,fieldType1:"VILLAGE",cardType:"EXPLORE"});
+        }
+        if(cardType==="RUIN"){
+            setCardObject({cardType:"RUIN"});
+        }
+    };
+
+    const handleCloseCardAdder = (e) => {
+        if (e.target !== e.currentTarget) return;
+        setAddCardObject({ ...addCardObject, open: false })
     };
 
     const handleSelect = async (id) => {
@@ -212,20 +309,20 @@ export default function Admin() {
             headers: {
                 ...authHeader(),
             }
-        }).then(res=>{
+        }).then(res => {
             const newMap = res.data;
             newMap.blocks = JSON.stringify(newMap.blocks);
-            setMaps([...maps,newMap])
+            setMaps([...maps, newMap])
         });
     }
 
     const handleDeleteMap = async (map) => {
-        const response = await axios.delete(`api/maps/${map.id}`,{
+        const response = await axios.delete(`api/maps/${map.id}`, {
             headers: {
                 ...authHeader(),
             }
-        }).then(res=>{
-            setMaps(maps.filter(_map=>_map.id!==map.id))
+        }).then(res => {
+            setMaps(maps.filter(_map => _map.id !== map.id))
         });
     }
 
@@ -409,6 +506,112 @@ export default function Admin() {
                 </form>
             }
 
+            {addCardObject.open && isActive("cards") &&
+                <form onSubmit={(e) => { }} className='ModalBackground' onClick={(e) => handleCloseCardAdder(e)}>
+                    <div className='Modal' id='MapModal'>
+                        <div className='ModalHeader'>
+                            <div>Kártya hozzáadása</div>
+                            <div className='Clickable' onClick={(e) => handleCloseCardAdder(e)}>×</div>
+                        </div>
+                        <div className='ModalContent' id="CardModalContent">
+                            <div className='ContentContainer'>
+                                <div className='ModalItem'>
+                                    <div>Kártya típus</div>
+                                    <div className='CustomSelect'>
+                                        <select className='Clickable' name="cardtype" defaultValue={addCardObject.component} onChange={(e) => handleCardAdderInputChange(e)}>
+                                            <option value={addCardObject.component} disabled hidden>{addCardObject.hunComponent}</option>
+                                            <option value="EXPLORE" huncomponent="Felfedezés" className='ItemStyle'>Felfedezés</option>
+                                            <option value="RAID" huncomponent="Rajtaütés" className='ItemStyle'>Rajtaütés</option>
+                                            <option value="RUIN" huncomponent="Rom" className='ItemStyle'>Rom</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className='ModalItem'>
+                                    <div>Kártya név</div>
+                                    <input name='name' style={{ width: "20vw" }} type="text" onChange={(e) => handleCardAdderInputChange(e)} />
+                                </div>
+
+                                {addCardObject.component === "EXPLORE" &&
+                                    <>
+                                        <div className='ModalItem'>
+                                            <div>Időtartam</div>
+                                            <input type="number" name='duration' style={{ width: "10vw" }} defaultValue={1} onChange={(e) => handleCardAdderInputChange(e)} />
+                                        </div>
+
+                                        <div className='ModalItem'>
+                                            <div>Mező típus</div>
+                                            <div className='CustomSelect'>
+                                                <select className='Clickable' name="fieldtype1" defaultValue="VILLAGE" onChange={(e) => { handleCardAdderInputChange(e); }}>
+                                                    <option value="VILLAGE" disabled hidden>Falu</option>
+                                                    <option value="VILLAGE" className='ItemStyle'>Falu</option>
+                                                    <option value="FOREST" className='ItemStyle'>Erdő</option>
+                                                    <option value="WATER" className='ItemStyle'>Víz</option>
+                                                    <option value="FARM" className='ItemStyle'>Farm</option>
+                                                    <option value="ANY" className='ItemStyle'>Bármilyen</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {addCardSelectedFieldType !== "ANY" &&
+                                            <div className='ModalItem'>
+                                                <div>Második mező típus</div>
+                                                <div className='CustomSelect'>
+                                                    <select className='Clickable' name="fieldtype2" defaultValue="" onChange={(e) => { handleCardAdderInputChange(e); }}>
+                                                        <option value="" disabled hidden>Semleges</option>
+                                                        <option value="VILLAGE" className='ItemStyle'>Falu</option>
+                                                        <option value="FOREST" className='ItemStyle'>Erdő</option>
+                                                        <option value="WATER" className='ItemStyle'>Víz</option>
+                                                        <option value="FARM" className='ItemStyle'>Farm</option>
+                                                        <option value="" className='ItemStyle'>Semleges</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        }
+                                        <div className='ModalItem' id='modalTextArea'>
+                                            <div>Forma</div>
+                                            <textarea style={{ outlineColor: isBlocks1ValidJSON ? "green" : "red", border: isBlocks1ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks1" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje. Pl: [[0,0],[1,0]] vagy [[0,0,1]]' onChange={(e) => { handleCardAdderInputChange(e) }}>
+
+                                            </textarea>
+                                        </div>
+
+                                        <div className='ModalItem' id='modalTextArea'>
+                                            <div>Második forma</div>
+                                            <textarea style={{ outlineColor: isBlocks2ValidJSON ? "green" : "red", border: isBlocks2ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks2" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje, vagy üres' onChange={(e) => { handleCardAdderInputChange(e) }}>
+
+                                            </textarea>
+                                        </div>
+                                    </>
+                                }
+
+                                {addCardObject.component === "RAID" &&
+                                    <>
+                                        <div className='ModalItem'>
+                                            <div>Csere iránya</div>
+                                            <div className='DirectionsDiv'>
+                                                <img src={megegyezo} name="direction" onClick={()=>{setCardObject({...cardObject, direction:1})}} alt="Ora iránya" style={{border: cardObject.direction===1 ? "0.5vh solid blue":""}}/>
+                                                <img src={ellentetes} name="direction" onClick={()=>{setCardObject({...cardObject, direction:-1})}} alt="Ora nem iránya" style={{border: cardObject.direction===-1 ? "0.5vh solid blue":""}} />
+                                            </div>
+                                        </div>
+
+                                        <div className='ModalItem' id='modalTextArea'>
+                                            <div>Forma</div>
+                                            <textarea style={{ outlineColor: isBlocks1ValidJSON ? "green" : "red", border: isBlocks1ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks1" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje. Pl: [[0,0],[1,0]] vagy [[0,0,1]]' onChange={(e) => { handleCardAdderInputChange(e) }}>
+
+                                            </textarea>
+                                        </div>
+                                    </>
+                                }
+
+
+                            </div>
+                        </div>
+                        <div className='ModalFooter'>
+                            <div className='Clickable' onClick={(e) => handleCloseCardAdder(e)}>Bezár</div>
+                            <button type="submit" className='Clickable'>Hozzáadás</button>
+                        </div>
+                    </div>
+                </form>
+            }
+
             <nav className='SideNavbar' id="navbar">
                 <li className={isActive("users") ? "Item Active" : "Item"} onClick={() => { setActive("users"); }}>Felhasználók</li>
                 <li className={isActive("maps") ? "Item Active" : "Item"} onClick={() => setActive("maps")}>Pályák</li>
@@ -455,10 +658,10 @@ export default function Admin() {
                                 maps.map((map, index) => {
                                     return (<Map key={index} mapTable={JSON.parse(map.blocks)}
                                         children={
-                                            map.official?
-                                            <div className='OfficialMapTableHovered'><div>Hivatalos</div></div>
-                                            :
-                                            <div className='UserMapTableHovered'><img src={deleteIcon} alt="delete" onClick={()=>handleDeleteMap(map)}/></div>
+                                            map.official ?
+                                                <div className='OfficialMapTableHovered'><div>Hivatalos</div></div>
+                                                :
+                                                <div className='UserMapTableHovered'><img src={deleteIcon} alt="delete" onClick={() => handleDeleteMap(map)} /></div>
                                         }
                                     />)
                                 })
@@ -542,7 +745,7 @@ export default function Admin() {
 
                                     // <div key={card.id} className='Card'>{card.name}<br />{card.fieldType1} {card.fieldType2} {card.cardType === "RUIN" ? card.cardType : ""}<br />{card.blocks1}</div>
                                 )}
-                                <div className='AddCard' onClick={handleOpen}><div>+</div></div>
+                                <div className='AddCard' onClick={() => handleOpenCardAdder("EXPLORE", "Felfedezés")}><div>+</div></div>
                             </div>
                         </div>
                         <div className='CardSection'>
@@ -612,7 +815,7 @@ export default function Admin() {
                                         </div>
                                     </div>
                                 )}
-                                <div className='AddCard'><div>+</div></div>
+                                <div className='AddCard' onClick={() => handleOpenCardAdder("RAID", "Rajtaütés")}><div>+</div></div>
                             </div>
                         </div>
                         <div className='CardSection'>

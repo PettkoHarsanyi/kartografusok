@@ -188,7 +188,7 @@ th {
     align-items: center;
 }
 
-.Admin #MapModal{
+.Admin #MapModal {
     width: 50vw;
     height: 90%;
 }
@@ -231,7 +231,52 @@ th {
     align-items: flex-start;
 }
 
-.Admin .MapEditor{
+.Admin #CardModalContent {
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0vh;
+}
+
+.Admin #modalTextArea {
+    flex-basis: 50%;
+}
+
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: max-content;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.Admin .ContentContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    height: max-content;
+    width: 100%;
+}
+
+.Admin .MapEditor {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -239,11 +284,25 @@ th {
     align-items: center;
 }
 
-.Admin .MapPic{
+.Admin .MapPic {
     width: 23vw;
 }
 
-.Admin .MapTable{
+.Admin .DirectionsDiv{
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    justify-content: space-around;
+    padding: 0.5vh;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Admin .DirectionsDiv img{
+    border-radius: 0.5vh;
+}
+
+.Admin .MapTable {
     position: absolute;
     left: 9.7%;
     top: 20.4%;
@@ -252,15 +311,16 @@ th {
     display: table;
 }
 
-.Admin .MapTableRow{
-	display: table-row;
+.Admin .MapTableRow {
+    display: table-row;
 }
 
 .Admin .MapTableBody {
-	display: table-row-group;
+    display: table-row-group;
 }
 
-.Admin .MapTableCell, .MapTableHead{
+.Admin .MapTableCell,
+.MapTableHead {
     width: 9.09090909%;
     max-width: 9.09090909%;
     display: table-cell;
@@ -275,7 +335,7 @@ th {
     overflow: hidden !important;
 }
 
-.Admin .OfficialMapTableHovered{
+.Admin .OfficialMapTableHovered {
     height: 100%;
     width: 100%;
     position: absolute;
@@ -291,7 +351,7 @@ th {
     color: white;
 }
 
-.Admin .OfficialMapTableHovered div{
+.Admin .OfficialMapTableHovered div {
     color: white;
     padding: 1vh 2vh;
     border: 0.3vh solid white;
@@ -299,7 +359,7 @@ th {
     border-radius: 2vh;
 }
 
-.Admin .UserMapTableHovered{
+.Admin .UserMapTableHovered {
     height: 100%;
     width: 100%;
     position: absolute;
@@ -313,7 +373,7 @@ th {
     justify-content: center;
 }
 
-.Admin .UserMapTableHovered img{
+.Admin .UserMapTableHovered img {
     width: 15vh;
     margin: 1vh;
     color: white;
@@ -322,17 +382,18 @@ th {
     cursor: pointer;
 }
 
-.Admin .OfficialMapTableHovered:hover, .UserMapTableHovered:hover{
+.Admin .OfficialMapTableHovered:hover,
+.UserMapTableHovered:hover {
     display: flex;
     opacity: 1;
 }
 
-.Admin .MapLayer{
+.Admin .MapLayer {
     width: 100%;
     height: 100%;
 }
 
-.Admin .MapLayer:hover{
+.Admin .MapLayer:hover {
     width: 100%;
     background-color: rgba(255, 255, 255, 0.478);
     height: 100%;
@@ -343,18 +404,18 @@ th {
     align-items: center;
 }
 
-.Admin .MapButtons{
+.Admin .MapButtons {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 5vh;
 }
 
-.Admin #MapButtonClicked{
+.Admin #MapButtonClicked {
     border: 0.5vh solid #0099FF !important;
 }
 
-.Admin .MapButton{
+.Admin .MapButton {
     width: 10vh;
     border-radius: 2vh;
     border: 0.5vh solid rgba(128, 128, 128, 0.45);
@@ -479,7 +540,7 @@ button {
     position: relative;
 }
 
-.Admin .PicInput{
+.Admin .PicInput {
     position: absolute;
     z-index: 2;
     width: 100%;
@@ -491,19 +552,19 @@ button {
 
     /* IE 8 */
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
- 
+
     /* IE 5-7 */
     filter: alpha(opacity=0);
-  
+
     /* Netscape or and older firefox browsers */
     -moz-opacity: 0.0;
- 
+
     /* older Safari browsers */
     -khtml-opacity: 0.0;
     display: none;
 }
 
-.Admin .InputRelativeParent{
+.Admin .InputRelativeParent {
     width: 30vh;
     overflow: hidden;
     margin-top: 2vh;
@@ -513,7 +574,7 @@ button {
     cursor: pointer;
 }
 
-.Admin .PicDiv{
+.Admin .PicDiv {
     border: 0.3vh solid black;
     cursor: pointer !important;
     border-radius: 0.5vh;
@@ -668,8 +729,8 @@ button {
     transition: 0.5s;
 }
 
-.Admin .AddCard:hover{
-    background-color:silver;
+.Admin .AddCard:hover {
+    background-color: silver;
     color: white;
     font-size: 25vh;
     padding-bottom: 5vh;
@@ -691,14 +752,14 @@ button {
     position: relative;
 }
 
-.Admin .CardBackImg{
+.Admin .CardBackImg {
     position: absolute;
     width: 100%;
     height: 100%;
     z-index: 0;
 }
 
-.Admin .CardBackText{
+.Admin .CardBackText {
     width: 100%;
     height: 100%;
     border-radius: 2vh;
@@ -712,7 +773,7 @@ button {
     font-size: 1.5vh;
 }
 
-.Admin .Text{
+.Admin .Text {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -764,38 +825,45 @@ button {
 }
 
 /* DivTable.com */
-.divTable{
-	display: table;
+.divTable {
+    display: table;
     border-collapse: collapse;
 }
+
 .divTableRow {
-	display: table-row;
+    display: table-row;
 }
+
 .divTableHeading {
-	background-color: #EEE; 
-	display: table-header-group;
+    background-color: #EEE;
+    display: table-header-group;
 }
-.divTableCell, .divTableHead {
-	border: 0.1vh solid white;
-	display: table-cell;
+
+.divTableCell,
+.divTableHead {
+    border: 0.1vh solid white;
+    display: table-cell;
     height: 10px !important;
     width: 10px !important;
 }
+
 .divTableHeading {
-	background-color: #EEE;
-	display: table-header-group;
-	font-weight: bold;
-}
-.divTableFoot {
-	background-color: #EEE;
-	display: table-footer-group;
-	font-weight: bold;
-}
-.divTableBody {
-	display: table-row-group;
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
 }
 
-.Admin .BlocksDiv{
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.divTableBody {
+    display: table-row-group;
+}
+
+.Admin .BlocksDiv {
     display: flex;
     border: 0.2vh solid white;
     padding: 1vh;
@@ -806,16 +874,16 @@ button {
     align-items: center;
 }
 
-.Admin .Attribute{
-    
+.Admin .Attribute {
+
     border: 0.2vh solid white;
     padding: 1vh;
     width: 90%;
     border-radius: 0.5vh;
 }
 
-.Admin .Attribute:first-of-type{
-    
+.Admin .Attribute:first-of-type {
+
     border: 0.2vh solid white;
     padding: 0.5vh 1vh;
     width: fit-content;
@@ -829,7 +897,7 @@ button {
     overflow-y: scroll;
 }
 
-.Admin .MapsSection{
+.Admin .MapsSection {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -839,7 +907,7 @@ button {
     flex-wrap: wrap;
 }
 
-.Admin .MapsTitle{
+.Admin .MapsTitle {
     border: 0.5vh solid black;
     font-size: 3vh;
     font-weight: bold;
@@ -850,8 +918,8 @@ button {
     color: rgb(0, 0, 0);
 }
 
-.Admin .Map{
-    width:40vh;
+.Admin .Map {
+    width: 40vh;
     height: 57.5vh;
 }
 
@@ -872,8 +940,8 @@ button {
     transition: 0.5s;
 }
 
-.Admin .AddMap:hover{
-    background-color:silver;
+.Admin .AddMap:hover {
+    background-color: silver;
     color: white;
     font-size: 25vh;
     padding-bottom: 5vh;
