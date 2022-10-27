@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Grenze+Gotisch&display=swap');
+
 .Admin {
     min-height: 100vh;
     flex-direction: row;
@@ -736,27 +738,21 @@ button {
     padding-bottom: 5vh;
 }
 
-
 .Admin .Card {
     width: 100%;
     height: 100%;
-}
-
-.Admin .CardBack {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    position: absolute;
+    left: 0;
+    top:0;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
 }
 
 .Admin .CardBackImg {
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: 0;
 }
 
 .Admin .CardBackText {
@@ -797,11 +793,6 @@ button {
     transform-style: preserve-3d;
 }
 
-/* Do an horizontal flip when you move the mouse over the flip box container */
-.FlipCard:hover .FlipCardInner {
-    /* transform: rotateY(180deg); */
-}
-
 /* Position the front and back side */
 .FlipCardFront,
 .FlipCardBack {
@@ -811,11 +802,39 @@ button {
     -webkit-backface-visibility: hidden;
     /* Safari */
     backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    z-index: 300;
 }
 
 /* Style the front side (fallback if image is missing) */
 .FlipCardFront {
     color: black;
+}
+
+.Admin .CardFront{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
+}
+
+.Admin .CardBack {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
 }
 
 /* Style the back side */
@@ -824,55 +843,6 @@ button {
     transform: rotateY(180deg);
 }
 
-/* DivTable.com */
-.divTable {
-    display: table;
-    border-collapse: collapse;
-}
-
-.divTableRow {
-    display: table-row;
-}
-
-.divTableHeading {
-    background-color: #EEE;
-    display: table-header-group;
-}
-
-.divTableCell,
-.divTableHead {
-    border: 0.1vh solid white;
-    display: table-cell;
-    height: 10px !important;
-    width: 10px !important;
-}
-
-.divTableHeading {
-    background-color: #EEE;
-    display: table-header-group;
-    font-weight: bold;
-}
-
-.divTableFoot {
-    background-color: #EEE;
-    display: table-footer-group;
-    font-weight: bold;
-}
-
-.divTableBody {
-    display: table-row-group;
-}
-
-.Admin .BlocksDiv {
-    display: flex;
-    border: 0.2vh solid white;
-    padding: 1vh;
-    width: 90%;
-    border-radius: 0.5vh;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-}
 
 .Admin .Attribute {
 
@@ -945,4 +915,169 @@ button {
     color: white;
     font-size: 25vh;
     padding-bottom: 5vh;
+}
+
+.FlipCardFrontLayer{
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    border-radius: 1vh;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.FlipCardFrontLayer div{
+    margin: 1vh;
+    border: 0.5vh solid white;
+    border-radius: 1vh;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.501);
+    padding: 0.5vh 1vh;
+    font-size: 2vh;
+    z-index: 10;
+    font-weight: bold;
+}
+
+.FlipCardFrontLayer img{
+    margin: 1vh;
+}
+
+.UserCardContext:hover + .FlipCardFrontLayer{
+    display: flex;
+    visibility: visible;
+}
+
+.FlipCardFrontLayer:hover{
+    display: flex;
+    visibility: visible;
+}
+
+
+.Admin .UserCardContext{
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    display: flex;
+    color: blanchedalmond;
+    padding: 0.8vh;
+    align-items: center;
+}
+
+.Admin .UserCardContext *{
+    font-family: 'Grenze Gotisch', cursive;
+    font-size: 3vh;
+    line-height: 1;
+}
+
+.Admin #exploreCard{
+    flex-direction: column;
+}
+
+.Admin .DurationsDiv{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.Admin .DurationsDivCircle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 5vh;
+}
+
+.Admin .DurationsDivCircle div{
+    position: relative;
+    line-height: 1.2;
+    z-index: 1;
+}
+
+.Admin .DurationsDivCircle img{
+    position: absolute;
+    height: auto;
+    left: 0;
+    top:0;
+    z-index: 0;
+}
+
+.Admin .CardNameDiv{
+    margin-top: 9.5vh;
+    height: max-content;
+    color: rgba(255, 255, 255, 0.798);
+    line-height: 1;
+}
+
+.Admin .FieldTypeDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+    align-items: center;
+    height: 5vh;
+    width: 90%;
+}
+
+.Admin .FieldTypeImg{
+    width: 3.7vh;
+}
+
+.Admin #anyFieldTypeImg{
+    width: 3vh;
+}
+
+.Admin .BlocksDiv {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 5vh;
+}
+
+
+/* DivTable.com */
+.divTable {
+    display: table;
+    border-collapse: collapse;
+}
+
+.divTableRow {
+    display: table-row;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+.divTableCell,
+.divTableHead {
+    display: table-cell;
+    height: 7px !important;
+    width: 7px !important;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.divTableBody {
+    display: table-row-group;
 }

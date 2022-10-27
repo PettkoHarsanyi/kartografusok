@@ -4,7 +4,7 @@ import { CardDto } from './dto/card.dto';
 import { Roles } from '../auth/roles';
 import { UserRole } from '../users/entity/user';
 import { AllowAnonymous } from '../auth/allow-anonymous';
-import { HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query, UseGuards, UseInterceptors, UploadedFile, Res } from "@nestjs/common";
+import { HttpException, HttpStatus, Param, ParseIntPipe, Patch, Query, UseGuards, UseInterceptors, UploadedFile, Res, Delete } from "@nestjs/common";
 import { Observable, of } from 'rxjs';
 import { join } from 'path';
 
@@ -39,6 +39,12 @@ export class CardsController {
     async addCard(@Body() cardDto: CardDto){
         const newCard = await this.cardsService.create(cardDto);
         return new CardDto(newCard);
+    }
+
+    @Delete(':id')
+    async deleteMap(@Param('id', ParseIntPipe) cardId: number){
+        const card = await this.cardsService.find(cardId);
+        return this.cardsService.remove(card);
     }
 
     @AllowAnonymous()

@@ -1,3 +1,4 @@
+import { Loaded } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/sqlite';
 import { Injectable } from '@nestjs/common';
@@ -35,6 +36,10 @@ export class CardsService {
         return this.cardRepository.find({
             cardType: CardType.Raid
         })
+    }
+
+    async remove(card: Loaded<Card, never>) {
+        return this.cardRepository.remove(card).flush();
     }
 
     async create(cardDto: CardDto) {

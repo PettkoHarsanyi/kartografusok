@@ -14,6 +14,9 @@ export class Card{
     @Property({nullable:true})
     picture?: string;
 
+    @Property({nullable: true})
+    official?: boolean = false;
+
     @Enum()
     cardType?: CardType;
 

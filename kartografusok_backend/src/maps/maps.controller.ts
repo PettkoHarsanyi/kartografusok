@@ -32,7 +32,6 @@ export class MapsController {
         return of(res.sendFile(join(process.cwd(), 'assets/maps/' + map.picture)))
     }
 
-    @AllowAnonymous()
     @Delete(':id')
     async deleteMap(@Param('id', ParseIntPipe) mapId: number){
         const map = await this.mapsService.find(mapId);
