@@ -20,8 +20,8 @@ export default function ExploreCard({ card }) {
             <div className="CardNameDiv">{card.name}</div>
             <div className="FieldTypeDiv">
                 {card.fieldType1 === "ANY" &&
-                    Object.values(fieldTypes).map(type => {
-                        return (<img className="FieldTypeImg" id="anyFieldTypeImg" src={type} />)
+                    Object.values(fieldTypes).map((type,index) => {
+                        return (<img key={index} className="FieldTypeImg" id="anyFieldTypeImg" src={type} />)
                     })
                 }
                 {card.fieldType1 !== "ANY" &&

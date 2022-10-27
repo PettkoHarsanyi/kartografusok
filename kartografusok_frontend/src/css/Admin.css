@@ -928,8 +928,8 @@ button {
     align-items: flex-end;
     position: absolute;
     top: 0;
-    left: 0;
-    z-index: 10;
+    left: 0;    
+    z-index: 9;
 }
 
 .FlipCardFrontLayer div{
@@ -949,6 +949,11 @@ button {
 }
 
 .UserCardContext:hover + .FlipCardFrontLayer{
+    display: flex;
+    visibility: visible;
+}
+
+.Card:hover + .FlipCardFrontLayer{
     display: flex;
     visibility: visible;
 }
@@ -985,6 +990,30 @@ button {
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
+}
+
+.Admin .RuinBadgeDiv{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.Admin .RuinDivCircle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Admin .RuinDivCircle img{
+    position: absolute;
+    height: auto;
+    left: 0;
+    top:0;
+    z-index: 0;
+    width: 3.8vh;
 }
 
 .Admin .DurationsDivCircle{
@@ -1062,8 +1091,8 @@ button {
 .divTableCell,
 .divTableHead {
     display: table-cell;
-    height: 7px !important;
-    width: 7px !important;
+    height: 7px;
+    width: 7px;
 }
 
 .divTableHeading {
@@ -1080,4 +1109,53 @@ button {
 
 .divTableBody {
     display: table-row-group;
+}
+
+.Admin #ruinCard{
+    flex-direction: column;
+    padding: 1.3vh;
+}
+
+.Admin #ruinName{
+    margin-top: 13vh;
+}
+
+.Admin .RuinFieldType{
+    height: 9vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.Admin .RuinFieldType img{
+    width: 7vh;
+}
+
+
+.Admin #raidCard{
+    flex-direction: column;
+}
+
+
+.Admin #raidName{
+    margin-top: 13.1vh;
+}
+
+.Admin .DirAndBlocks{
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.Admin .directionImg{
+    width: 8vh;
+    padding-right: 1vh;
+}
+
+.Admin #monsterTableCell{
+    height: 11px;
+    width: 11px;
 }

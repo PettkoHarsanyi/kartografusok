@@ -294,26 +294,62 @@ export default function Admin() {
         }
     }
 
+    const cardItemsCorrect = (card) => {
+        if(card.name==="") return false;
+        if(card.cardType==="EXPLORE" || card.cardType==="RAID"){
+            if(card.blocks1 === ""){
+                return false;
+            }else{
+                try {
+                    let l = JSON.parse(card.blocks1);
+    
+                    if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
+                    } else {
+                        return false;
+                    }
+                }
+                catch (e) {return false }
+            }
+            if(card.blocks2 && card.blocks2.length > 0){
+                try {
+                    let l = JSON.parse(card.blocks2);
+    
+                    if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
+                    } else {
+                        return false
+                    }
+                }
+                catch (e) {return false }
+            }
+        }
+        return true;
+    }
+
     const handleSubmitCard = async (event) => {
         event.preventDefault();
-        handleClose(event);
 
-        if(selectedCardType === exploreCardObject.cardType){
+        if(selectedCardType === exploreCardObject.cardType && cardItemsCorrect(exploreCardObject)){
+            handleCloseCardAdder(event)
             const responseCard = await axios.post(`api/cards`, exploreCardObject, {
                 headers: authHeader()
             });
             dispatch(addExploreCard(responseCard.data))
-        }else if(selectedCardType === raidCardObject.cardType){
+        }
+        if(selectedCardType === raidCardObject.cardType && cardItemsCorrect(raidCardObject)){
+            handleCloseCardAdder(event)
             const responseCard = await axios.post(`api/cards`, raidCardObject, {
                 headers: authHeader()
             });
             dispatch(addRaidCard(responseCard.data))
-        }else{
+        }
+        if(selectedCardType === ruinCardObject.cardType && cardItemsCorrect(ruinCardObject)){
+            handleCloseCardAdder(event)
             const responseCard = await axios.post(`api/cards`, ruinCardObject, {
                 headers: authHeader()
             });
             dispatch(addExploreCard(responseCard.data))
         }
+
     }
 
     const handleAddMap = async (event) => {
@@ -537,7 +573,7 @@ export default function Admin() {
             }
 
             {addCardOpen && isActive("cards") &&
-                <form onSubmit={(e) => { handleSubmitCard(e); handleCloseCardAdder(e)}} className='ModalBackground' onClick={(e) => handleCloseCardAdder(e)}>
+                <form onSubmit={(e) => { handleSubmitCard(e)}} className='ModalBackground' onClick={(e) => handleCloseCardAdder(e)}>
                     <div className='Modal' id='MapModal'>
                         <div className='ModalHeader'>
                             <div>Kártya hozzáadása</div>
