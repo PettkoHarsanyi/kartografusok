@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import authService from '../../auth/auth.service';
 import axios from 'axios';
 import "../../css/CreateRoom.css";
@@ -7,18 +7,21 @@ import authHeader from '../../auth/auth-header';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage } from '../../state/messages/actions';
 import { getMessages } from '../../state/messages/selectors';
-import { addPlayer } from '../../state/players/actions';
+import { addPlayer, mutePlayer, removePlayer } from '../../state/players/actions';
 import { getPlayers } from '../../state/players/selectors';
 import { fillExploreCards } from '../../state/cards/exploreCards/actions';
 import { fillRaidCards } from '../../state/cards/raidCards/actions';
 import guestpic from "../../assets/profileimage.png"
+import unmuted from "../../assets/playerunmute.png"
+import muted from "../../assets/playermute.png"
+import kick from "../../assets/delete.png"
 
 export default function CreateRoom() {
     const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
     // const [users,setUsers] = useState([user]);
     // const [messages, setMessages] = useState([]);
     const loadedData = useLoaderData();
-
+    const navigate = useNavigate();
 
     const [exploreCards] = useState(loadedData[0]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[1]); // DB-ből jön, mert dinamikus, a többi stateből
@@ -31,6 +34,13 @@ export default function CreateRoom() {
     const dispatch = useDispatch()
     const users = useSelector(getPlayers);
     const messages = useSelector(getMessages);
+
+    useEffect(() => {
+        let actualUser = users.find(finduser => finduser.id === user.id)
+        if (actualUser) {
+            setUser(users.find(finduser => finduser.id === user.id))
+        }
+    }, [users])
 
     useEffect(() => {
         dispatch(addPlayer(user))
@@ -129,18 +139,37 @@ export default function CreateRoom() {
         document.getElementById("copyButton").setAttribute("class", "CopyButton")
     }
 
+    const muteUser = (user) => {
+        dispatch(mutePlayer(user));
+    }
+
+    const kickUser = (user) => {
+        dispatch(removePlayer(user));
+    }
+
     return (
         <div className='CreateRoom'>
             <div className='Div2'>
                 <div className='Div3'>
                     <div className='DivTitle'>Csatlakozott játékosok:</div>
-                    {users && users.length > 0 && users.map((user) => {
-                        return (<div key={user.id} className='PlayerDiv'>
-                            <img src={user.id === 0 ? guestpic : `api/users/${user.id}/profileimage`} style={getBorderAndBoxShadow(user.division)} className="PictureDiv" alt="profilpics" />
-                            <div className='InfoDiv'>{user.name}<br />{user.division.name}</div>
-                        </div>)
-                    })
-                    }
+                    <div className='PlayersDiv'>
+                        {users && users.length > 0 && users.map((_user) => {
+                            return (
+                                <div key={_user.id} className='PlayerDiv'>
+                                    <div className='MuteBanDiv'>
+                                        {_user.id !== user.id && <>
+                                            <img onClick={() => muteUser(_user)} src={_user.muted ? muted : unmuted} />
+                                            <img onClick={() => kickUser(_user)} src={kick} />
+                                        </>}
+                                    </div>
+                                    <div className='PicsDiv'>
+                                        <img src={_user.id === 0 ? guestpic : `api/users/${_user.id}/profileimage`} style={getBorderAndBoxShadow(_user.division)} className="PictureDiv" alt="profilpics" />
+                                    </div>
+                                    <div className='InfoDiv'>{_user.name}<br />{_user.division.name}</div>
+                                </div>)
+                        })
+                        }
+                    </div>
                 </div>
                 <div className='Div4'>
                     <form className='ChatDiv' onSubmit={(e) => handleSendMessage(e)} autoComplete="off">
