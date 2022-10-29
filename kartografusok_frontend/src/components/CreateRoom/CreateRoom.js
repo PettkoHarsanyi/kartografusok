@@ -188,7 +188,7 @@ export default function CreateRoom() {
                     <div className='ServerInfoDiv'>
                         <div className='TextDiv'>
                             <div>Szoba: {user.name} szobája</div>
-                            <div>Pálya nehézsége: könnyű nehéz</div>
+                            {/* <div>Pálya nehézsége: könnyű nehéz</div> */}
                             <div>Csatlakozott játékosok: 3</div>
                             <div>Szobakód:</div>
                             <div className='InviteDiv'>
@@ -200,7 +200,7 @@ export default function CreateRoom() {
                             <Link to="/" onClick={() => dispatch({
                                 type: "CLEAR_STATE"
                             })}>Kilépés</Link>
-                            <button>Indítás</button>
+                            <Link to="/jatek">Indítás</Link>
                         </div>
                     </div>
                 </div>
