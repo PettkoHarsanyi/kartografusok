@@ -75,9 +75,9 @@ export default function Profil() {
                         document.getElementById("profilPic").style.opacity = 1
                     }}>
                         <div className='PicsBg'></div>
-                        <img src={frame} className="ProfileFrame" alt="profilframe" style={decoration} />
-                        <img src={`api/users/${user.id}/profileimage`} id="profilPic" className="ProfilePics" alt="profilpics" />
-                        <img src={selectPics} className="SelectPics" alt='select' id='selectPics'/>
+                        <img src={frame} className="ProfileFrame" draggable="false" alt="profilframe" style={decoration} />
+                        <img src={`api/users/${user.id}/profileimage`} draggable="false" id="profilPic" className="ProfilePics" alt="profilpics" />
+                        <img src={selectPics} draggable="false" className="SelectPics" alt='select' id='selectPics'/>
                         <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e)=>uploadPicture(e)} ref={fileInput} />
                     </div>
                     <div className='Name'>{user.name}</div>

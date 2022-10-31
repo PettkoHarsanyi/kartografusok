@@ -7,10 +7,6 @@ export default function ConnectRoom() {
     const [code, setCode] = useState("");
     const [user] = useState(authService.getCurrentUser());
 
-    if(!user){
-        console.log("Hi guest")
-    }
-
     const handleChange = async (e) => {
         await setCode(e.target.value);
     }

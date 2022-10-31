@@ -15,6 +15,9 @@ import guestpic from "../../assets/profileimage.png"
 import unmuted from "../../assets/playerunmute.png"
 import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
+import { initRoom } from '../../state/room/actions';
+import { initMap } from '../../state/map/actions';
+import { initActualPlayer } from '../../state/actualPlayer/actions';
 
 export default function CreateRoom() {
     const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
@@ -25,11 +28,8 @@ export default function CreateRoom() {
 
     const [exploreCards] = useState(loadedData[0]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[1]); // DB-ből jön, mert dinamikus, a többi stateből
-
-    useEffect(() => {
-        dispatch(fillExploreCards(exploreCards));
-        dispatch(fillRaidCards(raidCards));
-    }, [])
+    const [maps] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
+    const [roomCode] = useState("412kj-412mk-124m-l124m-1k-2l14");
 
     const dispatch = useDispatch()
     const users = useSelector(getPlayers);
@@ -42,7 +42,14 @@ export default function CreateRoom() {
         }
     }, [users])
 
+    const getRandomMap = () => {
+        return maps[Math.floor(Math.random() * maps.length)]
+    }
+
     useEffect(() => {
+        dispatch(initRoom(user, roomCode))
+        dispatch(initActualPlayer(user))
+        dispatch(initMap(getRandomMap()))
         dispatch(addPlayer(user))
         dispatch(addPlayer({
             id: 3,
@@ -50,8 +57,8 @@ export default function CreateRoom() {
             userName: 'adam',
             role: 'USER',
             division: {
-                id: 3,
-                name: 'Arany',
+                id: 4,
+                name: 'Platina',
                 createdAt: '2022-10-08T17:22:22.470Z',
                 modifiedAt: '2022-10-08T17:22:22.470Z'
             },
@@ -60,6 +67,8 @@ export default function CreateRoom() {
             points: 2500,
             weekly: 2200
         }))
+        dispatch(fillExploreCards(exploreCards));
+        dispatch(fillRaidCards(raidCards));
     }, [])
 
     const handleSendMessage = async (e) => {
@@ -158,12 +167,12 @@ export default function CreateRoom() {
                                 <div key={_user.id} className='PlayerDiv'>
                                     <div className='MuteBanDiv'>
                                         {_user.id !== user.id && <>
-                                            <img onClick={() => muteUser(_user)} src={_user.muted ? muted : unmuted} />
-                                            <img onClick={() => kickUser(_user)} src={kick} />
+                                            <img onClick={() => muteUser(_user)} src={_user.muted ? muted : unmuted} draggable="false" />
+                                            <img onClick={() => kickUser(_user)} src={kick} draggable="false" />
                                         </>}
                                     </div>
                                     <div className='PicsDiv'>
-                                        <img src={_user.id === 0 ? guestpic : `api/users/${_user.id}/profileimage`} style={getBorderAndBoxShadow(_user.division)} className="PictureDiv" alt="profilpics" />
+                                        <img src={_user.id === 0 ? guestpic : `api/users/${_user.id}/profileimage`} style={getBorderAndBoxShadow(_user.division)} draggable="false" className="PictureDiv" alt="profilpics" />
                                     </div>
                                     <div className='InfoDiv'>{_user.name}<br />{_user.division.name}</div>
                                 </div>)
@@ -192,7 +201,7 @@ export default function CreateRoom() {
                             <div>Csatlakozott játékosok: 3</div>
                             <div>Szobakód:</div>
                             <div className='InviteDiv'>
-                                <input className='CodeDiv' id="roomId" defaultValue={"412kj-412mk-124m-l124m-1k-2l14"} readOnly onClick={() => copy(false)} />
+                                <input className='CodeDiv' id="roomId" defaultValue={roomCode} readOnly onClick={() => copy(false)} />
                                 <button className='CopyButton' id="copyButton" onClick={() => copy(true)} onMouseLeave={copyDefault}>Kimásolás</button>
                             </div>
                         </div>

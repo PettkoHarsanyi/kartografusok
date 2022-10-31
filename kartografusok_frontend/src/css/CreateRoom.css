@@ -241,6 +241,7 @@
     height: 100%;
     cursor: pointer;
     width: 20vh;
+    transition: 0.5s;
 }
 
 .CreateRoom .CopyButton:hover {

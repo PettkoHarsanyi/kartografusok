@@ -17,16 +17,16 @@ export default function Leaderboard() {
 
   const setDiv = (id) => {
     if (id===1) {
-      return <img src={bronz} className="Pics" alt="profilpics" />
-    }
-    if (id===2) {
-      return <img src={ezust} className="Pics" alt="profilpics" />
-    }
-    if (id===3) {
-      return <img src={arany} className="Pics" alt="profilpics" />
-    }
-    if (id===4) {
-      return <img src={platina} className="Pics" alt="profilpics" />
+      return <img src={bronz} className="Pics" alt="profilpics" draggable="false" />
+     }
+    if (id===2)  {
+      return <img src={ezust} className="Pics" alt="profilpics"  draggable="false"/>
+     }
+    if (id===3)  {
+      return <img src={arany} className="Pics" alt="profilpics" draggable="false" />
+     }
+    if (id===4)  {
+      return <img src={platina} className="Pics" alt="profilpics" draggable="false" />
     }
   }
 

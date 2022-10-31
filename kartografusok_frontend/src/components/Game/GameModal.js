@@ -1,16 +1,10 @@
 
-export default function GameModal({closable=true}) {
-
-    const handleCloseModal = (e) => {
-        if (e.target !== e.currentTarget || !closable) return;
-        const component = e.target;
-        component.remove();
-    }
+export default function GameModal({closable=true,handleCloseModal,children}) {
 
     return (
-        <div className="GameModal" onClick={(e)=>handleCloseModal(e)}>
+        <div className="GameModal" id="modal" onClick={(e)=>{if(closable){handleCloseModal(e)}}}>
             <div className="GameModalContext">
-
+                {children}
             </div>
         </div>
     )

@@ -44,6 +44,9 @@ const router = createBrowserRouter([
         fetch('api/cards/raid', {
           headers: authHeader()
         }).then(resp => resp.json()),
+        fetch('api/maps', {
+          headers: authHeader()
+        }).then(resp => resp.json()),
       ])
     }
   },

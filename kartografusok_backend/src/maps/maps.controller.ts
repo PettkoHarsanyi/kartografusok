@@ -13,6 +13,7 @@ export class MapsController {
         private mapsService: MapsService,
     ){}
 
+    @AllowAnonymous()
     @Get('')
     async findAll(){
         return await this.mapsService.findAll();
