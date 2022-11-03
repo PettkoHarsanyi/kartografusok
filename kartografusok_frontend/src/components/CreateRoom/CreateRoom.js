@@ -5,9 +5,9 @@ import axios from 'axios';
 import "../../css/CreateRoom.css";
 import authHeader from '../../auth/auth-header';
 import { useDispatch, useSelector } from 'react-redux';
-import { addMessage } from '../../state/messages/actions';
+import { addMessage, sendMessage } from '../../state/messages/actions';
 import { getMessages } from '../../state/messages/selectors';
-import { addPlayer, mutePlayer, removePlayer } from '../../state/players/actions';
+import { addPlayer, modifyPlayer, mutePlayer, removePlayer } from '../../state/players/actions';
 import { getPlayers } from '../../state/players/selectors';
 import { fillExploreCards } from '../../state/cards/exploreCards/actions';
 import { fillRaidCards } from '../../state/cards/raidCards/actions';
@@ -15,9 +15,13 @@ import guestpic from "../../assets/profileimage.png"
 import unmuted from "../../assets/playerunmute.png"
 import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
-import { initRoom } from '../../state/room/actions';
 import { initMap } from '../../state/map/actions';
 import { initActualPlayer } from '../../state/actualPlayer/actions';
+import { createRoom, initRoom } from '../../state/room/actions';
+import { wsConnect } from '../../state/store';
+import { getRoom } from '../../state/room/selectors';
+import { getState } from '../../state/selector';
+import { socketApi } from '../../socket/SocketApi';
 
 export default function CreateRoom() {
     const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
@@ -29,11 +33,13 @@ export default function CreateRoom() {
     const [exploreCards] = useState(loadedData[0]); // DB-ből jön, mert dinamikus, a többi stateből
     const [raidCards] = useState(loadedData[1]); // DB-ből jön, mert dinamikus, a többi stateből
     const [maps] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
-    const [roomCode] = useState("412kj-412mk-124m-l124m-1k-2l14");
 
     const dispatch = useDispatch()
     const users = useSelector(getPlayers);
     const messages = useSelector(getMessages);
+    const room = useSelector(getRoom);
+    const state = useSelector(getState);
+    const players = useSelector(getPlayers);
 
     useEffect(() => {
         let actualUser = users.find(finduser => finduser.id === user.id)
@@ -46,30 +52,35 @@ export default function CreateRoom() {
         return maps[Math.floor(Math.random() * maps.length)]
     }
 
+    const createRoomAck = (obj) => {
+        dispatch(initRoom(user,obj.roomId))
+    }
+
+    const syncStateAck = (obj) => {
+        console.log(obj)
+    }
+
     useEffect(() => {
-        dispatch(initRoom(user, roomCode))
         dispatch(initActualPlayer(user))
-        dispatch(initMap(getRandomMap()))
         dispatch(addPlayer(user))
-        dispatch(addPlayer({
-            id: 3,
-            name: 'Adam',
-            userName: 'adam',
-            role: 'USER',
-            division: {
-                id: 4,
-                name: 'Platina',
-                createdAt: '2022-10-08T17:22:22.470Z',
-                modifiedAt: '2022-10-08T17:22:22.470Z'
-            },
-            banned: false,
-            muted: false,
-            points: 2500,
-            weekly: 2200
-        }))
-        dispatch(fillExploreCards(exploreCards));
-        dispatch(fillRaidCards(raidCards));
     }, [])
+    
+    useEffect(()=>{
+        if(players.length===0){
+            dispatch(initMap(getRandomMap()))
+            dispatch(fillExploreCards(exploreCards));
+            dispatch(fillRaidCards(raidCards));
+            dispatch(wsConnect())
+            socketApi.createRoom(user,createRoomAck);
+        }
+        console.log(players.length);
+    },[players])
+
+    useEffect(()=>{
+        if(room.roomCode){
+            socketApi.syncState(room.roomCode,state,true,syncStateAck)
+        }
+    },[room])
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
@@ -86,7 +97,8 @@ export default function CreateRoom() {
 
             message.user = user; // Azért kell, mert a responseban nem tudom populálni a user-t
 
-            dispatch(addMessage(message))
+            // dispatch(addMessage(message))
+            dispatch(sendMessage(message))
 
             input.value = ""
 
@@ -148,12 +160,12 @@ export default function CreateRoom() {
         document.getElementById("copyButton").setAttribute("class", "CopyButton")
     }
 
-    const muteUser = (user) => {
-        dispatch(mutePlayer(user));
+    const muteUser = (_user) => {
+        dispatch(modifyPlayer({..._user,muted:!_user.muted}));
     }
 
-    const kickUser = (user) => {
-        dispatch(removePlayer(user));
+    const kickUser = (_user) => {
+        dispatch(removePlayer(_user));
     }
 
     return (
@@ -196,12 +208,12 @@ export default function CreateRoom() {
                     </form>
                     <div className='ServerInfoDiv'>
                         <div className='TextDiv'>
-                            <div>Szoba: {user.name} szobája</div>
+                            <div>Szoba: {room.leader?.name} szobája</div>
                             {/* <div>Pálya nehézsége: könnyű nehéz</div> */}
-                            <div>Csatlakozott játékosok: 3</div>
+                            <div>Csatlakozott játékosok: {players.length}</div>
                             <div>Szobakód:</div>
                             <div className='InviteDiv'>
-                                <input className='CodeDiv' id="roomId" defaultValue={roomCode} readOnly onClick={() => copy(false)} />
+                                <input className='CodeDiv' id="roomId" defaultValue={room.roomCode} readOnly onClick={() => copy(false)} />
                                 <button className='CopyButton' id="copyButton" onClick={() => copy(true)} onMouseLeave={copyDefault}>Kimásolás</button>
                             </div>
                         </div>

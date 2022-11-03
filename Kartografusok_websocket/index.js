@@ -6,12 +6,13 @@ import handler from 'serve-handler';
 import dotenv from "dotenv";
 
 dotenv.config();
-const port = process.env.PORT || 3031;
+const port = process.env.PORT || 3030;
 const app = createServer((request, response) => {
   return handler(request, response, {
     "public": "node_modules/@socket.io/admin-ui/ui/dist"
   });
 })
+
 const io = new Server(app, {
   cors: {
     origin: "*",
@@ -20,16 +21,6 @@ const io = new Server(app, {
   },
   allowEIO3: true
 });
-
-if (process.env.NODE_ENV !== 'production') {
-  instrument(io, {
-    auth: {
-      type: "basic",
-      username: process.env.SOCKET_IO_UI_USERNAME,
-      password: process.env.SOCKET_IO_UI_PASSWORD,
-    }
-  });
-}
 
 gameRoom(io);
 

@@ -16,12 +16,14 @@ import CreateRoom from './components/CreateRoom/CreateRoom';
 import authService from './auth/auth.service';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { LoggedRoute } from './components/Auth/LoggedRoute';
-import { Provider } from 'react-redux';
-import store from './state/store';
+import { Provider, useDispatch } from 'react-redux';
+import { store } from './state/store';
 import { BannedRoute } from './components/Auth/BannedRoute';
 import Map from './components/Admin/Map';
 import Game from './components/Game/Game';
+import { useEffect } from 'react';
 // import reportWebVitals from './reportWebVitals';
+
 
 const router = createBrowserRouter([
   {

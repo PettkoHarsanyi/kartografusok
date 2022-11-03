@@ -1,4 +1,4 @@
-import { ADD_PLAYER, MUTE_PLAYER, REMOVE_PLAYER } from "./actions";
+import { ADD_PLAYER, MODIFY_PLAYER, MUTE_PLAYER, REMOVE_PLAYER } from "./actions";
 
 export const playersInitialState = []
 
@@ -21,6 +21,15 @@ export const playersReducer = (state = playersInitialState, action) => {
             if(player.id === payload.id)
                 return {...payload, muted: !payload.muted}
             return player
+        })
+    }
+
+    if(type=== MODIFY_PLAYER){
+        return players.map(player => {
+            if(player.id === payload.id){
+                return payload
+            }
+            return player;
         })
     }
 
