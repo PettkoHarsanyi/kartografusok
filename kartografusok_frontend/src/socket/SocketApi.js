@@ -20,11 +20,11 @@ class SocketApi {
     this.socket.emit("create-room", ack);
   }
 
-  syncAction(roomId,payload,broadcast){
+  syncAction(roomId,action,broadcast){
     this.socket.emit(
       "sync-action",
       roomId,
-      payload,
+      action,
       broadcast,
       (ack) => {}
     );
@@ -40,8 +40,12 @@ class SocketApi {
     );
   }
 
-  joinRoom(id,ack) {
-    this.socket.emit("join-room", id, ack);
+  joinRoom(id,user,ack) {
+    this.socket.emit("join-room", id, user, ack);
+  }
+  
+  startGame(roomId,broadcast,ack){
+    this.socket.emit("start-game",roomId,broadcast,ack)
   }
 
   onMessageReceived(callback) {
@@ -50,6 +54,38 @@ class SocketApi {
     };
     this.socket.on("messages created", listener);
     return () => this.socket.off("messages created", listener);
+  }
+
+  onPlayerJoined(callback) {
+    const listener = (action) => {
+      callback(action);
+    };
+    this.socket.on("player-joined", listener);
+    return () => this.socket.off("player-joined", listener);
+  }
+
+  onStateChanged(callback) {
+    const listener = (action) => {
+      callback(action);
+    };
+    this.socket.on("state-changed", listener);
+    return () => this.socket.off("state-changed", listener);
+  }
+
+  onActionSent(callback) {
+    const listener = (action) => {
+      callback(action);
+    };
+    this.socket.on("action-sent", listener);
+    return () => this.socket.off("action-sent", listener);
+  }
+
+  onGameStart(callback){
+    const listener = (action) => {
+      callback(action);
+    };
+    this.socket.on("game-start", listener);
+    return () => this.socket.off("game-start", listener);
   }
 
   get id() {

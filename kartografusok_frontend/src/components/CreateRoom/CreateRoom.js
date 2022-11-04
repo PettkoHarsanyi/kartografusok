@@ -17,7 +17,7 @@ import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
 import { initMap } from '../../state/map/actions';
 import { initActualPlayer } from '../../state/actualPlayer/actions';
-import { createRoom, initRoom } from '../../state/room/actions';
+import { createRoom, gameStarted, initRoom } from '../../state/room/actions';
 import { wsConnect } from '../../state/store';
 import { getRoom } from '../../state/room/selectors';
 import { getState } from '../../state/selector';
@@ -53,34 +53,66 @@ export default function CreateRoom() {
     }
 
     const createRoomAck = (obj) => {
-        dispatch(initRoom(user,obj.roomId))
+        dispatch(initRoom(user, obj.roomId))
     }
 
     const syncStateAck = (obj) => {
-        console.log(obj)
+        console.log(obj);
+    }
+
+    const syncActionAck = (obj) => {
+        console.log(obj);
     }
 
     useEffect(() => {
-        dispatch(initActualPlayer(user))
-        dispatch(addPlayer(user))
-    }, [])
-    
-    useEffect(()=>{
-        if(players.length===0){
-            dispatch(initMap(getRandomMap()))
+        if(players.length === 0){               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
+            dispatch(initActualPlayer(user));
+            dispatch(initMap(getRandomMap()));
+            dispatch(addPlayer(user))
+            console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));
-            dispatch(wsConnect())
-            socketApi.createRoom(user,createRoomAck);
         }
-        console.log(players.length);
-    },[players])
+    }, [])
 
-    useEffect(()=>{
-        if(room.roomCode){
-            socketApi.syncState(room.roomCode,state,true,syncStateAck)
+    useEffect(() => {
+        if (players.length === 1) {
+            if (!room.roomCode) {
+                console.log("ITT LEFUTOTTAM, MEGCSINÁLTAM A SZOBÁT");
+                dispatch(wsConnect())
+                socketApi.createRoom(user, createRoomAck);
+            }
+            else {
+                console.log("ITT NEM FUTOTTAM LE, CSAK CSATLAKOZTAM A SZOBÁHOZ")
+            }
         }
-    },[room])
+        // if(players.length===0){
+        //     dispatch(initMap(getRandomMap()))
+        //     dispatch(fillExploreCards(exploreCards));
+        //     dispatch(fillRaidCards(raidCards));
+        //     dispatch(wsConnect())
+        //     socketApi.createRoom(user,createRoomAck);
+        // }
+        // // if(players.length>1){
+        // //     socketApi.syncAction(room.roomCode,{type:"ADD_PLAYER",payload:user},true,syncActionAck)
+        // // }
+        // console.log(players);
+        if(room?.roomCode) socketApi.syncState(room.roomCode,state,true,(ack)=>console.log(ack))
+    }, [players])
+
+    useEffect(() => {
+        if (players.length === 1) {
+            if(room.leader.id === user.id){
+                console.log("FELKÜLDTEM A SZOBÁT")
+                socketApi.syncState(room.roomCode, state, true, (ack) => console.log(ack))
+            }else{
+                console.log("NEM KÜLDTEM MÁR FEL SEMMIT, A LEADER FELKÜLDTE A SYNCET, LEGKÖZELEBB CSAK ADD PLAYERNÉL KELL")
+            }
+        }
+        // if(room.roomCode && players.length === 0){              // AMIKOR A SZOBA LÉTREHOZÓ VAN CSAK BELÉPVE
+        //     socketApi.syncState(room.roomCode,state,true,syncStateAck)  // AMIKOR A SZOBA LÉTREJÖTT ÉS BEÁLLÍTÓDOTT A STATEJA
+        // }
+    }, [room])
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
@@ -98,7 +130,7 @@ export default function CreateRoom() {
             message.user = user; // Azért kell, mert a responseban nem tudom populálni a user-t
 
             // dispatch(addMessage(message))
-            dispatch(sendMessage(message))
+            dispatch(addMessage(message))
 
             input.value = ""
 
@@ -142,6 +174,13 @@ export default function CreateRoom() {
         chat.scrollTop = chat.scrollHeight;
     }, [messages])
 
+    useEffect(()=>{
+        if(room.gameStarted && room.gameStarted === true){
+            console.log("game has started");
+            navigate("/jatek");
+        }
+    },[room])
+
     const copy = (b) => {
         var copyText = document.getElementById("roomId");
         copyText.select();
@@ -161,11 +200,16 @@ export default function CreateRoom() {
     }
 
     const muteUser = (_user) => {
-        dispatch(modifyPlayer({..._user,muted:!_user.muted}));
+        dispatch(modifyPlayer({ ..._user, muted: !_user.muted }));
     }
 
     const kickUser = (_user) => {
         dispatch(removePlayer(_user));
+    }
+
+    const handleStartGame = (e) => {
+        e.preventDefault();
+        dispatch(gameStarted(true));
     }
 
     return (
@@ -178,7 +222,7 @@ export default function CreateRoom() {
                             return (
                                 <div key={_user.id} className='PlayerDiv'>
                                     <div className='MuteBanDiv'>
-                                        {_user.id !== user.id && <>
+                                        {_user.id !== user.id && room?.leader.id === user.id && <>
                                             <img onClick={() => muteUser(_user)} src={_user.muted ? muted : unmuted} draggable="false" />
                                             <img onClick={() => kickUser(_user)} src={kick} draggable="false" />
                                         </>}
@@ -221,7 +265,7 @@ export default function CreateRoom() {
                             <Link to="/" onClick={() => dispatch({
                                 type: "CLEAR_STATE"
                             })}>Kilépés</Link>
-                            <Link to="/jatek">Indítás</Link>
+                            <Link onClick={e=>handleStartGame(e)} >Indítás</Link>
                         </div>
                     </div>
                 </div>

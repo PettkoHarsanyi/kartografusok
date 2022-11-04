@@ -1,14 +1,20 @@
 import { socketApi } from "../socket/SocketApi";
-import { ADD_PLAYER } from "./players/actions";
+import { ADD_MESSAGE } from "./messages/actions";
+import { ADD_PLAYER, MODIFY_PLAYER } from "./players/actions";
+import { GAME_STARTED } from "./room/actions";
 
 export const sync = (store) => (next) => (action) => {
   let isSync = false;
 
   const types = [
-    ADD_PLAYER
+    ADD_PLAYER,
+    ADD_MESSAGE,
+    MODIFY_PLAYER,
+    GAME_STARTED,
   ];
 
   if (types.includes(action.type)) {
+
     if (
       store
         .getState()
@@ -18,6 +24,12 @@ export const sync = (store) => (next) => (action) => {
     ) {
       isSync = true;
     }
+
+    // console.log(store
+    //   .getState()
+    //   .players.some(
+    //     (player) => player.id === store.getState().actualPlayer.id
+    //   ))
   }
 
   next(action);
@@ -30,6 +42,19 @@ export const sync = (store) => (next) => (action) => {
 
     let state = store.getState();
 
-    socketApi.syncAction(store.getState().room.roomId,{type: "GAME_CHANGED", state: state},true)
+    console.log("SYNCING...")
+
+    // socketApi.syncState(store.getState().room.roomCode,state,true)
+    socketApi.syncAction(store.getState().room.roomCode, action, true);
+  } else {
+    console.log("NOT SYNCING...")
+  }
+
+
+  console.log(store.getState());
+  if(action.type === ADD_PLAYER && store.getState().room.roomCode){
+    if(store.getState().players.some((player)=> player.id !== store.getState().actualPlayer.id)){
+      socketApi.syncAction(store.getState().room.roomCode, action, true);
+    }
   }
 };

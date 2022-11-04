@@ -1,7 +1,9 @@
 export const ADD_PLAYER = "ADD_PLAYER"
+export const ADD_PLAYER_LOCAL = "ADD_PLAYER_LOCAL"
 export const REMOVE_PLAYER = "REMOVE_PLAYER"
 export const MUTE_PLAYER = "MUTE_PLAYER"
 export const MODIFY_PLAYER = "MODIFY_PLAYER"
+export const MODIFY_PLAYER_LOCAL = "MODIFY_PLAYER_LOCAL"
 
 export const addPlayer = (user) => ({
     type: ADD_PLAYER,

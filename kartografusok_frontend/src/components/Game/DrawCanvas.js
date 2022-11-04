@@ -8,7 +8,7 @@ import { modifyPlayer } from "../../state/players/actions";
 import { getRoom } from "../../state/room/selectors";
 import clearButton from "../../assets/delete.png"
 
-export default function DrawCanvas({handleCloseModal}) {
+export default function DrawCanvas({ handleCloseModal }) {
 
     const navigate = useNavigate();
     const room = useSelector(getRoom);
@@ -119,14 +119,15 @@ export default function DrawCanvas({handleCloseModal}) {
     }, [currentDrawingState])
 
     const saveDrawing = (index) => {
-        let img = new Image();
-        img.src = canvasRef.current.toDataURL()
+        // let img = new Image();
+        // img.src = canvasRef.current.toDataURL()
+        let base64 = canvasRef.current.toDataURL()
         if (!drawings[currentDrawingState]) {
-            setDrawings([...drawings, img])
+            setDrawings([...drawings, base64])
         } else {
             setDrawings(drawings.map((drawing, index) => {
                 if (index === currentDrawingState) {
-                    return img;
+                    return base64;
                 } else {
                     return drawing;
                 }
@@ -141,98 +142,105 @@ export default function DrawCanvas({handleCloseModal}) {
     const loadDrawing = (direction) => {
         contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
         if (drawings[currentDrawingState + direction]) {
-            const image = drawings[currentDrawingState + direction]
-            contextRef.current.drawImage(image, 0, 0, image.width, image.height);
+            const base64 = drawings[currentDrawingState + direction]
+            let img = new Image();
+            img.src = base64;
+            console.log("WIDTH: " + base64.width);
+
+            img.onload = function () {
+                contextRef.current.drawImage(img, 0, 0, img.width, img.height);
+            };
+            // const image = drawings[currentDrawingState + direction]
         }
     }
     return (
         <>
-        {states[currentState] === INIT_DRAWING &&
-            <>
-                <div className="ModalTitle"><div>Rajzolás</div></div>
+            {states[currentState] === INIT_DRAWING &&
+                <>
+                    <div className="ModalTitle"><div>Rajzolás</div></div>
 
-                <div className="ModalContext">
-                    <div className="DrawMessage">
-                        {drawingStates[currentDrawingState] === VILLAGE && <div>Rajzold meg a falvak terepmintáját!</div>}
-                        {drawingStates[currentDrawingState] === FOREST && <div>Rajzold meg az erdők terepmintáját!</div>}
-                        {drawingStates[currentDrawingState] === WATER && <div>Rajzold meg a vizek terepmintáját!</div>}
-                        {drawingStates[currentDrawingState] === FARM && <div>Rajzold meg a farmok terepmintáját!</div>}
-                        {drawingStates[currentDrawingState] === MONSTER && <div>Rajzold meg a szörnyek terepmintáját!</div>}
-                    </div>
+                    <div className="ModalContext">
+                        <div className="DrawMessage">
+                            {drawingStates[currentDrawingState] === VILLAGE && <div>Rajzold meg a falvak terepmintáját!</div>}
+                            {drawingStates[currentDrawingState] === FOREST && <div>Rajzold meg az erdők terepmintáját!</div>}
+                            {drawingStates[currentDrawingState] === WATER && <div>Rajzold meg a vizek terepmintáját!</div>}
+                            {drawingStates[currentDrawingState] === FARM && <div>Rajzold meg a farmok terepmintáját!</div>}
+                            {drawingStates[currentDrawingState] === MONSTER && <div>Rajzold meg a szörnyek terepmintáját!</div>}
+                        </div>
 
-                    <div className="DrawContext">
-                        <div className="DCDiv1">
-                            <div className="InputWrapper">
-                                <div>Szín:</div>
-                                <div className="InputDiv">
-                                    <input id="stroke" type="color" value={drawColor} name="stroke" onChange={(e) => { setDrawColor(e.target.value); contextRef.current.strokeStyle = e.target.value }}></input>
+                        <div className="DrawContext">
+                            <div className="DCDiv1">
+                                <div className="InputWrapper">
+                                    <div>Szín:</div>
+                                    <div className="InputDiv">
+                                        <input id="stroke" type="color" value={drawColor} name="stroke" onChange={(e) => { setDrawColor(e.target.value); contextRef.current.strokeStyle = e.target.value }}></input>
+                                    </div>
+                                </div>
+                                <div className="InputWrapper">
+                                    <div>Erősség:</div>
+                                    <div className="InputDiv">
+                                        <input id="lineWidth" min="1" max="21" type="range" name="lineWidth" defaultValue="5" step="2" onChange={(e) => { contextRef.current.lineWidth = e.target.value }}></input>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="InputWrapper">
-                                <div>Erősség:</div>
-                                <div className="InputDiv">
-                                    <input id="lineWidth" min="1" max="21" type="range" name="lineWidth" defaultValue="5" step="2" onChange={(e) => { contextRef.current.lineWidth = e.target.value }}></input>
+                            <div className="DCDiv2">
+                                <img className="ClearButton" src={clearButton} alt="clear" onClick={() => { contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height) }} />
+                                <div id="canvasDiv" className="CanvasDiv">
+                                    <canvas id="drawing-board"
+                                        onMouseDown={startDrawing}
+                                        onMouseUp={finishDrawing}
+                                        onMouseMove={draw}
+                                        onMouseEnter={continueDrawing}
+                                        onMouseLeave={holdDrawing}
+                                        ref={canvasRef}
+                                    ></canvas>
                                 </div>
                             </div>
-                        </div>
-                        <div className="DCDiv2">
-                            <img className="ClearButton" src={clearButton} alt="clear" onClick={() => { contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height) }} />
-                            <div id="canvasDiv" className="CanvasDiv">
-                                <canvas id="drawing-board"
-                                    onMouseDown={startDrawing}
-                                    onMouseUp={finishDrawing}
-                                    onMouseMove={draw}
-                                    onMouseEnter={continueDrawing}
-                                    onMouseLeave={holdDrawing}
-                                    ref={canvasRef}
-                                ></canvas>
-                            </div>
-                        </div>
-                        <div className="DCDiv3">
-                            <button disabled={currentDrawingState === 0 ? true : false}
-                                style={{ color: currentDrawingState === 0 ? "gray" : "white", backgroundColor: currentDrawingState === 0 ? "#2d2d2d" : "dimgray" }}
-                                onClick={() => {
-                                    if (currentDrawingState > 0) {
-                                        saveDrawing()
-                                        loadDrawing(-1)
-                                        setCurrentDrawingState(currentDrawingState - 1)
-                                    }
-
-                                }}
-                            >
-                                VISSZA
-                            </button>
-
-                            {currentDrawingState < drawingStates.length - 1 ?
-                                <button
+                            <div className="DCDiv3">
+                                <button disabled={currentDrawingState === 0 ? true : false}
+                                    style={{ color: currentDrawingState === 0 ? "gray" : "white", backgroundColor: currentDrawingState === 0 ? "#2d2d2d" : "dimgray" }}
                                     onClick={() => {
-                                        saveDrawing()
-                                        loadDrawing(1)
-                                        setCurrentDrawingState(currentDrawingState + 1)
+                                        if (currentDrawingState > 0) {
+                                            saveDrawing()
+                                            loadDrawing(-1)
+                                            setCurrentDrawingState(currentDrawingState - 1)
+                                        }
+
                                     }}
-                                    style={{ backgroundColor: "dimgray", transition: "0.5s" }}
                                 >
-                                    ELŐRE
+                                    VISSZA
                                 </button>
-                                :
-                                <button
-                                    onClick={(e) => {
-                                        saveDrawing()
-                                        /*
-                                        Synchronize state
-                                        */
-                                        handleCloseModal(e)
-                                    }}
-                                    style={{ backgroundColor: "dodgerblue" }}>
-                                    KÉSZ
-                                </button>
-                            }
+
+                                {currentDrawingState < drawingStates.length - 1 ?
+                                    <button
+                                        onClick={() => {
+                                            saveDrawing()
+                                            loadDrawing(1)
+                                            setCurrentDrawingState(currentDrawingState + 1)
+                                        }}
+                                        style={{ backgroundColor: "dimgray", transition: "0.5s" }}
+                                    >
+                                        ELŐRE
+                                    </button>
+                                    :
+                                    <button
+                                        onClick={(e) => {
+                                            saveDrawing()
+                                            /*
+                                            Synchronize state
+                                            */
+                                            handleCloseModal(e)
+                                        }}
+                                        style={{ backgroundColor: "dodgerblue" }}>
+                                        KÉSZ
+                                    </button>
+                                }
 
 
+                            </div>
                         </div>
                     </div>
-                </div>
-            </>
-        }
-    </>)
+                </>
+            }
+        </>)
 }

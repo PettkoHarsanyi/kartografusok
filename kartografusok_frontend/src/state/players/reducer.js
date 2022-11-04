@@ -1,4 +1,4 @@
-import { ADD_PLAYER, MODIFY_PLAYER, MUTE_PLAYER, REMOVE_PLAYER } from "./actions";
+import { ADD_PLAYER, ADD_PLAYER_LOCAL, MODIFY_PLAYER, MODIFY_PLAYER_LOCAL, MUTE_PLAYER, REMOVE_PLAYER } from "./actions";
 
 export const playersInitialState = []
 
@@ -31,6 +31,20 @@ export const playersReducer = (state = playersInitialState, action) => {
             }
             return player;
         })
+    }
+
+    if(type === MODIFY_PLAYER_LOCAL){
+        return players.map(player => {
+            if(player.id === payload.id){
+                console.log(payload.fields)
+                return payload;
+            }
+            return player;
+        })
+    }
+
+    if(type=== ADD_PLAYER_LOCAL){
+        return [...players, payload];
     }
 
     return state;

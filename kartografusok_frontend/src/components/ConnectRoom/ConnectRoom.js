@@ -6,6 +6,7 @@ import authService from '../../auth/auth.service';
 import "../../css/ConnectRoom.css";
 import { socketApi } from '../../socket/SocketApi';
 import { initActualPlayer } from '../../state/actualPlayer/actions';
+import { addPlayer } from '../../state/players/actions';
 import { joinRoom } from '../../state/room/actions';
 import { getState } from '../../state/selector';
 import { wsConnect } from '../../state/store';
@@ -29,16 +30,21 @@ export default function ConnectRoom() {
 
     const joinRoomAck = (obj) => {
         console.log(JSON.parse(obj.state));
+
         dispatch({
             type: "SET_STATE",
             payload: JSON.parse(obj.state)
         })
+
+        dispatch(addPlayer(user))
+        
+        
         navigate("/letrehozas");
     }
 
     const handleJoinRoom = (e) => {
         e.preventDefault();
-        socketApi.joinRoom(code,joinRoomAck);
+        socketApi.joinRoom(code,user,joinRoomAck);
     }
 
     return(

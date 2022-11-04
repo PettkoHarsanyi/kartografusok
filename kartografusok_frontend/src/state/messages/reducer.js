@@ -1,4 +1,4 @@
-import { ADD_MESSAGE } from "./actions";
+import { ADD_MESSAGE, ADD_MESSAGE_LOCAL } from "./actions";
 
 export const messagesInitialState = []
 
@@ -9,6 +9,11 @@ export const messagesReducer = (state = messagesInitialState, action) => {
     if (type === ADD_MESSAGE) {
         return [...messages, payload];
     }
+
+    if (type === ADD_MESSAGE_LOCAL) {
+        return [...messages, payload];
+    }
+
 
     return state;
 };

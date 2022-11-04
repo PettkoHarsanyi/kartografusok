@@ -14,30 +14,25 @@ export const gameRoom = (io) => {
         const room = await db.rooms.findOne({
           where: { uuid },
         });
-        console.log("room created with id: " + uuid)
-        console.log("room content: ")
-        console.log(room);
+
+        console.log(room)
+
         ack({ status: "ok", roomId: uuid });
       } catch (e) {
-        console.log("room hasn't been created")
         if (typeof ack === "function") {
           ack({ status: "error", message: e.message });
         }
       }
     });
 
-    socket.on("join-room", async (uuid, ack) => {
+    socket.on("join-room", async (uuid, user, ack) => {
       try {
         // nincs ilyen szoba
-        console.log(socket.id)
-        console.log(" attempts to join room " + uuid)
 
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
           throw new Error("No such room id on the socket.io server.");
         }
-
-        console.log(" 1 ")
 
         // szoba state lekérése
         // nincs benne db-ben a uuid, meghal a db query
@@ -48,31 +43,19 @@ export const gameRoom = (io) => {
           throw new Error("No such room id in database.");
         }
 
-        console.log(" 2 ")
-
-
         // Már a szobában van a kliens
         if (socket.rooms.has(uuid)) {
           throw new Error("The client is already in this room.");
         }
 
-        console.log(" 3 ")
-
-
         socket.join(uuid);
         socket.broadcast
           .to(uuid)
-          .emit("player-joined", { roomId: uuid, socketId: socket.id });
+          .emit("player-joined", { roomId: uuid, player: user });
 
-        console.log(" 4 ")
 
-        console.log(socket + " has joined to room: " + uuid)
-        console.log("the rooms content now is:")
-        console.log(room);
-        // visszaadás
         ack({ status: "ok", state: room.state });
       } catch (e) {
-        console.log(socket + " couldn't join room: " + uuid)
 
         if (typeof ack === "function") {
           ack({ status: "error", message: e.message });
@@ -84,7 +67,6 @@ export const gameRoom = (io) => {
       try {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
-        console.log("az uuid: " + uuid);
         if (!Array.from(allRooms.keys()).includes(uuid)) {
           throw new Error("No such room id on the socket.io server.");
         }
@@ -118,12 +100,40 @@ export const gameRoom = (io) => {
         }
         sender.emit("state-changed", { roomId: uuid, state });
         
-        console.log(room);
+        console.log(state);
 
         ack({ status: "ok" });
       } catch (e) {
         if (typeof ack === "function") {
           ack({ status: "error", message: e.message });
+        }
+      }
+    });
+
+    socket.on("start-game", async (uuid, broadcast, ack) => {
+      try{
+        const allRooms = io.sockets.adapter.rooms;
+        if (!Array.from(allRooms.keys()).includes(uuid)) {
+          throw new Error("No such room id on the socket.io server.");
+        }
+
+        // Nincs a szobában a kliens
+        if (!socket.rooms.has(uuid)) {
+          throw new Error("The client is not in this room.");
+        }
+
+        let sender;
+        if (broadcast) {
+          // sender = socket.broadcast.to(uuid);
+          socket.broadcast.emit("game-start", {});
+        } else {
+          io.emit("game-start", {});
+        }
+
+        ack({ status: "ok" });
+      }catch(e){
+        if(typeof ack === "function"){
+          ack({status:"errore", message: e.message})
         }
       }
     });
@@ -148,7 +158,7 @@ export const gameRoom = (io) => {
         } else {
           sender = io.to(uuid);
         }
-        sender.emit("action-sent", { roomId: uuid, action });
+        sender.emit("action-sent", action);
 
         ack({ status: "ok" });
       } catch (e) {

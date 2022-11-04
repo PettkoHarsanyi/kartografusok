@@ -9,6 +9,7 @@ import { containerClasses } from "@mui/system";
 import { modifyPlayer } from "../../state/players/actions";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 import DrawCanvas from "./DrawCanvas";
+import { getPlayers } from "../../state/players/selectors";
 
 
 export default function Game() {
@@ -21,17 +22,26 @@ export default function Game() {
     }
 
     const actualPlayer = useSelector(getActualPlayer);
+    const players = useSelector(getPlayers);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(actualPlayer)
-    },[actualPlayer])
+    }, [actualPlayer])
+
+    useEffect(() => {
+        console.log(players)
+    }, [players])
 
     return (
         <div className="Game">
-            <GameModal closable={true} handleCloseModal={handleCloseModal} >
-                <DrawCanvas handleCloseModal={handleCloseModal}/>
+            <GameModal closable={false} handleCloseModal={handleCloseModal} >
+                <DrawCanvas handleCloseModal={handleCloseModal} />
             </GameModal>
-            
+
+            {/* {players[1] && players[1].fields && players[1].fields[0] &&
+                console.log(players[1].fields[0])
+                // <img src={players[1].fields[0].data} />
+            } */}
         </div>
     )
 }
