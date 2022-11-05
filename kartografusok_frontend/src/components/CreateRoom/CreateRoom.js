@@ -22,6 +22,8 @@ import { wsConnect } from '../../state/store';
 import { getRoom } from '../../state/room/selectors';
 import { getState } from '../../state/selector';
 import { socketApi } from '../../socket/SocketApi';
+import { getCards } from '../../state/cards/selector';
+import { initPointCards } from '../../state/cards/pointCards/actions';
 
 export default function CreateRoom() {
     const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
@@ -36,6 +38,7 @@ export default function CreateRoom() {
 
     const dispatch = useDispatch()
     const users = useSelector(getPlayers);
+    const cards = useSelector(getCards);
     const messages = useSelector(getMessages);
     const room = useSelector(getRoom);
     const state = useSelector(getState);
@@ -57,11 +60,18 @@ export default function CreateRoom() {
     }
 
     const syncStateAck = (obj) => {
-        console.log(obj);
+        // console.log(obj);
     }
 
     const syncActionAck = (obj) => {
-        console.log(obj);
+        // console.log(obj);
+    }
+
+    const randomize4PointCards = () => {
+        // console.log(cards.pointCards);
+        const shuffled = cards.pointCards.sort(() => 0.5 - Math.random());
+        let selected = shuffled.slice(0, 4);
+        dispatch(initPointCards(selected));
     }
 
     useEffect(() => {
@@ -69,21 +79,22 @@ export default function CreateRoom() {
             dispatch(initActualPlayer(user));
             dispatch(initMap(getRandomMap()));
             dispatch(addPlayer(user))
-            console.log("Ive been called");
+            // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));
+            randomize4PointCards();
         }
     }, [])
 
     useEffect(() => {
         if (players.length === 1) {
             if (!room.roomCode) {
-                console.log("ITT LEFUTOTTAM, MEGCSINÁLTAM A SZOBÁT");
+                // console.log("ITT LEFUTOTTAM, MEGCSINÁLTAM A SZOBÁT");
                 dispatch(wsConnect())
                 socketApi.createRoom(user, createRoomAck);
             }
             else {
-                console.log("ITT NEM FUTOTTAM LE, CSAK CSATLAKOZTAM A SZOBÁHOZ")
+                // console.log("ITT NEM FUTOTTAM LE, CSAK CSATLAKOZTAM A SZOBÁHOZ")
             }
         }
         // if(players.length===0){
@@ -97,16 +108,16 @@ export default function CreateRoom() {
         // //     socketApi.syncAction(room.roomCode,{type:"ADD_PLAYER",payload:user},true,syncActionAck)
         // // }
         // console.log(players);
-        if(room?.roomCode) socketApi.syncState(room.roomCode,state,true,(ack)=>console.log(ack))
+        if(room?.roomCode) socketApi.syncState(room.roomCode,state,true,(ack)=>{/*console.log(ack)*/})
     }, [players])
 
     useEffect(() => {
         if (players.length === 1) {
             if(room.leader.id === user.id){
-                console.log("FELKÜLDTEM A SZOBÁT")
-                socketApi.syncState(room.roomCode, state, true, (ack) => console.log(ack))
+                // console.log("FELKÜLDTEM A SZOBÁT")
+                socketApi.syncState(room.roomCode, state, true, (ack) => {/*console.log(ack)*/})
             }else{
-                console.log("NEM KÜLDTEM MÁR FEL SEMMIT, A LEADER FELKÜLDTE A SYNCET, LEGKÖZELEBB CSAK ADD PLAYERNÉL KELL")
+                // console.log("NEM KÜLDTEM MÁR FEL SEMMIT, A LEADER FELKÜLDTE A SYNCET, LEGKÖZELEBB CSAK ADD PLAYERNÉL KELL")
             }
         }
         // if(room.roomCode && players.length === 0){              // AMIKOR A SZOBA LÉTREHOZÓ VAN CSAK BELÉPVE
@@ -176,7 +187,7 @@ export default function CreateRoom() {
 
     useEffect(()=>{
         if(room.gameStarted && room.gameStarted === true){
-            console.log("game has started");
+            // console.log("game has started");
             navigate("/jatek");
         }
     },[room])

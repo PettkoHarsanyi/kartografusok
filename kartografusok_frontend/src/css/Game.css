@@ -3,14 +3,17 @@
 
 .Game {
     min-height: 100vh;
+    height: 100vh;
     background-color: gainsboro;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
 
     box-shadow: inset 0 0 120px 24px rgba(228, 129, 0, 0.5);
     position: relative;
+    padding: 3vh;
+    gap:2vh;
 }
 
 .Game * {
@@ -22,171 +25,182 @@
     user-select: none;
 }
 
-.Game .GameModal {
+.Game .MapDiv{
+    height: 100%;
+    box-shadow: rgba(0, 0, 0, 0.411) 0vh 2vh 4vh 0vh,rgba(0, 0, 0, 0.534) 0vh 2vh 16vh 0vh;
+    background-color: #474544;
+    position: relative;
+    border-radius: 0.5vh;
+}
+
+.Game .MapPic{
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.Game .MapTable {
     position: absolute;
+    left: 9.7%;
+    top: 20.4%;
+    width: 81.2%;
+    height: 56.6%;
+    display: table;
+}
+
+.Game .MapTableRow {
+    display: table-row;
+}
+
+.Game .MapTableBody {
+    display: table-row-group;
+}
+
+.Game .MapTableCell,
+.Game .MapTableHead {
+    width: 9.09090909%;
+    max-width: 9.09090909%;
+    display: table-cell;
+    border-collapse: collapse;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    vertical-align: middle;
+    overflow: hidden !important;
+}
+
+.Game .MapLayer {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.637);
 }
 
-.Game .GameModalContext {
-    width: 70%;
-    height: 80%;
-    border: 0.5vh solid black;
-    background-color: gainsboro;
-    box-shadow: 0 0 32px 16px rgba(0, 0, 0, 0.3),
-        inset 0 0 32px 16px rgba(228, 129, 0, 0.2);
-    border-radius: 1vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5vh;
-}
-
-.Game .ModalTitle{
-    height: 20%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.Game .ModalTitle * {
-    font-size: 13vh;
-    font-weight: 900;
-}
-
-.Game .ModalContext{
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.Game .DrawMessage{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.Game .MapLayer:hover {
     width: 100%;
-    height: max-content;
+    background-color: rgba(255, 255, 255, 0.478);
+    height: 100%;
 }
 
-.Game .DrawMessage * {
-    font-size: 6vh;
-}
-
-.Game .DrawContext {
-    height: 75%;
+.Game .ContextDiv{
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content:space-between;
+    justify-content: center;
     align-items: center;
-    gap: 3vh;
-    width: max-content;
-}
-
-.Game .InputWrapper{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.Game .DCDiv1 {
-    height: 30%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
     gap: 2vh;
 }
 
-.Game .DCDiv1 div {
-    width: 10vw;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+.Game .ContextDiv *{
+    gap: 2vh;
 }
 
-.Game input {
-    height: 5vh;
+.Game .DeckDiv{
+    height: 60%;
     width: 100%;
-    color: black;
-}
-
-.Game .CanvasDiv {
-    width: 15vh;
-    height: 15vh;
-    background-color: white;
-    border: 0.5vh solid black;
-    border-radius: 2vh;
-    position: relative;
-    overflow: hidden;
-    padding: 0;
-    z-index: 10;
-}
-
-.Game .DCDiv2 {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap:1vh;
-    position: relative;
-    height: 55%;
-    width: 70%;
-}
-
-.Game .DCDiv3 {
-    height: 15%;
-    display: flex;
+    flex-direction: row;
     justify-content: center;
-    gap: 4vh;
+    align-items: center;
+    gap: 2vh;
 }
 
-.Game .DCDiv3 button {
-    width: max-content;
-    line-height: 1.5;
-    border: 0.5vh solid black;
-    border-radius: 2vh;
-    cursor: pointer;
-    background-color: dimgrey;
-    color: white;
-    font-family: "Alfa Slab One", cursive;
-    font-size: 3vh;
-    padding: 0 2vh;
-}
-
-#drawing-board {
-    position: absolute;
+.Game .PlayersChatDiv{
+    height: 40%;
+    display: flex;
+    flex-direction: row;
     width: 100%;
+}
+
+.Game .DrawnCardDiv{
     height: 100%;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    display: block;
-    margin: 0;
+    width: 25%;
+    display: flex;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:0vh
 }
 
-.Game .ClearButton{
-    line-height: 1;
-    cursor: pointer;
-    color: white;
-    font-size: 3vh;
-    position: absolute;
-    width: 4vh;
-    z-index: 9;
-    right: 30%;
-    transition: 0.3s;
+.Game .ActualCardDiv{
+    height: 70%;
+    width: 100%;
 }
 
-.DCDiv2:hover > .ClearButton{
-    right: 0%;
+.Game .ChooseDiv{
+    height: 30%;
+    width: 100%;
+}
+
+.Game .CardsDiv{
+    width: 75%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .CardsDiv, .Game .CardsDiv *{
+    gap: 2vh;
+}
+
+.Game .TopCardsDiv{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+}
+
+.Game .CardDiv{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .CardDivImg{
+    max-width: 100%;
+    object-fit: contain;
+    border: 0.4vh solid black;
+    border-radius: 1vh;
+    background-color: #474544;
+    cursor:pointer;
+}
+
+.Game .BottomCardsDiv{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+}
+
+.Game .ChatDiv{
+    width: 60%;
+    height: 100%;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+}
+
+.Game .PlayersDiv{
+    width: 40%;
+    height: 100%;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+}
+
+.Game .SelectBlockDiv{
+    height: 60%;
+    width: 100%;
+    border-top: 0.5vh solid black;
+}
+
+.Game .ControlsDiv{
+    height: 40%;
+    width: 100%;
+    border-top: 0.5vh solid black;
 }

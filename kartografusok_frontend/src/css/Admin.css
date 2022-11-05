@@ -322,7 +322,7 @@ th {
 }
 
 .Admin .MapTableCell,
-.MapTableHead {
+.Admin .MapTableHead {
     width: 9.09090909%;
     max-width: 9.09090909%;
     display: table-cell;

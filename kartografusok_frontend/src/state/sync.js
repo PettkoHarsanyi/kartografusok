@@ -42,16 +42,16 @@ export const sync = (store) => (next) => (action) => {
 
     let state = store.getState();
 
-    console.log("SYNCING...")
+    // console.log("SYNCING...")
 
     // socketApi.syncState(store.getState().room.roomCode,state,true)
     socketApi.syncAction(store.getState().room.roomCode, action, true);
   } else {
-    console.log("NOT SYNCING...")
+    // console.log("NOT SYNCING...")
   }
 
 
-  console.log(store.getState());
+  // console.log(store.getState());
   if(action.type === ADD_PLAYER && store.getState().room.roomCode){
     if(store.getState().players.some((player)=> player.id !== store.getState().actualPlayer.id)){
       socketApi.syncAction(store.getState().room.roomCode, action, true);

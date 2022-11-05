@@ -1,27 +1,27 @@
 export const decreeCardsInitialState = [
     {
-        id: 1,
+        id: 0,
         name:"A",
-        picture:"A.png",
-        backPicture:"A.png"
+        picture:"decreecards/A.png",
+        backPicture:"decreecards/A.png"
+    },
+    {
+        id: 1,
+        name:"B",
+        picture:"decreecards/B.png",
+        backPicture:"decreecards/B.png"
     },
     {
         id: 2,
-        name:"B",
-        picture:"B.png",
-        backPicture:"B.png"
+        name:"C",
+        picture:"decreecards/C.png",
+        backPicture:"decreecards/C.png"
     },
     {
         id: 3,
-        name:"C",
-        picture:"C.png",
-        backPicture:"C.png"
-    },
-    {
-        id: 4,
         name:"D",
-        picture:"D.png",
-        backPicture:"D.png"
+        picture:"decreecards/D.png",
+        backPicture:"decreecards/D.png"
     },
 ]
 

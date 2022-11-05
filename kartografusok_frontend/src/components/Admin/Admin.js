@@ -774,11 +774,11 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={require(`../../assets/cards/pointcards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
+                                                <img src={require(`../../assets/cards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack" id="Back">
                                                 <div className='CardBack' onClick={(e) => flipBackCard(e)} >
-                                                    <img src={require(`../../assets/cards/pointcards/${card.backPicture}`)} className='CardBackImg' />
+                                                    <img src={require(`../../assets/cards/${card.backPicture}`)} className='CardBackImg' />
                                                     <div className='CardBackText'>
                                                         <div className='Attribute'>{card.name}</div>
                                                     </div>
@@ -808,11 +808,11 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={require(`../../assets/cards/seasoncards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
+                                                <img src={require(`../../assets/cards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack">
                                                 <div className='CardBack' onClick={(e) => flipBackCard(e)} >
-                                                    <img src={require(`../../assets/cards/seasoncards/${card.backPicture}`)} className="CardBackImg" onClick={(e) => flipBackCard(e)} />
+                                                    <img src={require(`../../assets/cards/${card.backPicture}`)} className="CardBackImg" onClick={(e) => flipBackCard(e)} />
                                                     <div className='CardBackText'>
                                                         <div className='Attribute'>{card.name}</div>
                                                     </div>
@@ -830,10 +830,10 @@ export default function Admin() {
                                     <div key={card.id} className="FlipCard">
                                         <div className="FlipCardInner">
                                             <div className="FlipCardFront">
-                                                <img src={require(`../../assets/cards/decreecards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
+                                                <img src={require(`../../assets/cards/${card.picture}`)} className="Card" onClick={(e) => flipCard(e)} />
                                             </div>
                                             <div className="FlipCardBack">
-                                                <img src={require(`../../assets/cards/decreecards/${card.backPicture}`)} className="CardBack" onClick={(e) => flipBackCard(e)} />
+                                                <img src={require(`../../assets/cards/${card.backPicture}`)} className="CardBack" onClick={(e) => flipBackCard(e)} />
                                             </div>
                                         </div>
                                     </div>

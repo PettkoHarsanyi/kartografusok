@@ -10,8 +10,6 @@ import clearButton from "../../assets/delete.png"
 
 export default function DrawCanvas({ handleCloseModal }) {
 
-    const navigate = useNavigate();
-    const room = useSelector(getRoom);
     const dispatch = useDispatch();
     const actualPlayer = useSelector(getActualPlayer);
 
@@ -30,11 +28,7 @@ export default function DrawCanvas({ handleCloseModal }) {
     const [currentState, setCurrentState] = useState(0);
     const [drawings, setDrawings] = useState([]);
 
-    useEffect(() => {
-        if (!room.roomCode) navigate("/");
-    }, [])
-
-    const canvasRef = useRef(null);
+        const canvasRef = useRef(null);
     const contextRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false)
     const [drawColor, setDrawColor] = useState("#993A30");
@@ -229,7 +223,7 @@ export default function DrawCanvas({ handleCloseModal }) {
                                             /*
                                             Synchronize state
                                             */
-                                            handleCloseModal(e)
+                                            handleCloseModal(e,"drawModal")
                                         }}
                                         style={{ backgroundColor: "dodgerblue" }}>
                                         KÉSZ
