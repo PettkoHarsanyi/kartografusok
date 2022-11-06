@@ -1,7 +1,5 @@
 import { db } from "./sequelize.js";
 
-const MAX_ROOM_SIZE = 5;
-
 export const gameRoom = (io) => {
   io.on("connection", (socket) => {
     console.log("Game room: connected", socket.id);
@@ -15,8 +13,6 @@ export const gameRoom = (io) => {
           where: { uuid },
         });
 
-        console.log(room)
-
         ack({ status: "ok", roomId: uuid });
       } catch (e) {
         if (typeof ack === "function") {
@@ -27,11 +23,10 @@ export const gameRoom = (io) => {
 
     socket.on("join-room", async (uuid, user, ack) => {
       try {
-        // nincs ilyen szoba
 
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // szoba state lekérése
@@ -40,12 +35,12 @@ export const gameRoom = (io) => {
           where: { uuid },
         });
         if (!room) {
-          throw new Error("No such room id in database.");
+          throw new Error("Nincs ilyen szoba id az adatbázisban");
         }
 
         // Már a szobában van a kliens
         if (socket.rooms.has(uuid)) {
-          throw new Error("The client is already in this room.");
+          throw new Error("A kliens már a szobában van");
         }
 
         socket.join(uuid);
@@ -68,7 +63,7 @@ export const gameRoom = (io) => {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // szoba state lekérése
@@ -77,12 +72,11 @@ export const gameRoom = (io) => {
           where: { uuid },
         });
         if (!room) {
-          throw new Error("No such room id in database.");
+          throw new Error("Nincs ilyen szoba id az adatbázisban");
         }
 
-        // Nincs a szobában a kliens
         if (!socket.rooms.has(uuid)) {
-          throw new Error("The client is not in this room.");
+          throw new Error("A kliens nincs a szobában");
         }
 
         // db módosítás
@@ -91,7 +85,7 @@ export const gameRoom = (io) => {
           { where: { uuid } }
         );
 
-        // send to everybody
+        // broadcastolás mindenkinek
         let sender;
         if (broadcast) {
           sender = socket.broadcast.to(uuid);
@@ -114,12 +108,12 @@ export const gameRoom = (io) => {
       try{
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // Nincs a szobában a kliens
         if (!socket.rooms.has(uuid)) {
-          throw new Error("The client is not in this room.");
+          throw new Error("A kliens nincs a szobában");
         }
 
         let sender;
@@ -143,12 +137,12 @@ export const gameRoom = (io) => {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // Nincs a szobában a kliens
         if (!socket.rooms.has(uuid)) {
-          throw new Error("The client is not in this room.");
+          throw new Error("A kliens nincs a szobában");
         }
 
         // send to everybody
@@ -173,12 +167,12 @@ export const gameRoom = (io) => {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // Nincs a szobában a kliens
         if (!socket.rooms.has(uuid)) {
-          throw new Error("The client is not in this room.");
+          throw new Error("A kliens nincs a szobában");
         }
 
         // broadcast
@@ -200,12 +194,12 @@ export const gameRoom = (io) => {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // Nincs a szobában a kliens
         if (!socket.rooms.has(uuid)) {
-          throw new Error("The client is not in this room.");
+          throw new Error("A kliens nincs a szobában");
         }
 
         // szoba state lekérése
@@ -214,7 +208,7 @@ export const gameRoom = (io) => {
           where: { uuid },
         });
         if (!room) {
-          throw new Error("No such room id in database.");
+          throw new Error("Nincs ilyen szoba id az adatbázisban");
         }
 
         // szoba lezárása
@@ -243,7 +237,7 @@ export const gameRoom = (io) => {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("No such room id on the socket.io server.");
+          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
         }
 
         // szoba state lekérése
@@ -252,12 +246,12 @@ export const gameRoom = (io) => {
           where: { uuid },
         });
         if (!room) {
-          throw new Error("No such room id in database.");
+          throw new Error("Nincs ilyen szoba id az adatbázisban");
         }
 
         // Nincs a szobában a kliens
         if (!socket.rooms.has(uuid)) {
-          throw new Error("The client is not in this room.");
+          throw new Error("A kliens nincs a szobában");
         }
 
         ack({ status: "ok", state: room.state });

@@ -16,24 +16,24 @@ export default function Map({ mapTable, children }) {
 
     return (
         <>
-            <img src={scheme} className="MapPic" alt='Map' />
-            <div className='MapTable'>
-                <div className='MapTableBody'>
-                    {mapTable.map((row, rowindex) =>
-                        <div key={rowindex} className='MapTableRow'>
-                            {row.map((cell, cellindex) => {
-                                return (<div key={cellindex} className='MapTableCell'
-                                    style={{ backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url('${Object.values(FieldTypes)[mapTable[rowindex][cellindex]]}')` }}>
-                                    <div className='MapLayer'>
-                                    </div>
-                                </div>)
-                            }
-                            )}
-                        </div>
-                    )}
+                <img src={scheme} className="MapPic" alt='Map' />
+                <div className='MapTable'>
+                    <div className='MapTableBody'>
+                        {mapTable.map((row, rowindex) =>
+                            <div key={rowindex} className='MapTableRow'>
+                                {row.map((cell, cellindex) => {
+                                    return (<div key={cellindex} className='MapTableCell'
+                                        style={{ backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url('${Object.values(FieldTypes)[mapTable[rowindex][cellindex]]}')` }}>
+                                        <div className='MapLayer'>
+                                        </div>
+                                    </div>)
+                                }
+                                )}
+                            </div>
+                        )}
 
+                    </div>
                 </div>
-            </div>
         </>
     )
 }

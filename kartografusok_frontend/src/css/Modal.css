@@ -13,6 +13,11 @@
     z-index: 1000;
 }
 
+.Game .DrawModal *{
+    font-family: 'Grenze Gotisch', cursive;
+}
+
+
 .Game .DrawModalContext {
     width: 70%;
     height: 80%;
@@ -53,6 +58,15 @@
     justify-content: center;
 }
 
+.Game .DivShadow{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    border-radius: 4vh;
+    box-shadow: inset 0 0 1vh 1vh rgb(0, 0, 0),  inset 0 0 10vh 5vh rgba(0, 0, 0, 0.582);
+}
+
 .Game .InspectModalImg{
     max-height: 100%;
     object-fit: contain;
@@ -77,6 +91,12 @@
     flex-direction: column;
     align-items: center;
 }
+
+
+.Game .ModalContext *{
+    font-size: 4vh;
+}
+
 
 .Game .DrawMessage{
     display: flex;

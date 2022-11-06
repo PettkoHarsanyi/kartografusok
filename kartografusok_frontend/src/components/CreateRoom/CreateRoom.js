@@ -37,7 +37,6 @@ export default function CreateRoom() {
     const [maps] = useState(loadedData[2]); // DB-ből jön, mert dinamikus, a többi stateből
 
     const dispatch = useDispatch()
-    const users = useSelector(getPlayers);
     const cards = useSelector(getCards);
     const messages = useSelector(getMessages);
     const room = useSelector(getRoom);
@@ -45,11 +44,11 @@ export default function CreateRoom() {
     const players = useSelector(getPlayers);
 
     useEffect(() => {
-        let actualUser = users.find(finduser => finduser.id === user.id)
+        let actualUser = players.find(finduser => finduser.id === user.id)
         if (actualUser) {
-            setUser(users.find(finduser => finduser.id === user.id))
+            setUser(players.find(finduser => finduser.id === user.id))
         }
-    }, [users])
+    }, [players])
 
     const getRandomMap = () => {
         return maps[Math.floor(Math.random() * maps.length)]
@@ -229,7 +228,7 @@ export default function CreateRoom() {
                 <div className='Div3'>
                     <div className='DivTitle'>Csatlakozott játékosok:</div>
                     <div className='PlayersDiv'>
-                        {users && users.length > 0 && users.map((_user) => {
+                        {players && players.length > 0 && players.map((_user) => {
                             return (
                                 <div key={_user.id} className='PlayerDiv'>
                                     <div className='MuteBanDiv'>

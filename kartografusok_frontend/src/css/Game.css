@@ -10,7 +10,7 @@
     justify-content: flex-start;
     align-items: center;
 
-    box-shadow: inset 0 0 120px 24px rgba(228, 129, 0, 0.5);
+    box-shadow: inset 0 0 8vh 2vh rgba(228, 129, 0, 0.5);
     position: relative;
     padding: 3vh;
     gap:2vh;
@@ -18,28 +18,35 @@
 
 .Game * {
     line-height: 1.5;
-    font-family: 'Grenze Gotisch', cursive;
-    font-size: 4vh;
+    font-size: 1.5vh;
     font-weight: 500;
     text-align: center;
+    font-family: "Alfa Slab One", cursive;
     user-select: none;
 }
 
 .Game .MapDiv{
+    /* width: 30%; */
+    /* height: fit-content; */
     height: 100%;
     box-shadow: rgba(0, 0, 0, 0.411) 0vh 2vh 4vh 0vh,rgba(0, 0, 0, 0.534) 0vh 2vh 16vh 0vh;
     background-color: #474544;
     position: relative;
     border-radius: 0.5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .Game .MapPic{
+    /* max-height: 100%; */
     max-height: 100%;
     object-fit: contain;
 }
 
 .Game .MapTable {
     position: absolute;
+    max-height: 100%;
     left: 9.7%;
     top: 20.4%;
     width: 81.2%;
@@ -84,7 +91,7 @@
 
 .Game .ContextDiv{
     height: 100%;
-    width: 100%;
+    width: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -179,18 +186,60 @@
     flex-direction: row;
 }
 
-.Game .ChatDiv{
-    width: 60%;
-    height: 100%;
-    border: 0.5vh solid black;
-    border-radius: 1vh;
-}
-
 .Game .PlayersDiv{
     width: 40%;
     height: 100%;
     border: 0.5vh solid black;
     border-radius: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1vh;
+    gap: 1vh;
+    box-shadow: inset 0 0 3vh 0.5vh rgba(228, 129, 0, 0.297);
+    z-index: 1;
+}
+
+.Game .PlayersInfoDiv{
+    height: 80%;
+    width: 100%;
+    border: 0.5vh solid black;
+    border-radius: 1vh 1vh 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap:0;
+}
+
+.Game .PlayerInfo{
+    border-bottom: 0.3vh solid black;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Game .PlayerInfo *{
+    font-size: 2vh;
+}
+
+.Game .RoomControlsDiv{
+    height: 20%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Game .RoomControlsDiv a{
+    all: unset;
+    background-color: gray;
+    border: 0.5vh solid black;
+    border-radius: 1.5vh;
+    padding: 1vh;
+    width: 50%;
+    cursor: pointer;
 }
 
 .Game .SelectBlockDiv{
@@ -203,4 +252,8 @@
     height: 40%;
     width: 100%;
     border-top: 0.5vh solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
 }
