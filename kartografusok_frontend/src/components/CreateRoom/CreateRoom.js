@@ -24,6 +24,7 @@ import { getState } from '../../state/selector';
 import { socketApi } from '../../socket/SocketApi';
 import { getCards } from '../../state/cards/selector';
 import { initPointCards } from '../../state/cards/pointCards/actions';
+import { initDeck } from '../../state/cards/deck/actions';
 
 export default function CreateRoom() {
     const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
@@ -73,6 +74,18 @@ export default function CreateRoom() {
         dispatch(initPointCards(selected));
     }
 
+    const randomizeExploreCards = () => {
+
+        const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
+        let selectedRaidCards = shuffledRaidCards.slice(0, 4);
+        const merged = cards.exploreCards.concat(selectedRaidCards)
+        console.log(merged);
+        const shuffledMerged = merged.sort(() => 0.5 - Math.random());
+        console.log(shuffledMerged);
+        dispatch(initDeck(shuffledMerged));
+        // const shuffled = cards.exploreCards.
+    }
+
     useEffect(() => {
         if(players.length === 0){               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             dispatch(initActualPlayer(user));
@@ -82,8 +95,14 @@ export default function CreateRoom() {
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));
             randomize4PointCards();
+            // randomizeExploreCards();
         }
     }, [])
+
+    useEffect(()=>{
+        console.log("cards have changed");
+        randomizeExploreCards();
+    },[cards.exploreCards,cards.raidCards])
 
     useEffect(() => {
         if (players.length === 1) {

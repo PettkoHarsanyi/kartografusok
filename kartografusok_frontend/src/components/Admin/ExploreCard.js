@@ -9,6 +9,7 @@ export default function ExploreCard({ card }) {
 
     const fieldTypes = { "FOREST": forest, "VILLAGE": village, "FARM": farm, "WATER": water, "MONSTER": monster }
 
+
     return (
         <div className="UserCardContext" id="exploreCard">
             <div className="DurationsDiv">
@@ -21,7 +22,7 @@ export default function ExploreCard({ card }) {
             <div className="FieldTypeDiv">
                 {card.fieldType1 === "ANY" &&
                     Object.values(fieldTypes).map((type,index) => {
-                        return (<img key={index} className="FieldTypeImg" id="anyFieldTypeImg" src={type} />)
+                        return (<img key={index} className="FieldTypeImg" id="anyFieldTypeImg" src={type}/>)
                     })
                 }
                 {card.fieldType1 !== "ANY" &&

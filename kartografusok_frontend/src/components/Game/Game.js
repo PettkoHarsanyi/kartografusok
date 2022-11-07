@@ -59,7 +59,12 @@ export default function Game() {
     // mindez legalábbis papíron =)
 
     useEffect(() => {
-        if (!room.roomCode) navigate("/");
+        if (!room.roomCode) {
+            dispatch({
+                type: "CLEAR_STATE"
+            })
+            navigate("/")
+        };
     }, [])
 
     const openInspectModal = (card) => {
@@ -115,7 +120,7 @@ export default function Game() {
                     <div className="PlayersDiv">
                         <div className="PlayersInfoDiv">
                             {players && players.map((player)=>{
-                                return(<div className="PlayerInfo" style={{backgroundColor: player.id === actualPlayer.id ? "gray":""}}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
+                                return(<div className="PlayerInfo" key={player.id} style={{backgroundColor: player.id === actualPlayer.id ? "gray":""}}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
                             })}
                         </div>
                         <div className="RoomControlsDiv">

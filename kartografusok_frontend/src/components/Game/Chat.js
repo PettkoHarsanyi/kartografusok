@@ -44,7 +44,9 @@ export default function Chat() {
     useEffect(() => {
         var chat = document.getElementById("chat");
         chat.scrollTop = chat.scrollHeight;
-        socketApi.syncState(room.roomCode,state,true,(ack)=>{/*console.log(ack)*/})
+        if(room.roomCode){
+            socketApi.syncState(room.roomCode,state,true,(ack)=>{/*console.log(ack)*/})
+        }
     }, [messages])
 
     return (
