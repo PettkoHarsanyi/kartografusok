@@ -23,6 +23,9 @@ import axios from "axios";
 import authHeader from "../../auth/auth-header";
 import { addMessage } from "../../state/messages/actions";
 import Chat from "./Chat";
+import { drawCard } from "../../state/cards/drawnCards/actions";
+import Card from "../Admin/Card";
+import DrawnCard from "./DrawnCard";
 
 
 export default function Game() {
@@ -49,8 +52,6 @@ export default function Game() {
     const [inspectedCard, setInspectedCard] = useState(null);
     const [actualSeasonCard, setActualSeasonCard] = useState(cards.seasonCards[0]);
 
-
-
     // HA BEMEGY EGY MODIFY PLAYER AKKOR AZ BEMEGY AZ ACTUAL PLAYERBE IS, HA HA MEGEGYEZIK A PLAYERS
     // BELI PLAYER ID-JAVAL.
     // TEHÁT MINDIG CSAK A PLAYERS TÖMBÖN KELL VÁLTOZTATGATNI,
@@ -64,8 +65,14 @@ export default function Game() {
                 type: "CLEAR_STATE"
             })
             navigate("/")
+        } else {
+            dispatch(drawCard(cards.deck[0]))
         };
     }, [])
+
+    useEffect(() => {
+        console.log(cards.drawnCards)
+    }, [cards.drawnCards])
 
     const openInspectModal = (card) => {
         setInspectedCard(card);
@@ -85,9 +92,21 @@ export default function Game() {
             <div className="ContextDiv">
                 <div className="DeckDiv">
                     <div className="DrawnCardDiv">
-                        <div className="ActualCardDiv"></div>
+
+                        <div className="ActualCardDiv">
+                            <div className="CardScrollDiv">
+                                {cards.drawnCards && cards.drawnCards.map((card, index) => {
+                                    return (<DrawnCard key={card.id} card={card} index={index} />)
+                                })}
+                            </div>
+                        </div>
                         <div className="ChooseDiv">
-                            <div className="SelectBlockDiv"></div>
+                            <div className="SelectBlockDiv">
+                                <button onClick={(e) => {
+                                    e.preventDefault();
+                                    dispatch(drawCard(cards.deck[0]))
+                                }}>Húz</button>
+                            </div>
                             <div className="ControlsDiv">
                                 <div>Letesz: bal egér gomb</div>
                                 <div>Forgatás: jobb egér gomb</div>
@@ -119,8 +138,8 @@ export default function Game() {
                     <Chat />
                     <div className="PlayersDiv">
                         <div className="PlayersInfoDiv">
-                            {players && players.map((player)=>{
-                                return(<div className="PlayerInfo" key={player.id} style={{backgroundColor: player.id === actualPlayer.id ? "gray":""}}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
+                            {players && players.map((player) => {
+                                return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "gray" : "" }}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
                             })}
                         </div>
                         <div className="RoomControlsDiv">
@@ -133,11 +152,11 @@ export default function Game() {
 
             {/* --- MODALS --- */}
 
-            {states[currentState] === INIT_DRAWING &&
+            {/* {states[currentState] === INIT_DRAWING &&
                 <GameModal closable={false} handleCloseModal={handleCloseModal}>
                     <DrawCanvas handleCloseModal={handleCloseModal} />
                 </GameModal>
-            }
+            } */}
 
             <InspectModal closable={true} handleCloseModal={handleCloseModal} >
                 {inspectedCard &&

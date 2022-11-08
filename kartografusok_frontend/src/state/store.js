@@ -61,7 +61,7 @@ export const wsConnect = () => (dispatch) => {
 
   socketApi.onPlayerJoined((action) => {
     // console.log(action);
-    console.log(action);
+    // console.log(action);
     // dispatch(action)
     // dispatch(addPlayer(action.player))
     // this.socket.emit(
@@ -84,14 +84,14 @@ export const wsConnect = () => (dispatch) => {
   socketApi.onActionSent((action)=>{
     // console.log(action);
     // console.log({type: action.type + "_LOCAL", payload: action.payload})
-    console.log("PAYLOAD: ");
-    console.log(action.payload)
+    // console.log("PAYLOAD: ");
+    // console.log(action.payload)
     dispatch({type: action.type + "_LOCAL", payload: action.payload}); // DISPATCH LOCAL - csak olyan action ami nincs benne a sync.js-ben, 
                                                                       //így azt nem küldi fel rekurzívan
   })
 
   socketApi.onGameStart((action)=>{
-    console.log("GAME HAS STARTED");
+    // console.log("GAME HAS STARTED");
   })
 
 }

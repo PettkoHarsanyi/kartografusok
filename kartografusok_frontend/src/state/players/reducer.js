@@ -36,7 +36,6 @@ export const playersReducer = (state = playersInitialState, action) => {
     if(type === MODIFY_PLAYER_LOCAL){
         return players.map(player => {
             if(player.id === payload.id){
-                console.log(payload.fields)
                 return payload;
             }
             return player;

@@ -1,6 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { deckInitialState, deckReducer } from "./deck/reducer";
 import { decreeCardsInitialState, decreeCardsReducer } from "./decreeCards/reducer";
+import { drawnCardsInitialState, drawnCardsReducer } from "./drawnCards/reducer";
 import { exploreCardsInitialState, exploreCardsReducer } from "./exploreCards/reducer";
 import { pointCardsInitialState, pointCardsReducer } from "./pointCards/reducer";
 import { raidCardsInitialState, raidCardsReducer } from "./raidCards/reducer";
@@ -13,6 +14,7 @@ export const cardsReducerInitialState = {
     seasonCards: seasonCardsInitialState,
     decreeCards: decreeCardsInitialState,
     deck: deckInitialState,
+    drawnCards: drawnCardsInitialState
 }
 
 export const cardsReducer = combineReducers({
@@ -22,4 +24,5 @@ export const cardsReducer = combineReducers({
     seasonCards: seasonCardsReducer,
     decreeCards: decreeCardsReducer,
     deck: deckReducer,
+    drawnCards: drawnCardsReducer
 })

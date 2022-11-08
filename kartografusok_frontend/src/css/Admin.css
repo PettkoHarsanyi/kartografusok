@@ -775,7 +775,7 @@ th {
     justify-content: space-around;
 }
 
-.FlipCard {
+.Admin .FlipCard {
     width: 20vh;
     height: 30vh;
     cursor: pointer;
@@ -784,7 +784,7 @@ th {
 }
 
 /* This container is needed to position the front and back side */
-.FlipCardInner {
+.Admin .FlipCardInner {
     position: relative;
     width: 100%;
     height: 100%;
@@ -794,8 +794,8 @@ th {
 }
 
 /* Position the front and back side */
-.FlipCardFront,
-.FlipCardBack {
+.Admin .FlipCardFront,
+.Admin .FlipCardBack {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -807,7 +807,7 @@ th {
 }
 
 /* Style the front side (fallback if image is missing) */
-.FlipCardFront {
+.Admin .FlipCardFront {
     color: black;
 }
 
@@ -838,7 +838,7 @@ th {
 }
 
 /* Style the back side */
-.FlipCardBack {
+.Admin .FlipCardBack {
     color: white;
     transform: rotateY(180deg);
 }
@@ -917,7 +917,7 @@ th {
     padding-bottom: 5vh;
 }
 
-.FlipCardFrontLayer{
+.Admin .FlipCardFrontLayer{
     width: 100%;
     height: 100%;
     visibility: hidden;
@@ -932,7 +932,7 @@ th {
     z-index: 9;
 }
 
-.FlipCardFrontLayer div{
+.Admin .FlipCardFrontLayer div{
     margin: 1vh;
     border: 0.5vh solid white;
     border-radius: 1vh;
@@ -944,21 +944,21 @@ th {
     font-weight: bold;
 }
 
-.FlipCardFrontLayer img{
+.Admin .FlipCardFrontLayer img{
     margin: 1vh;
 }
 
-.UserCardContext:hover + .FlipCardFrontLayer{
+.Admin .UserCardContext:hover + .FlipCardFrontLayer{
     display: flex;
     visibility: visible;
 }
 
-.Card:hover + .FlipCardFrontLayer{
+.Admin .Card:hover + .FlipCardFrontLayer{
     display: flex;
     visibility: visible;
 }
 
-.FlipCardFrontLayer:hover{
+.Admin .FlipCardFrontLayer:hover{
     display: flex;
     visibility: visible;
 }
@@ -1074,40 +1074,40 @@ th {
 
 
 /* DivTable.com */
-.divTable {
+.Admin .divTable {
     display: table;
     border-collapse: collapse;
 }
 
-.divTableRow {
+.Admin .divTableRow {
     display: table-row;
 }
 
-.divTableHeading {
+.Admin .divTableHeading {
     background-color: #EEE;
     display: table-header-group;
 }
 
-.divTableCell,
-.divTableHead {
+.Admin .divTableCell,
+.Admin .divTableHead {
     display: table-cell;
     height: 7px;
     width: 7px;
 }
 
-.divTableHeading {
+.Admin .divTableHeading {
     background-color: #EEE;
     display: table-header-group;
     font-weight: bold;
 }
 
-.divTableFoot {
+.Admin .divTableFoot {
     background-color: #EEE;
     display: table-footer-group;
     font-weight: bold;
 }
 
-.divTableBody {
+.Admin .divTableBody {
     display: table-row-group;
 }
 

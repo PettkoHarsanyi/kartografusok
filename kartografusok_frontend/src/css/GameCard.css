@@ -1,0 +1,246 @@
+.Game .CardFrame{
+    position: relative;
+}
+
+.Game .DrawnGameCardDiv *{
+    all:unset;
+    line-height: 1;
+}
+
+.Game .DrawnGameCardDiv{
+    position: absolute;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Game .DrawnGameCardDivImg{
+    max-height: 100%;
+    object-fit: contain;
+    border: 0.4vh solid black;
+    border-radius: 1vh;
+    background-color: #474544;
+    cursor:pointer;
+}
+
+/* .Game .DrawnGameCardDivImg{
+    border: 0.4vh solid black;
+    border-radius: 1vh;
+    background-color: #474544;
+    cursor:pointer;
+    position: absolute;
+    left: 0;
+    top: 0;
+}  */
+
+
+.Game .UserCardContext{
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    display: flex;
+    color: blanchedalmond;
+    padding: 0.8vh;
+    align-items: center;
+    position: absolute;
+}
+
+.Game #exploreCard{
+    flex-direction: column;
+}
+
+.Game .DurationsDiv{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.Game .RuinBadgeDiv{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.Game .RuinDivCircle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .RuinDivCircle img{
+    position: absolute;
+    height: auto;
+    left: 0;
+    top:0;
+    z-index: 0;
+    width: 3vh;
+}
+
+.Game .DurationsDivCircle{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 5vh;
+}
+
+.Game .DurationsDivCircle div{
+    position: relative;
+    line-height: 1.2;
+    z-index: 1;
+}
+
+.Game .DurationsDivCircle img{
+    position: absolute;
+    height: auto;
+    left: 0;
+    top:0;
+    z-index: 0;
+    width: 5vh;
+}
+
+.Game .CardNameDiv{
+    margin-top: 7.1vh;
+    height: max-content;
+    color: rgba(255, 255, 255, 0.798);
+    line-height: 1;
+}
+
+.Game .FieldTypeDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+    align-items: center;
+    height: 3.8vh;
+    width: 80%;
+}
+
+.Game .FieldTypeImg{
+    width: 2.5vh;
+}
+
+.Game #anyFieldTypeImg{
+    width: 2.5vh;
+}
+
+.Game .BlocksDiv {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 4.5vh;
+}
+
+.Game .UserCardContext *{
+    font-family: 'Grenze Gotisch', cursive;
+    font-size: 2.7vh;
+    line-height: 1;
+}
+
+.Game .DurationsDiv{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.Game #exploreCard{
+    flex-direction: column;
+}
+
+.Game #ruinCard{
+    flex-direction: column;
+    padding: 1.3vh;
+}
+
+.Game #ruinName{
+    margin-top: 10.5vh;
+}
+
+
+.Game .RuinFieldType{
+    height: 7vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .RuinFieldType img{
+    width: 5vh;
+}
+
+
+.Game #raidCard{
+    flex-direction: column;
+}
+
+
+.Game #raidName{
+    margin-top: 10.1vh;
+}
+
+.Game .DirAndBlocks{
+    height: 8vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.Game .directionImg{
+    width: 6vh;
+}
+
+.Game #monsterTableCell{
+    height: 7px;
+    width: 7px;
+}
+
+.Game .divTable {
+    display: table;
+    border-collapse: collapse;
+}
+
+.Game .divTableRow {
+    display: table-row;
+}
+
+.Game .divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+.Game .divTableCell,
+.Game .divTableHead {
+    display: table-cell;
+    height: 5px;
+    width: 5px;
+}
+
+.Game .divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.Game .divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.Game .divTableBody {
+    display: table-row-group;
+}

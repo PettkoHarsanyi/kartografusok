@@ -75,7 +75,6 @@ export default function CreateRoom() {
     }
 
     const randomizeExploreCards = () => {
-
         const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
         let selectedRaidCards = shuffledRaidCards.slice(0, 4);
         const merged = cards.exploreCards.concat(selectedRaidCards)
@@ -87,7 +86,7 @@ export default function CreateRoom() {
     }
 
     useEffect(() => {
-        if(players.length === 0){               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
+        if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             dispatch(initActualPlayer(user));
             dispatch(initMap(getRandomMap()));
             dispatch(addPlayer(user))
@@ -99,10 +98,13 @@ export default function CreateRoom() {
         }
     }, [])
 
-    useEffect(()=>{
-        console.log("cards have changed");
-        randomizeExploreCards();
-    },[cards.exploreCards,cards.raidCards])
+    useEffect(() => {
+        if (players.length === 1) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
+            console.log("cards have changed");          // ITT AZÉRT PLAYERS.LENGTH === 1, MERT ITT MÁR A LEADER BENT VAN, []-nál még nincs
+            randomizeExploreCards();
+        }
+
+    }, [cards.exploreCards, cards.raidCards])
 
     useEffect(() => {
         if (players.length === 1) {
@@ -126,15 +128,15 @@ export default function CreateRoom() {
         // //     socketApi.syncAction(room.roomCode,{type:"ADD_PLAYER",payload:user},true,syncActionAck)
         // // }
         // console.log(players);
-        if(room?.roomCode) socketApi.syncState(room.roomCode,state,true,(ack)=>{/*console.log(ack)*/})
+        if (room?.roomCode) socketApi.syncState(room.roomCode, state, true, (ack) => {/*console.log(ack)*/ })
     }, [players])
 
     useEffect(() => {
         if (players.length === 1) {
-            if(room.leader.id === user.id){
+            if (room.leader.id === user.id) {
                 // console.log("FELKÜLDTEM A SZOBÁT")
-                socketApi.syncState(room.roomCode, state, true, (ack) => {/*console.log(ack)*/})
-            }else{
+                socketApi.syncState(room.roomCode, state, true, (ack) => {/*console.log(ack)*/ })
+            } else {
                 // console.log("NEM KÜLDTEM MÁR FEL SEMMIT, A LEADER FELKÜLDTE A SYNCET, LEGKÖZELEBB CSAK ADD PLAYERNÉL KELL")
             }
         }
@@ -203,12 +205,12 @@ export default function CreateRoom() {
         chat.scrollTop = chat.scrollHeight;
     }, [messages])
 
-    useEffect(()=>{
-        if(room.gameStarted && room.gameStarted === true){
+    useEffect(() => {
+        if (room.gameStarted && room.gameStarted === true) {
             // console.log("game has started");
             navigate("/jatek");
         }
-    },[room])
+    }, [room])
 
     const copy = (b) => {
         var copyText = document.getElementById("roomId");
@@ -294,7 +296,7 @@ export default function CreateRoom() {
                             <Link to="/" onClick={() => dispatch({
                                 type: "CLEAR_STATE"
                             })}>Kilépés</Link>
-                            <Link onClick={e=>handleStartGame(e)} >Indítás</Link>
+                            <Link onClick={e => handleStartGame(e)} >Indítás</Link>
                         </div>
                     </div>
                 </div>
