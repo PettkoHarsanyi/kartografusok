@@ -1,0 +1,36 @@
+.Game .BlocksTable {
+    display: table;
+    border-collapse: collapse;
+}
+
+.Game .BlocksTableRow {
+    display: table-row;
+}
+
+.Game .BlocksTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+.Game .BlocksTableCell,
+.Game .BlocksTableHead {
+    display: table-cell;
+    height: 2vh;
+    width: 2vh;
+}
+
+.Game .BlocksTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.Game .BlocksTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.Game .BlocksTableBody {
+    display: table-row-group;
+}

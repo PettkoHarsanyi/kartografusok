@@ -9,7 +9,7 @@
 
 .Game .DrawnGameCardDiv{
     position: absolute;
-    height: 60%;
+    height: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -78,10 +78,10 @@
 .Game .RuinDivCircle img{
     position: absolute;
     height: auto;
-    left: 0;
-    top:0;
+    left: 1.8vh;
+    top:1.5vh;
     z-index: 0;
-    width: 3vh;
+    width: 5vh;
 }
 
 .Game .DurationsDivCircle{
@@ -89,26 +89,26 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 5vh;
+    width: 8.6vh;
 }
 
 .Game .DurationsDivCircle div{
     position: relative;
-    line-height: 1.2;
+    line-height: 1.5;
     z-index: 1;
 }
 
 .Game .DurationsDivCircle img{
     position: absolute;
-    height: auto;
-    left: 0;
-    top:0;
+    height: max-content;
+    left: 1.3vh;
+    top:0.7vh;
     z-index: 0;
-    width: 5vh;
+    width: 6vh;
 }
 
 .Game .CardNameDiv{
-    margin-top: 7.1vh;
+    margin-top: 12.5vh;
     height: max-content;
     color: rgba(255, 255, 255, 0.798);
     line-height: 1;
@@ -120,16 +120,16 @@
     justify-content: space-evenly;
     
     align-items: center;
-    height: 3.8vh;
+    height: 6.7vh;
     width: 80%;
 }
 
 .Game .FieldTypeImg{
-    width: 2.5vh;
+    width: 5vh;
 }
 
 .Game #anyFieldTypeImg{
-    width: 2.5vh;
+    width: 4vh;
 }
 
 .Game .BlocksDiv {
@@ -138,12 +138,12 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    height: 4.5vh;
+    height: 7.5vh;
 }
 
 .Game .UserCardContext *{
     font-family: 'Grenze Gotisch', cursive;
-    font-size: 2.7vh;
+    font-size: 4vh;
     line-height: 1;
 }
 
@@ -165,12 +165,12 @@
 }
 
 .Game #ruinName{
-    margin-top: 10.5vh;
+    margin-top: 18.5vh;
 }
 
 
 .Game .RuinFieldType{
-    height: 7vh;
+    height: 13.5vh;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -178,7 +178,7 @@
 }
 
 .Game .RuinFieldType img{
-    width: 5vh;
+    width: 8vh;
 }
 
 
@@ -188,11 +188,11 @@
 
 
 .Game #raidName{
-    margin-top: 10.1vh;
+    margin-top: 18.3vh;
 }
 
 .Game .DirAndBlocks{
-    height: 8vh;
+    height: 14vh;
     width: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -200,12 +200,12 @@
 }
 
 .Game .directionImg{
-    width: 6vh;
+    width: 9vh;
 }
 
 .Game #monsterTableCell{
-    height: 7px;
-    width: 7px;
+    height: 2.5vh;
+    width: 2.5vh;
 }
 
 .Game .divTable {
@@ -225,8 +225,8 @@
 .Game .divTableCell,
 .Game .divTableHead {
     display: table-cell;
-    height: 5px;
-    width: 5px;
+    height: 2vh;
+    width: 2vh;
 }
 
 .Game .divTableHeading {

@@ -102,7 +102,7 @@ export default function Admin() {
 
     const [open, setOpen] = React.useState(false);
     const [addCardOpen, setAddCardOpen] = React.useState(false);
-    const [exploreCardObject, setExploreCardObject] = React.useState({ cardType: "EXPLORE", hunCardType: "Felfedezés", name: "", duration: 1, fieldType1: "VILLAGE",  fieldType2: "", blocks1: "", blocks2: "", picture: "customexplore.png" });
+    const [exploreCardObject, setExploreCardObject] = React.useState({ cardType: "EXPLORE", hunCardType: "Felfedezés", name: "", duration: 1, fieldType1: "VILLAGE", fieldType2: "", blocks1: "", blocks2: "", picture: "customexplore.png" });
     const [raidCardObject, setRaidCardObject] = React.useState({ cardType: "RAID", name: "", hunCardType: "Rajtaütés", fieldType1: "MONSTER", direction: 1, blocks1: "", picture: "customraid.png" });
     const [ruinCardObject, setRuinCardObject] = React.useState({ cardType: "RUIN", name: "", hunCardType: "Rom", picture: "customexplore.png" });
 
@@ -139,8 +139,8 @@ export default function Admin() {
             console.log(value);
             setSelectedCardType(value);
 
-            if(value===exploreCardObject.cardType){
-                setExploreCardObject({...exploreCardObject,fieldType1:"VILLAGE",fieldType2:""})
+            if (value === exploreCardObject.cardType) {
+                setExploreCardObject({ ...exploreCardObject, fieldType1: "VILLAGE", fieldType2: "" })
             }
         }
 
@@ -295,31 +295,31 @@ export default function Admin() {
     }
 
     const cardItemsCorrect = (card) => {
-        if(card.name==="") return false;
-        if(card.cardType==="EXPLORE" || card.cardType==="RAID"){
-            if(card.blocks1 === ""){
+        if (card.name === "") return false;
+        if (card.cardType === "EXPLORE" || card.cardType === "RAID") {
+            if (card.blocks1 === "") {
                 return false;
-            }else{
+            } else {
                 try {
                     let l = JSON.parse(card.blocks1);
-    
+
                     if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
                     } else {
                         return false;
                     }
                 }
-                catch (e) {return false }
+                catch (e) { return false }
             }
-            if(card.blocks2 && card.blocks2.length > 0){
+            if (card.blocks2 && card.blocks2.length > 0) {
                 try {
                     let l = JSON.parse(card.blocks2);
-    
+
                     if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
                     } else {
                         return false
                     }
                 }
-                catch (e) {return false }
+                catch (e) { return false }
             }
         }
         return true;
@@ -328,21 +328,21 @@ export default function Admin() {
     const handleSubmitCard = async (event) => {
         event.preventDefault();
 
-        if(selectedCardType === exploreCardObject.cardType && cardItemsCorrect(exploreCardObject)){
+        if (selectedCardType === exploreCardObject.cardType && cardItemsCorrect(exploreCardObject)) {
             handleCloseCardAdder(event)
             const responseCard = await axios.post(`api/cards`, exploreCardObject, {
                 headers: authHeader()
             });
             dispatch(addExploreCard(responseCard.data))
         }
-        if(selectedCardType === raidCardObject.cardType && cardItemsCorrect(raidCardObject)){
+        if (selectedCardType === raidCardObject.cardType && cardItemsCorrect(raidCardObject)) {
             handleCloseCardAdder(event)
             const responseCard = await axios.post(`api/cards`, raidCardObject, {
                 headers: authHeader()
             });
             dispatch(addRaidCard(responseCard.data))
         }
-        if(selectedCardType === ruinCardObject.cardType && cardItemsCorrect(ruinCardObject)){
+        if (selectedCardType === ruinCardObject.cardType && cardItemsCorrect(ruinCardObject)) {
             handleCloseCardAdder(event)
             const responseCard = await axios.post(`api/cards`, ruinCardObject, {
                 headers: authHeader()
@@ -403,10 +403,10 @@ export default function Admin() {
                 ...authHeader(),
             }
         }).then(res => {
-            if(card.cardType === "EXPLORE" || card.cardType === "RUIN"){
+            if (card.cardType === "EXPLORE" || card.cardType === "RUIN") {
                 dispatch(removeExploreCard(card))
             }
-            if(card.cardType === "RAID"){
+            if (card.cardType === "RAID") {
                 dispatch(removeRaidCard(card))
             }
         });
@@ -573,7 +573,7 @@ export default function Admin() {
             }
 
             {addCardOpen && isActive("cards") &&
-                <form onSubmit={(e) => { handleSubmitCard(e)}} className='ModalBackground' onClick={(e) => handleCloseCardAdder(e)}>
+                <form onSubmit={(e) => { handleSubmitCard(e) }} className='ModalBackground' onClick={(e) => handleCloseCardAdder(e)}>
                     <div className='Modal' id='MapModal'>
                         <div className='ModalHeader'>
                             <div>Kártya hozzáadása</div>
@@ -624,10 +624,10 @@ export default function Admin() {
                                                 <div className='CustomSelect'>
                                                     <select className='Clickable' name="fieldType2" defaultValue="" onChange={(e) => { handleCardAdderInputChange(e); }}>
                                                         <option value="" disabled hidden>Semleges</option>
-                                                        {exploreCardObject.fieldType1!=="VILLAGE" && <option value="VILLAGE" className='ItemStyle'>Falu</option>}
-                                                        {exploreCardObject.fieldType1!=="FOREST" && <option value="FOREST" className='ItemStyle'>Erdő</option>}
-                                                        {exploreCardObject.fieldType1!=="WATER" && <option value="WATER" className='ItemStyle'>Víz</option>}
-                                                        {exploreCardObject.fieldType1!=="FARM" && <option value="FARM" className='ItemStyle'>Farm</option>}
+                                                        {exploreCardObject.fieldType1 !== "VILLAGE" && <option value="VILLAGE" className='ItemStyle'>Falu</option>}
+                                                        {exploreCardObject.fieldType1 !== "FOREST" && <option value="FOREST" className='ItemStyle'>Erdő</option>}
+                                                        {exploreCardObject.fieldType1 !== "WATER" && <option value="WATER" className='ItemStyle'>Víz</option>}
+                                                        {exploreCardObject.fieldType1 !== "FARM" && <option value="FARM" className='ItemStyle'>Farm</option>}
                                                         <option value="" className='ItemStyle'>Semleges</option>
                                                     </select>
                                                 </div>
@@ -638,12 +638,14 @@ export default function Admin() {
                                             <textarea defaultValue={exploreCardObject.blocks1} style={{ outlineColor: isBlocks1ValidJSON ? "green" : "red", border: isBlocks1ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks1" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje. Pl: [[0,0],[1,0]] vagy [[0,0,1]]' onChange={(e) => { handleCardAdderInputChange(e) }}>
                                             </textarea>
                                         </div>
+                                        {exploreCardObject.fieldType1 !== "ANY" &&
 
-                                        <div className='ModalItem' id='modalTextArea'>
-                                            <div>Második forma</div>
-                                            <textarea defaultValue={exploreCardObject.blocks2} style={{ outlineColor: isBlocks2ValidJSON ? "green" : "red", border: isBlocks2ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks2" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje, vagy üres' onChange={(e) => { handleCardAdderInputChange(e) }}>
-                                            </textarea>
-                                        </div>
+                                            <div className='ModalItem' id='modalTextArea'>
+                                                <div>Második forma</div>
+                                                <textarea defaultValue={exploreCardObject.blocks2} style={{ outlineColor: isBlocks2ValidJSON ? "green" : "red", border: isBlocks2ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks2" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje, vagy üres' onChange={(e) => { handleCardAdderInputChange(e) }}>
+                                                </textarea>
+                                            </div>
+                                        }
                                     </>
                                 }
 
@@ -758,9 +760,9 @@ export default function Admin() {
                             <div className='CardsDiv'>
                                 {cards && cards.exploreCards.length > 0 && cards.exploreCards.map((card) =>
 
-                                    <Card key={card.id} card={card} handleDeleteCard={handleDeleteCard}/>
+                                    <Card key={card.id} card={card} handleDeleteCard={handleDeleteCard} />
 
-                                    
+
 
                                     // <div key={card.id} className='Card'>{card.name}<br />{card.fieldType1} {card.fieldType2} {card.cardType === "RUIN" ? card.cardType : ""}<br />{card.blocks1}</div>
                                 )}
@@ -794,9 +796,9 @@ export default function Admin() {
                             <div className='CardsDiv'>
                                 {cards && cards.raidCards.length > 0 && cards.raidCards.map((card) =>
 
-                                    <Card key={card.id} card={card} handleDeleteCard={handleDeleteCard}/>
+                                    <Card key={card.id} card={card} handleDeleteCard={handleDeleteCard} />
 
-                                    
+
                                 )}
                                 <div className='AddCard' onClick={() => handleOpenCardAdder("RAID")}><div>+</div></div>
                             </div>

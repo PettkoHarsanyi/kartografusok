@@ -91,7 +91,7 @@
 
 .Game .ContextDiv {
     height: 100%;
-    width: 70%;
+    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -122,7 +122,7 @@
 
 .Game .DrawnCardDiv {
     height: 100%;
-    width: 25%;
+    width: 17%;
     display: flex;
     border: 0.5vh solid black;
     border-radius: 1vh;
@@ -133,7 +133,7 @@
 }
 
 .Game .ActualCardDiv {
-    height: 70%;
+    height: 62%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -155,12 +155,12 @@
 }
 
 .Game .ChooseDiv {
-    height: 30%;
+    height: 38%;
     width: 100%;
 }
 
 .Game .CardsDiv {
-    width: 75%;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -261,13 +261,33 @@
 }
 
 .Game .SelectBlockDiv {
-    height: 60%;
+    height: 80%;
     width: 100%;
     border-top: 0.5vh solid black;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-evenly;
+    flex-flow: row wrap;
 }
 
+.Game .BlockDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 2 50%;
+    box-shadow: inset 0 0 4vh 1vh rgba(74, 74, 74, 0.5);
+    transition: 0.3s;
+}
+
+.Game .BlockDiv:hover {
+    box-shadow: inset 0 0 4vh 1vh rgba(0, 77, 122, 0.43);
+}
+
+
 .Game .ControlsDiv {
-    height: 40%;
+    height: 20%;
     width: 100%;
     border-top: 0.5vh solid black;
     display: flex;

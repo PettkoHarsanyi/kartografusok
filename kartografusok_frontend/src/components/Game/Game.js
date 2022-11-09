@@ -26,12 +26,14 @@ import Chat from "./Chat";
 import { drawCard } from "../../state/cards/drawnCards/actions";
 import Card from "../Admin/Card";
 import DrawnCard from "./DrawnCard";
+import Blocks from "./Blocks";
 
 
 export default function Game() {
     const INIT_DRAWING = "INIT_DRAWING";
     const CARD_DRAW = "CARD_DRAW";
     const CARD_PLACE = "CARD_PLACE";
+    const FIELD_TYPES = ["FOREST", "VILLAGE", "FARM", "WATER", "MONSTER"]
 
     const handleCloseModal = (e, id) => {
         if (e.target !== e.currentTarget) return;
@@ -51,6 +53,7 @@ export default function Game() {
 
     const [inspectedCard, setInspectedCard] = useState(null);
     const [actualSeasonCard, setActualSeasonCard] = useState(cards.seasonCards[0]);
+    const [selectedBlock, setSelectedBlock] = useState({ type: "", blocks: "" });
 
     // HA BEMEGY EGY MODIFY PLAYER AKKOR AZ BEMEGY AZ ACTUAL PLAYERBE IS, HA HA MEGEGYEZIK A PLAYERS
     // BELI PLAYER ID-JAVAL.
@@ -71,7 +74,13 @@ export default function Game() {
     }, [])
 
     useEffect(() => {
-        console.log(cards.drawnCards)
+        if (cards.drawnCards.length > 0) {
+            if (cards.drawnCards[cards.drawnCards.length - 1].fieldType1 === "ANY") {
+                setSelectedBlock({ type: "FOREST", blocks: cards.drawnCards[cards.drawnCards.length - 1].blocks1 ?? "" })
+            } else {
+                setSelectedBlock({ type: cards.drawnCards[cards.drawnCards.length - 1].fieldType1 ?? "", blocks: cards.drawnCards[cards.drawnCards.length - 1].blocks1 ?? "" })
+            }
+        }
     }, [cards.drawnCards])
 
     const openInspectModal = (card) => {
@@ -79,7 +88,14 @@ export default function Game() {
         document.getElementById("inspectModal").style.display = "flex"
     }
 
+    const selectBlocks = (event, type, blocks) => {
+        if (type !== "RUIN") {
+            setSelectedBlock({ type, blocks })
+        } else {
 
+        }
+        if (event.target === event.currentTarget) event.target.style.boxShadow = "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)"
+    }
 
     return (
         <div className="Game">
@@ -89,30 +105,112 @@ export default function Game() {
                     <Map mapTable={JSON.parse(map.blocks)} />
                 </div>
             }
+            <div className="DrawnCardDiv">
+
+                <div className="ActualCardDiv">
+                    <div className="CardScrollDiv">
+                        {cards.drawnCards && cards.drawnCards.map((card, index) => {
+                            return (<DrawnCard key={card.id} card={card} index={index} />)
+                        })}
+                    </div>
+                </div>
+                <div className="ChooseDiv">
+                    <div className="SelectBlockDiv">
+
+                        {/* HA BÁRMILYEN */}
+                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 === "ANY" &&
+                            FIELD_TYPES.map((type, index) => {
+                                return (
+                                    <div key={index} className="BlockDiv" onClick={(e) => { selectBlocks(e, type, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
+                                        style={{
+                                            boxShadow: (selectedBlock.type === type &&
+                                                selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks1)
+                                                ?
+                                                "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
+                                                ""
+                                        }}
+                                    >
+                                        <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={type} />
+                                    </div>
+                                )
+                            })
+                            // <div>{cards.drawnCards[cards.drawnCards.length - 1].fieldType1}</div>
+                        }
+
+                        {/* HA VAN ELSŐ FÖLDTÍPUS - ELSŐ BLOCK KIRAJZOLÁSA */}
+                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks1 &&
+                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType1, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
+                                style={{
+                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks1)
+                                        ?
+                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
+                                        ""
+                                }}
+                            >
+                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType1} />
+                            </div>
+                        }
+
+                        {/* HA VAN ELSŐ FÖLDTÍPUS - MÁSODIK BLOCK KIRAJZOLÁSA */}
+                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks2 &&
+                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType1, cards.drawnCards[cards.drawnCards.length - 1].blocks2) }}
+                                style={{
+                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks2)
+                                        ?
+                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
+                                        ""
+                                }}
+                            >
+                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks2} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType1} />
+                            </div>
+                        }
+
+                        {/* HA VAN MÁSODIK FÖLDTÍPUS - ELSŐ BLOCK KIRAJZOLÁSA */}
+                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
+                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks1 &&
+                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType2, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
+                                style={{
+                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
+                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks1)
+                                        ?
+                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
+                                        ""
+                                }}
+                            >
+                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType2} />
+                            </div>
+                        }
+
+                        {/* HA VAN MÁSODIK FÖLDTÍPUS - MÁSODIK BLOCK KIRAJZOLÁSA */}
+                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
+                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks2 &&
+                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType2, cards.drawnCards[cards.drawnCards.length - 1].blocks2) }}
+                                style={{
+                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
+                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks2)
+                                        ?
+                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
+                                        ""
+                                }}
+                            >
+                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks2} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType2} />
+                            </div>
+                        }
+
+                    </div>
+                    <div className="ControlsDiv">
+                        <div>Letesz: bal egér gomb</div>
+                        <div>Forgatás: jobb egér gomb</div>
+                    </div>
+                </div>
+            </div>
             <div className="ContextDiv">
                 <div className="DeckDiv">
-                    <div className="DrawnCardDiv">
-
-                        <div className="ActualCardDiv">
-                            <div className="CardScrollDiv">
-                                {cards.drawnCards && cards.drawnCards.map((card, index) => {
-                                    return (<DrawnCard key={card.id} card={card} index={index} />)
-                                })}
-                            </div>
-                        </div>
-                        <div className="ChooseDiv">
-                            <div className="SelectBlockDiv">
-                                <button onClick={(e) => {
-                                    e.preventDefault();
-                                    dispatch(drawCard(cards.deck[0]))
-                                }}>Húz</button>
-                            </div>
-                            <div className="ControlsDiv">
-                                <div>Letesz: bal egér gomb</div>
-                                <div>Forgatás: jobb egér gomb</div>
-                            </div>
-                        </div>
-                    </div>
                     <div className="CardsDiv">
                         <div className="TopCardsDiv">
                             <div className="CardDiv"><img src={require(`../../assets/cards/${actualSeasonCard.picture}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard.name} /></div>
@@ -141,6 +239,10 @@ export default function Game() {
                             {players && players.map((player) => {
                                 return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "gray" : "" }}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
                             })}
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                dispatch(drawCard(cards.deck[0]))
+                            }}>Húz</button>
                         </div>
                         <div className="RoomControlsDiv">
                             <Link to="/">Kilépés</Link>

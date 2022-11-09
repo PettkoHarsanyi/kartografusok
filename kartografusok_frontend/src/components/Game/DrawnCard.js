@@ -10,8 +10,8 @@ export default function DrawnCard({ card, index }) {
     const cards = useSelector(getCards)
     return (
         <div className="DrawnGameCardDiv" style={{
-            marginBottom: ((cards.drawnCards.length/2)-index > 0) ? `${((cards.drawnCards.length/2)-index)*7}vh` : "0vh",
-            marginTop: ((cards.drawnCards.length/2)-index < 0) ? `${(index-(cards.drawnCards.length/2))*7}vh` : "0vh",
+            marginBottom: ((cards.drawnCards.length/2)-index > 0) ? `${((cards.drawnCards.length/2)-index)*12}vh` : "0vh",
+            marginTop: ((cards.drawnCards.length/2)-index < 0) ? `${(index-(cards.drawnCards.length/2))*12}vh` : "0vh",
             zIndex: index
         }}>
 
