@@ -23,10 +23,11 @@ import axios from "axios";
 import authHeader from "../../auth/auth-header";
 import { addMessage } from "../../state/messages/actions";
 import Chat from "./Chat";
-import { drawCard } from "../../state/cards/drawnCards/actions";
+import { clearDrawnCards, drawCard } from "../../state/cards/drawnCards/actions";
 import Card from "../Admin/Card";
 import DrawnCard from "./DrawnCard";
 import Blocks from "./Blocks";
+import { initDeck } from "../../state/cards/deck/actions";
 
 
 export default function Game() {
@@ -52,8 +53,10 @@ export default function Game() {
     const [currentState, setCurrentState] = useState(0);
 
     const [inspectedCard, setInspectedCard] = useState(null);
-    const [actualSeasonCard, setActualSeasonCard] = useState(cards.seasonCards[0]);
+    const [seasonIndex, setSeasonIndex] = useState(0);
+    const [actualSeasonCard, setActualSeasonCard] = useState(cards.seasonCards[seasonIndex]);
     const [selectedBlock, setSelectedBlock] = useState({ type: "", blocks: "" });
+    const [duration,setDuration] = useState(cards.deck[0]?.duration??0);
 
     // HA BEMEGY EGY MODIFY PLAYER AKKOR AZ BEMEGY AZ ACTUAL PLAYERBE IS, HA HA MEGEGYEZIK A PLAYERS
     // BELI PLAYER ID-JAVAL.
@@ -161,12 +164,20 @@ export default function Game() {
         setSelectedBlock({type:blocksAndTypes[selectedBlockIndex]?.type??"",blocks:blocksAndTypes[selectedBlockIndex]?.block??""})
     },[blocksAndTypes])
 
+    useEffect(()=>{
+        if(cards.deck.length === 0){
+            const shuffled = cards.drawnCards.sort(() => 0.5 - Math.random());
+            dispatch(initDeck(shuffled));
+            dispatch(clearDrawnCards());
+        }
+    },[cards.deck])
+
     return (
         <div className="Game">
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map mapTable={JSON.parse(map.blocks)} />
+                    <Map mapTable={JSON.parse(map.blocks)} selectedBlock={selectedBlock} />
                 </div>
             }
             <div className="DrawnCardDiv">
@@ -182,7 +193,6 @@ export default function Game() {
                     <div className="SelectBlockDiv">
 
                         {blocksAndTypes.map((item,index) => {
-                            console.log(item);
                             return(<div key={index} className="BlockDiv" onClick={(e) => { selectBlocks(e, item.type, item.block); setSelectedBlockIndex(index) }}
                                 style={{
                                     boxShadow: (selectedBlock.type === item.type &&
@@ -195,95 +205,9 @@ export default function Game() {
                                 <Blocks blocks={item.block} type={item.type} />
                             </div>)
                         })}
-
-                        {/* HA BÁRMILYEN */}
-                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
-                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 === "ANY" &&
-                            FIELD_TYPES.map((type, index) => {
-                                return (
-                                    <div key={index} className="BlockDiv" onClick={(e) => { selectBlocks(e, type, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
-                                        style={{
-                                            boxShadow: (selectedBlock.type === type &&
-                                                selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks1)
-                                                ?
-                                                "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
-                                                ""
-                                        }}
-                                    >
-                                        <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={type} />
-                                    </div>
-                                )
-                            })
-                            // <div>{cards.drawnCards[cards.drawnCards.length - 1].fieldType1}</div>
-                        } */}
-
-                        {/* HA VAN ELSŐ FÖLDTÍPUS - ELSŐ BLOCK KIRAJZOLÁSA */}
-                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
-                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks1 &&
-                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType1, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
-                                style={{
-                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
-                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks1)
-                                        ?
-                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
-                                        ""
-                                }}
-                            >
-                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType1} />
-                            </div>
-                        } */}
-
-                        {/* HA VAN ELSŐ FÖLDTÍPUS - MÁSODIK BLOCK KIRAJZOLÁSA */}
-                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
-                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks2 &&
-                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType1, cards.drawnCards[cards.drawnCards.length - 1].blocks2) }}
-                                style={{
-                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
-                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks2)
-                                        ?
-                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
-                                        ""
-                                }}
-                            >
-                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks2} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType1} />
-                            </div>
-                        } */}
-
-                        {/* HA VAN MÁSODIK FÖLDTÍPUS - ELSŐ BLOCK KIRAJZOLÁSA */}
-                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
-                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks1 &&
-                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType2, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
-                                style={{
-                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
-                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks1)
-                                        ?
-                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
-                                        ""
-                                }}
-                            >
-                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType2} />
-                            </div>
-                        } */}
-
-                        {/* HA VAN MÁSODIK FÖLDTÍPUS - MÁSODIK BLOCK KIRAJZOLÁSA */}
-                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
-                            cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks2 &&
-                            <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType2, cards.drawnCards[cards.drawnCards.length - 1].blocks2) }}
-                                style={{
-                                    boxShadow: (selectedBlock.type === cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
-                                        selectedBlock.blocks === cards.drawnCards[cards.drawnCards.length - 1].blocks2)
-                                        ?
-                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
-                                        ""
-                                }}
-                            >
-                                <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks2} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType2} />
-                            </div>
-                        } */}
-
                     </div>
                     <div className="ControlsDiv">
-                        <button onClick={(e) => handleUserKeyPress(e)}>Forgatás</button>
+                        <button className="RotateButton" onClick={(e) => handleUserKeyPress(e)}>Forgatás</button>
                     </div>
                 </div>
             </div>
@@ -319,6 +243,18 @@ export default function Game() {
                             })}
                             <button onClick={(e) => {
                                 e.preventDefault();
+                                console.log(duration);
+                                if(actualSeasonCard.duration <= duration){
+                                    setActualSeasonCard(cards.seasonCards[seasonIndex+1]);
+                                    setSeasonIndex(seasonIndex+1);
+                                    if(cards.deck[0].duration){
+                                        setDuration(cards.deck[0].duration)
+                                    }else{
+                                        setDuration(0);
+                                    }
+                                }else if(cards.deck[0].duration){
+                                    setDuration(duration + cards.deck[0].duration)
+                                }
                                 dispatch(drawCard(cards.deck[0]))
                             }}>Húz</button>
                         </div>
@@ -332,11 +268,11 @@ export default function Game() {
 
             {/* --- MODALS --- */}
 
-            {/* {states[currentState] === INIT_DRAWING &&
+            {states[currentState] === INIT_DRAWING &&
                 <GameModal closable={false} handleCloseModal={handleCloseModal}>
                     <DrawCanvas handleCloseModal={handleCloseModal} />
                 </GameModal>
-            } */}
+            }
 
             <InspectModal closable={true} handleCloseModal={handleCloseModal} >
                 {inspectedCard &&

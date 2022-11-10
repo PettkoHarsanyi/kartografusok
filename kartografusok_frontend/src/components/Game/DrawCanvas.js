@@ -27,6 +27,7 @@ export default function DrawCanvas({ handleCloseModal }) {
     const contextRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false)
     const [drawColor, setDrawColor] = useState("#993A30");
+    const colors = ["#522621", "#2C492E", "#2B3145", "#72472F", "#3F2A41"]
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -39,6 +40,9 @@ export default function DrawCanvas({ handleCloseModal }) {
         context.lineJoin = 'round';
         context.lineWidth = 5;
         context.strokeStyle = '#993A30';
+
+        context.fillStyle = "#522621";
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
         contextRef.current = context;
 
@@ -139,7 +143,9 @@ export default function DrawCanvas({ handleCloseModal }) {
             img.onload = function () {
                 contextRef.current.drawImage(img, 0, 0, img.width, img.height);
             };
-            // const image = drawings[currentDrawingState + direction]
+        } else {
+            contextRef.current.fillStyle = colors[currentDrawingState + direction]; // AZÉRT KELL A "+ direction" MERT A CURRENTDRAWINGSTATEBAN NINCS BENNE
+            contextRef.current.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);   // A KÖVETKEZŐ
         }
     }
     return (
@@ -171,7 +177,10 @@ export default function DrawCanvas({ handleCloseModal }) {
                         </div>
                     </div>
                     <div className="DCDiv2">
-                        <img className="ClearButton" src={clearButton} alt="clear" onClick={() => { contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height) }} />
+                        <img className="ClearButton" src={clearButton} alt="clear" onClick={() => {
+                            contextRef.current.fillStyle = colors[currentDrawingState];
+                            contextRef.current.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+                        }} />
                         <div id="canvasDiv" className="CanvasDiv">
                             <canvas id="drawing-board"
                                 onMouseDown={startDrawing}

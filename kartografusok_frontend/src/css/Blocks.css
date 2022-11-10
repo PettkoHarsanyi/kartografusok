@@ -15,8 +15,8 @@
 .Game .BlocksTableCell,
 .Game .BlocksTableHead {
     display: table-cell;
-    height: 2vh;
-    width: 2vh;
+    height: 3vh;
+    width: 3vh;
 }
 
 .Game .BlocksTableHeading {

@@ -7,13 +7,31 @@ import mountain_transparent from "../../assets/maps/mountain_transparent.png"
 import { useSelector } from 'react-redux';
 import { getActualPlayer } from '../../state/actualPlayer/selectors';
 
-export default function Map({ mapTable, children }) {
+export default function Map({ mapTable, selectedBlock, children }) {
 
     const FieldTypes = {
         Empty: "",
         Ruin: ruin_transparent,
         Mountain: mountain_transparent,
         Gap: gap_transparent,
+    }
+
+    const getFieldPos = (_type) => {
+        switch (_type) {
+            case "VILLAGE":
+                return 0
+            case "FOREST":
+                return 1
+            case "WATER":
+                return 2
+            case "FARM":
+                return 3
+            case "MONSTER":
+                return 4
+            default:
+                return 0
+                break;
+        }
     }
 
     const actualPlayer = useSelector(getActualPlayer);
@@ -30,7 +48,10 @@ export default function Map({ mapTable, children }) {
                                     <div key={cellindex} className='MapTableCell'
                                         onClick={(e) => {
                                             let newMapTable = [...mapTable];
-                                            e.target.parentElement.style.backgroundImage = `url('${actualPlayer.fields[0]}')`;
+                                            e.target.parentElement.style.backgroundImage = `url('${actualPlayer.fields[getFieldPos(selectedBlock.type)]}')`;
+                                            e.target.parentElement.style.borderRadius = "0.5vh";
+                                            e.target.parentElement.style.opacity = "0.9";
+                                            console.log(selectedBlock);
                                             // newMapTable[rowindex][cellindex] = Object.values(FieldTypes).indexOf(selectedFieldType);
                                             // handleSetMapTable(newMapTable);
                                         }}
