@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/Game.css";
@@ -73,15 +73,23 @@ export default function Game() {
         };
     }, [])
 
-    useEffect(() => {
-        if (cards.drawnCards.length > 0) {
-            if (cards.drawnCards[cards.drawnCards.length - 1].fieldType1 === "ANY") {
-                setSelectedBlock({ type: "FOREST", blocks: cards.drawnCards[cards.drawnCards.length - 1].blocks1 ?? "" })
-            } else {
-                setSelectedBlock({ type: cards.drawnCards[cards.drawnCards.length - 1].fieldType1 ?? "", blocks: cards.drawnCards[cards.drawnCards.length - 1].blocks1 ?? "" })
-            }
-        }
-    }, [cards.drawnCards])
+    const rotateMatrix = (matrix) => {
+        return flipMajorDiagonal(matrix.reverse());
+    }
+
+    const flipMajorDiagonal = (matrix) => {
+        return matrix[0].map((column, index) => (
+            matrix.map(row => row[index])
+        ))
+    }
+
+    const handleUserKeyPress = (event) => {
+            setBlocksAndTypes(blocksAndTypes.map((item)=>{
+                const blocks = JSON.parse(item.block);
+                const rotatedBlocks = JSON.stringify(rotateMatrix(blocks));
+                return {...item, block: rotatedBlocks}
+            }))
+    };
 
     const openInspectModal = (card) => {
         setInspectedCard(card);
@@ -96,6 +104,62 @@ export default function Game() {
         }
         if (event.target === event.currentTarget) event.target.style.boxShadow = "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)"
     }
+
+    const [blocksAndTypes, setBlocksAndTypes] = useState([]);
+
+    useEffect(() => {
+        if (cards.drawnCards.length < 1) return;
+        const card = cards.drawnCards[cards.drawnCards.length - 1];
+
+        let _blocksAndTypes = [];
+
+        if (card.fieldType1 && card.fieldType1 === "ANY") {
+            _blocksAndTypes = 
+                FIELD_TYPES.map((fieldType) => {
+                    return { type: fieldType, block: card.blocks1 }
+                })
+        }
+
+        if (card.fieldType1 && card.fieldType1 !== "ANY" && card.blocks1) {
+            _blocksAndTypes = [
+                ..._blocksAndTypes,
+                { type: card.fieldType1, block: card.blocks1 }
+            ]
+        }
+
+        if (card.fieldType1 && card.fieldType1 !== "ANY" && card.blocks2) {
+            _blocksAndTypes = [
+                ..._blocksAndTypes,
+                { type: card.fieldType1, block: card.blocks2 }
+            ]
+        }
+
+        if (card.fieldType2 && card.fieldType1 !== "ANY" && card.blocks1) {
+            _blocksAndTypes = [
+                ..._blocksAndTypes,
+                { type: card.fieldType2, block: card.blocks1 }
+            ]
+        }
+
+        if (card.fieldType2 && card.fieldType1 !== "ANY" && card.blocks2) {
+            _blocksAndTypes = [
+                ..._blocksAndTypes,
+                { type: card.fieldType2, block: card.blocks2 }
+            ]
+        }
+
+        setBlocksAndTypes(_blocksAndTypes);
+    }, [cards.drawnCards])
+
+    const [selectedBlockIndex,setSelectedBlockIndex] = useState(0);
+
+    useEffect(()=>{
+        setSelectedBlockIndex(0);
+    },[cards.drawnCards])
+
+    useEffect(()=>{
+        setSelectedBlock({type:blocksAndTypes[selectedBlockIndex]?.type??"",blocks:blocksAndTypes[selectedBlockIndex]?.block??""})
+    },[blocksAndTypes])
 
     return (
         <div className="Game">
@@ -117,8 +181,23 @@ export default function Game() {
                 <div className="ChooseDiv">
                     <div className="SelectBlockDiv">
 
+                        {blocksAndTypes.map((item,index) => {
+                            console.log(item);
+                            return(<div key={index} className="BlockDiv" onClick={(e) => { selectBlocks(e, item.type, item.block); setSelectedBlockIndex(index) }}
+                                style={{
+                                    boxShadow: (selectedBlock.type === item.type &&
+                                        selectedBlock.blocks === item.block)
+                                        ?
+                                        "inset 0 0 4vh 2vh rgba(0, 140, 187, 0.792)" :
+                                        ""
+                                }}
+                            >
+                                <Blocks blocks={item.block} type={item.type} />
+                            </div>)
+                        })}
+
                         {/* HA BÁRMILYEN */}
-                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
                             cards.drawnCards[cards.drawnCards.length - 1].fieldType1 === "ANY" &&
                             FIELD_TYPES.map((type, index) => {
                                 return (
@@ -136,10 +215,10 @@ export default function Game() {
                                 )
                             })
                             // <div>{cards.drawnCards[cards.drawnCards.length - 1].fieldType1}</div>
-                        }
+                        } */}
 
                         {/* HA VAN ELSŐ FÖLDTÍPUS - ELSŐ BLOCK KIRAJZOLÁSA */}
-                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
                             cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks1 &&
                             <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType1, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
                                 style={{
@@ -152,10 +231,10 @@ export default function Game() {
                             >
                                 <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType1} />
                             </div>
-                        }
+                        } */}
 
                         {/* HA VAN ELSŐ FÖLDTÍPUS - MÁSODIK BLOCK KIRAJZOLÁSA */}
-                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
+                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType1 &&
                             cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks2 &&
                             <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType1, cards.drawnCards[cards.drawnCards.length - 1].blocks2) }}
                                 style={{
@@ -168,10 +247,10 @@ export default function Game() {
                             >
                                 <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks2} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType1} />
                             </div>
-                        }
+                        } */}
 
                         {/* HA VAN MÁSODIK FÖLDTÍPUS - ELSŐ BLOCK KIRAJZOLÁSA */}
-                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
+                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
                             cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks1 &&
                             <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType2, cards.drawnCards[cards.drawnCards.length - 1].blocks1) }}
                                 style={{
@@ -184,10 +263,10 @@ export default function Game() {
                             >
                                 <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks1} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType2} />
                             </div>
-                        }
+                        } */}
 
                         {/* HA VAN MÁSODIK FÖLDTÍPUS - MÁSODIK BLOCK KIRAJZOLÁSA */}
-                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
+                        {/* {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards[cards.drawnCards.length - 1].fieldType2 &&
                             cards.drawnCards[cards.drawnCards.length - 1].fieldType1 !== "ANY" && cards.drawnCards[cards.drawnCards.length - 1].blocks2 &&
                             <div className="BlockDiv" onClick={(e) => { selectBlocks(e, cards.drawnCards[cards.drawnCards.length - 1].fieldType2, cards.drawnCards[cards.drawnCards.length - 1].blocks2) }}
                                 style={{
@@ -200,12 +279,11 @@ export default function Game() {
                             >
                                 <Blocks blocks={cards.drawnCards[cards.drawnCards.length - 1].blocks2} type={cards.drawnCards[cards.drawnCards.length - 1].fieldType2} />
                             </div>
-                        }
+                        } */}
 
                     </div>
                     <div className="ControlsDiv">
-                        <div>Letesz: bal egér gomb</div>
-                        <div>Forgatás: jobb egér gomb</div>
+                        <button onClick={(e) => handleUserKeyPress(e)}>Forgatás</button>
                     </div>
                 </div>
             </div>

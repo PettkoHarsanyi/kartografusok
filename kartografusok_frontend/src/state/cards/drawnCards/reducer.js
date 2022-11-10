@@ -1,4 +1,4 @@
-import { DRAW_CARD, DRAW_CARD_LOCAL } from "./actions";
+import { DRAW_CARD, DRAW_CARD_LOCAL, ROTATE_BLOCKS } from "./actions";
 
 export const drawnCardsInitialState = [];
 
