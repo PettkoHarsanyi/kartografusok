@@ -177,7 +177,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map mapTable={JSON.parse(map.blocks)} selectedBlock={selectedBlock} />
+                    <Map selectedBlock={selectedBlock} />
                 </div>
             }
             <div className="DrawnCardDiv">

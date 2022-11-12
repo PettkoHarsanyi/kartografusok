@@ -7,7 +7,7 @@ import authHeader from '../../auth/auth-header';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage, sendMessage } from '../../state/messages/actions';
 import { getMessages } from '../../state/messages/selectors';
-import { addPlayer, modifyPlayer, mutePlayer, removePlayer } from '../../state/players/actions';
+import { addMapToPlayer, addPlayer, modifyPlayer, mutePlayer, removePlayer } from '../../state/players/actions';
 import { getPlayers } from '../../state/players/selectors';
 import { fillExploreCards } from '../../state/cards/exploreCards/actions';
 import { fillRaidCards } from '../../state/cards/raidCards/actions';
@@ -16,7 +16,7 @@ import unmuted from "../../assets/playerunmute.png"
 import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
 import { initMap } from '../../state/map/actions';
-import { initActualPlayer } from '../../state/actualPlayer/actions';
+import { addMapToActualPlayer, initActualPlayer } from '../../state/actualPlayer/actions';
 import { createRoom, gameStarted, initRoom } from '../../state/room/actions';
 import { wsConnect } from '../../state/store';
 import { getRoom } from '../../state/room/selectors';
@@ -25,6 +25,7 @@ import { socketApi } from '../../socket/SocketApi';
 import { getCards } from '../../state/cards/selector';
 import { initPointCards } from '../../state/cards/pointCards/actions';
 import { initDeck } from '../../state/cards/deck/actions';
+import { getMap } from '../../state/map/selectors';
 
 export default function CreateRoom() {
     const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
@@ -43,6 +44,7 @@ export default function CreateRoom() {
     const room = useSelector(getRoom);
     const state = useSelector(getState);
     const players = useSelector(getPlayers);
+    const map = useSelector(getMap);
 
     useEffect(() => {
         let actualUser = players.find(finduser => finduser.id === user.id)
@@ -87,9 +89,11 @@ export default function CreateRoom() {
 
     useEffect(() => {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
+            const randomMap = getRandomMap();
+            dispatch(initMap(randomMap));
             dispatch(initActualPlayer(user));
-            dispatch(initMap(getRandomMap()));
-            dispatch(addPlayer(user))
+            dispatch(addMapToActualPlayer(randomMap.blocks));
+            dispatch(addPlayer({...user,map:randomMap.blocks}))
             // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));
@@ -114,7 +118,7 @@ export default function CreateRoom() {
                 socketApi.createRoom(user, createRoomAck);
             }
             else {
-                // console.log("ITT NEM FUTOTTAM LE, CSAK CSATLAKOZTAM A SZOBÁHOZ")
+                console.log("ITT NEM FUTOTTAM LE, CSAK CSATLAKOZTAM A SZOBÁHOZ")
             }
         }
         // if(players.length===0){

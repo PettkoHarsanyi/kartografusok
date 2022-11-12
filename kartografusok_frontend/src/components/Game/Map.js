@@ -4,8 +4,9 @@ import empty from "../../assets/maps/empty.png"
 import ruin_transparent from "../../assets/maps/ruin_transparent.png"
 import gap_transparent from "../../assets/maps/gap_transparent.png"
 import mountain_transparent from "../../assets/maps/mountain_transparent.png"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getActualPlayer } from '../../state/actualPlayer/selectors';
+import { modifyPlayer } from '../../state/actualPlayer/actions';
 
 export default function Map({ mapTable, selectedBlock, children }) {
 
@@ -35,27 +36,44 @@ export default function Map({ mapTable, selectedBlock, children }) {
     }
 
     const actualPlayer = useSelector(getActualPlayer);
+    const dispatch = useDispatch();
 
     return (
         <>
             <img src={scheme} className="MapPic" alt='Map' />
             <div className='MapTable'>
                 <div className='MapTableBody'>
-                    {mapTable.map((row, rowindex) =>
+                    {JSON.parse(actualPlayer.map).map((row, rowindex) =>
                         <div key={rowindex} className='MapTableRow'>
                             {row.map((cell, cellindex) => {
                                 return (
                                     <div key={cellindex} className='MapTableCell'
                                         onClick={(e) => {
-                                            let newMapTable = [...mapTable];
+
                                             e.target.parentElement.style.backgroundImage = `url('${actualPlayer.fields[getFieldPos(selectedBlock.type)]}')`;
                                             e.target.parentElement.style.borderRadius = "0.5vh";
                                             e.target.parentElement.style.opacity = "0.9";
                                             console.log(selectedBlock);
-                                            // newMapTable[rowindex][cellindex] = Object.values(FieldTypes).indexOf(selectedFieldType);
-                                            // handleSetMapTable(newMapTable);
+
+                                            let newMap = JSON.parse(actualPlayer.map);
+                                            JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
+                                                // console.log(blockRow);
+                                                blockRow.forEach((blockCell, blockCellIndex) => {
+                                                    console.log((rowindex + blockRowIndex) + " --- " + (cellindex + blockCellIndex));
+                                                    // console.log(blockCell);
+                                                    if (newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] === 0) {
+                                                        newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] = blockCell;
+                                                    } else {
+                                                        newMap = JSON.parse(actualPlayer.map);
+                                                        return;
+                                                    }
+                                                });
+                                            });
+                                            // console.log(newMap);
+                                            // console.log(JSON.stringify(newMap));
+                                            dispatch(modifyPlayer({...actualPlayer, map: JSON.stringify(newMap)}))
                                         }}
-                                        style={{ backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url('${Object.values(FieldTypes)[mapTable[rowindex][cellindex]]}')` }}>
+                                        style={{ backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url('${Object.values(FieldTypes)[JSON.parse(actualPlayer.map)[rowindex][cellindex]]}')` }}>
                                         <div className='MapLayer'>
                                         </div>
                                     </div>)

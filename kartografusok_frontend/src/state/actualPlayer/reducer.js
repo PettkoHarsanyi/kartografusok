@@ -1,5 +1,5 @@
 import { MODIFY_PLAYER_LOCAL } from "../players/actions";
-import { INIT_PLAYER,MODIFY_ACTUAL_PLAYER,MODIFY_PLAYER } from "./actions";
+import { ADD_MAP_TO_ACTUAL_PLAYER, INIT_PLAYER,MODIFY_ACTUAL_PLAYER,MODIFY_PLAYER } from "./actions";
 
 export const actualPlayerReducerInitialState = {}
 
@@ -29,6 +29,10 @@ export const actualPlayerReducer = (state = actualPlayerReducerInitialState, act
             return payload;
         }
         return state;
+    }
+
+    if(type === ADD_MAP_TO_ACTUAL_PLAYER){
+        return {...state, map: payload}
     }
 
     return state;

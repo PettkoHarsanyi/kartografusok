@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import authService from '../../auth/auth.service';
 import "../../css/ConnectRoom.css";
 import { socketApi } from '../../socket/SocketApi';
-import { initActualPlayer } from '../../state/actualPlayer/actions';
-import { addPlayer } from '../../state/players/actions';
+import { addMapToActualPlayer, initActualPlayer } from '../../state/actualPlayer/actions';
+import { addMapToPlayer, addPlayer } from '../../state/players/actions';
 import { joinRoom } from '../../state/room/actions';
 import { getState } from '../../state/selector';
 import { wsConnect } from '../../state/store';
@@ -29,15 +29,14 @@ export default function ConnectRoom() {
     }
 
     const joinRoomAck = (obj) => {
-        console.log(JSON.parse(obj.state));
+        dispatch(addMapToActualPlayer(JSON.parse(obj.state).map.blocks))
 
         dispatch({
             type: "SET_STATE",
             payload: JSON.parse(obj.state)
         })
 
-        dispatch(addPlayer(user))
-        
+        dispatch(addPlayer({...user,map: JSON.parse(obj.state).map.blocks }))
         
         navigate("/letrehozas");
     }
