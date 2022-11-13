@@ -25,14 +25,8 @@ export default function Map({ mapTable, selectedBlock, children }) {
     }
 
     const unHover = () => {
-        divsToColorGray.forEach(item => {
-            item.style.backgroundColor = ""
-        })
-        divsToColorGreen.forEach(item => {
-            item.style.backgroundColor = ""
-        })
-        divsToColorRed.forEach(item => {
-            item.style.backgroundColor = ""
+        Array.from(document.getElementsByClassName("MapLayer")).forEach((element)=>{
+            element.style.backgroundColor = ""
         })
         divsToColorGray = [];
         divsToColorGreen = [];
@@ -110,27 +104,29 @@ export default function Map({ mapTable, selectedBlock, children }) {
                                 return (
                                     <div key={cellindex} className='MapTableCell'
                                         onClick={(e) => {
-                                            let succesful = true;
-                                            let newMap = JSON.parse(actualPlayer.map);
-                                            JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
-                                                // console.log(blockRow);
-                                                blockRow.forEach((blockCell, blockCellIndex) => {
-                                                    // console.log(blockCell);
-                                                    if (inBounds(rowindex, cellindex, blockCellIndex, blockRowIndex) && (newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] === 0 ||
-                                                        newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 ||
-                                                        blockCell === 0)) {
-                                                        if (blockCell === 1) {
-                                                            newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] = parseToLetter();
+                                            if (!actualPlayer.isReady) {
+                                                let succesful = true;
+                                                let newMap = JSON.parse(actualPlayer.map);
+                                                JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
+                                                    // console.log(blockRow);
+                                                    blockRow.forEach((blockCell, blockCellIndex) => {
+                                                        // console.log(blockCell);
+                                                        if (inBounds(rowindex, cellindex, blockCellIndex, blockRowIndex) && (newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] === 0 ||
+                                                            newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 ||
+                                                            blockCell === 0)) {
+                                                            if (blockCell === 1) {
+                                                                newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] = parseToLetter();
+                                                            }
+                                                        } else {
+                                                            newMap = JSON.parse(actualPlayer.map);
+                                                            succesful = false;
                                                         }
-                                                    } else {
-                                                        newMap = JSON.parse(actualPlayer.map);
-                                                        succesful = false;
-                                                    }
+                                                    });
                                                 });
-                                            });
-                                            if (succesful) {
-                                                dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap) }))
-                                                unHover();
+                                                if (succesful) {
+                                                    dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                    unHover();
+                                                }
                                             }
                                         }}
                                         // `url('${Object.values(FieldTypes)[JSON.parse(actualPlayer.map)[rowindex][cellindex]]}')`
@@ -145,54 +141,60 @@ export default function Map({ mapTable, selectedBlock, children }) {
                                         }}>
                                         <div className='MapLayer' id={`${rowindex},` + `${cellindex}`}
                                             onMouseEnter={(e) => {
-                                                const map = JSON.parse(actualPlayer.map);
-                                                let succesful = true;
+                                                if (!actualPlayer.isReady) {
+                                                    const map = JSON.parse(actualPlayer.map);
+                                                    let succesful = true;
 
-                                                JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
-                                                    blockRow.forEach((blockCell, blockCellIndex) => {
-                                                        if (inBounds(rowindex, cellindex, blockCellIndex, blockRowIndex) && (
-                                                            map[rowindex + blockRowIndex][cellindex + blockCellIndex] === 0 ||
-                                                            map[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 ||
-                                                            blockCell === 0)) {
-                                                            if (blockCell === 1) {
-                                                                divsToColorGreen.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
-                                                            } else {
-                                                                divsToColorGray.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
-                                                            }
-                                                        }
-                                                        else {
-                                                            succesful = false;
-                                                        }
-                                                    });
-                                                });
-
-                                                
-                                                if (succesful) {
-                                                    divsToColorGreen.forEach(item => {
-                                                        item.style.backgroundColor = "rgba(17, 135, 43, 0.7)"
-                                                    })
-                                                } else {
                                                     JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
                                                         blockRow.forEach((blockCell, blockCellIndex) => {
                                                             if (inBounds(rowindex, cellindex, blockCellIndex, blockRowIndex) && (
-                                                                blockCell === 1)) {
-                                                                divsToColorRed.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                map[rowindex + blockRowIndex][cellindex + blockCellIndex] === 0 ||
+                                                                map[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 ||
+                                                                blockCell === 0)) {
+                                                                if (blockCell === 1) {
+                                                                    divsToColorGreen.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                } else {
+                                                                    divsToColorGray.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                }
+                                                            }
+                                                            else {
+                                                                succesful = false;
                                                             }
                                                         });
                                                     });
 
-                                                    divsToColorRed = divsToColorRed.concat(divsToColorGreen)
-                                                    divsToColorGreen = []
-                                                    divsToColorRed.forEach(item => {
-                                                        item.style.backgroundColor = "rgba(255, 0, 0, 0.7)"
+
+                                                    if (succesful) {
+                                                        divsToColorGreen.forEach(item => {
+                                                            item.style.backgroundColor = "rgba(17, 135, 43, 0.7)"
+                                                        })
+                                                    } else {
+                                                        JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
+                                                            blockRow.forEach((blockCell, blockCellIndex) => {
+                                                                if (inBounds(rowindex, cellindex, blockCellIndex, blockRowIndex) && (
+                                                                    blockCell === 1)) {
+                                                                    divsToColorRed.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                }
+                                                            });
+                                                        });
+
+                                                        divsToColorRed = divsToColorRed.concat(divsToColorGreen)
+                                                        divsToColorGreen = []
+                                                        divsToColorRed.forEach(item => {
+                                                            item.style.backgroundColor = "rgba(255, 0, 0, 0.7)"
+                                                        })
+                                                    }
+                                                    divsToColorGray.forEach(item => {
+                                                        item.style.backgroundColor = "rgba(255, 255, 255, 0.3)"
                                                     })
                                                 }
-                                                divsToColorGray.forEach(item => {
-                                                    item.style.backgroundColor = "rgba(255, 255, 255, 0.3)"
-                                                })
+                                                else{
+                                                    unHover();
+                                                }
                                             }}
 
                                             onMouseLeave={(e) => {
+
                                                 unHover();
                                             }}
                                         >

@@ -91,9 +91,9 @@ export default function CreateRoom() {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             const randomMap = getRandomMap();
             dispatch(initMap(randomMap));
-            dispatch(initActualPlayer(user));
+            dispatch(initActualPlayer({...user,isReady: false}));
             dispatch(addMapToActualPlayer(randomMap.blocks));
-            dispatch(addPlayer({...user,map:randomMap.blocks}))
+            dispatch(addPlayer({...user,map:randomMap.blocks,isReady: false}))
             // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));

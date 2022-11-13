@@ -222,6 +222,7 @@ export default function DrawCanvas({ handleCloseModal }) {
                             <button
                                 onClick={(e) => {
                                     saveDrawing()
+                                    dispatch(modifyPlayer({ ...actualPlayer, isReady: true }))
                                     /*
                                     Synchronize state
                                     */

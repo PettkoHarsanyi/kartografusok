@@ -1,4 +1,4 @@
-import { MODIFY_PLAYER_LOCAL } from "../players/actions";
+import { MODIFY_PLAYER_LOCAL, UNREADY_PLAYERS } from "../players/actions";
 import { ADD_MAP_TO_ACTUAL_PLAYER, INIT_PLAYER,MODIFY_ACTUAL_PLAYER,MODIFY_PLAYER } from "./actions";
 
 export const actualPlayerReducerInitialState = {}
@@ -33,6 +33,10 @@ export const actualPlayerReducer = (state = actualPlayerReducerInitialState, act
 
     if(type === ADD_MAP_TO_ACTUAL_PLAYER){
         return {...state, map: payload}
+    }
+
+    if(type === UNREADY_PLAYERS){
+        return {...state,isReady: false};
     }
 
     return state;

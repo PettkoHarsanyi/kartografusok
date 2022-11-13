@@ -8,7 +8,7 @@ import "../../css/Chat.css";
 import { getRoom } from "../../state/room/selectors";
 import GameModal from "./DrawModal";
 import { containerClasses } from "@mui/system";
-import { modifyPlayer } from "../../state/players/actions";
+import { modifyPlayer, setPlayersUnReady } from "../../state/players/actions";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 import DrawCanvas from "./DrawCanvas";
 import { getPlayers } from "../../state/players/selectors";
@@ -28,6 +28,7 @@ import Card from "../Admin/Card";
 import DrawnCard from "./DrawnCard";
 import Blocks from "./Blocks";
 import { initDeck } from "../../state/cards/deck/actions";
+import WaitingModal from "./WaitingModal";
 
 
 export default function Game() {
@@ -56,7 +57,7 @@ export default function Game() {
     const [seasonIndex, setSeasonIndex] = useState(0);
     const [actualSeasonCard, setActualSeasonCard] = useState(cards.seasonCards[seasonIndex]);
     const [selectedBlock, setSelectedBlock] = useState({ type: "", blocks: "" });
-    const [duration,setDuration] = useState(cards.deck[0]?.duration??0);
+    const [duration, setDuration] = useState(cards.deck[0]?.duration ?? 0);
 
     // HA BEMEGY EGY MODIFY PLAYER AKKOR AZ BEMEGY AZ ACTUAL PLAYERBE IS, HA HA MEGEGYEZIK A PLAYERS
     // BELI PLAYER ID-JAVAL.
@@ -72,7 +73,7 @@ export default function Game() {
             })
             navigate("/")
         } else {
-            dispatch(drawCard(cards.deck[0]))
+            // dispatch(drawCard(cards.deck[0]))
         };
     }, [])
 
@@ -87,11 +88,11 @@ export default function Game() {
     }
 
     const handleUserKeyPress = (event) => {
-            setBlocksAndTypes(blocksAndTypes.map((item)=>{
-                const blocks = JSON.parse(item.block);
-                const rotatedBlocks = JSON.stringify(rotateMatrix(blocks));
-                return {...item, block: rotatedBlocks}
-            }))
+        setBlocksAndTypes(blocksAndTypes.map((item) => {
+            const blocks = JSON.parse(item.block);
+            const rotatedBlocks = JSON.stringify(rotateMatrix(blocks));
+            return { ...item, block: rotatedBlocks }
+        }))
     };
 
     const openInspectModal = (card) => {
@@ -117,7 +118,7 @@ export default function Game() {
         let _blocksAndTypes = [];
 
         if (card.fieldType1 && card.fieldType1 === "ANY") {
-            _blocksAndTypes = 
+            _blocksAndTypes =
                 FIELD_TYPES.map((fieldType) => {
                     return { type: fieldType, block: card.blocks1 }
                 })
@@ -154,23 +155,73 @@ export default function Game() {
         setBlocksAndTypes(_blocksAndTypes);
     }, [cards.drawnCards])
 
-    const [selectedBlockIndex,setSelectedBlockIndex] = useState(0);
+    const [selectedBlockIndex, setSelectedBlockIndex] = useState(0);
 
-    useEffect(()=>{
+    useEffect(() => {
         setSelectedBlockIndex(0);
-    },[cards.drawnCards])
+    }, [cards.drawnCards])
 
-    useEffect(()=>{
-        setSelectedBlock({type:blocksAndTypes[selectedBlockIndex]?.type??"",blocks:blocksAndTypes[selectedBlockIndex]?.block??""})
-    },[blocksAndTypes])
+    useEffect(() => {
+        setSelectedBlock({ type: blocksAndTypes[selectedBlockIndex]?.type ?? "", blocks: blocksAndTypes[selectedBlockIndex]?.block ?? "" })
+    }, [blocksAndTypes])
 
-    useEffect(()=>{
-        if(cards.deck.length === 0){
+    useEffect(() => {
+        if (room.roomCode && cards.deck.length === 0) {
             const shuffled = cards.drawnCards.sort(() => 0.5 - Math.random());
             dispatch(initDeck(shuffled));
             dispatch(clearDrawnCards());
         }
-    },[cards.deck])
+    }, [cards.deck])
+
+    useEffect(() => {
+        let allReady = true;
+
+        players.forEach(player => {
+            if (!player.isReady) {
+                allReady = false;
+            }
+        });
+
+        if (room.roomCode && allReady) {
+            if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
+                setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
+                setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
+                if (cards.deck[0].duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
+                    setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
+                } else {
+                    setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+                }
+            } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
+                setDuration(duration + cards.deck[0].duration)              // AZ IDŐ SUMHOZ HOZZÁADJUK A KÖVI KÁRTYA IDEJÉT
+            }
+            // várakozás a többi játékos lépésére modal elrejtése.
+            document.getElementById("waitingModal").style.visibility = "hidden";
+            dispatch(drawCard(cards.deck[0]))
+            dispatch(setPlayersUnReady());
+        }
+
+        if (!allReady && actualPlayer.isReady) {
+            // Várakozás a többi játékos lépésére modal kirajzolása.
+            document.getElementById("waitingModal").style.visibility = "visible";
+        }
+    }, [players])
+
+    useEffect(()=>{
+        if(cards.drawnCards[cards.drawnCards.length-1]?.fieldType1 === "MONSTER"){
+            // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
+            const direction = cards.drawnCards[cards.drawnCards.length-1].direction
+            players.forEach((player,index)=>{
+                dispatch(modifyPlayer({...player,map: players[(index+direction)%players.length].map, fields: players[(index+direction)%players.length].fields}))
+            })
+        }
+        if(cards.drawnCards[cards.drawnCards.length-2]?.fieldType1 === "MONSTER"){
+            // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
+            const direction = cards.drawnCards[cards.drawnCards.length-1].direction
+            players.forEach((player,index)=>{
+                dispatch(modifyPlayer({...player,map: players[Math.abs((index-direction)%players.length)].map, fields: players[Math.abs((index-direction)%players.length)].fields}))
+            })
+        }
+    },[cards.drawnCards])
 
     return (
         <div className="Game">
@@ -184,7 +235,7 @@ export default function Game() {
 
                 <div className="ActualCardDiv">
                     <div className="CardScrollDiv">
-                        {cards.drawnCards && cards.drawnCards.map((card, index) => {
+                        {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards.map((card, index) => {
                             return (<DrawnCard key={card.id} card={card} index={index} />)
                         })}
                     </div>
@@ -192,8 +243,8 @@ export default function Game() {
                 <div className="ChooseDiv">
                     <div className="SelectBlockDiv">
 
-                        {blocksAndTypes.map((item,index) => {
-                            return(<div key={index} className="BlockDiv" onClick={(e) => { selectBlocks(e, item.type, item.block); setSelectedBlockIndex(index) }}
+                        {blocksAndTypes.map((item, index) => {
+                            return (<div key={index} className="BlockDiv" onClick={(e) => { selectBlocks(e, item.type, item.block); setSelectedBlockIndex(index) }}
                                 style={{
                                     boxShadow: (selectedBlock.type === item.type &&
                                         selectedBlock.blocks === item.block)
@@ -242,20 +293,23 @@ export default function Game() {
                                 return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "gray" : "" }}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
                             })}
                             <button onClick={(e) => {
+
                                 e.preventDefault();
-                                console.log(duration);
-                                if(actualSeasonCard.duration <= duration){
-                                    setActualSeasonCard(cards.seasonCards[seasonIndex+1]);
-                                    setSeasonIndex(seasonIndex+1);
-                                    if(cards.deck[0].duration){
+                                if (actualSeasonCard.duration <= duration) {
+                                    setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);
+                                    setSeasonIndex(seasonIndex + 1);
+                                    if (cards.deck[0].duration) {
                                         setDuration(cards.deck[0].duration)
-                                    }else{
+                                    } else {
                                         setDuration(0);
                                     }
-                                }else if(cards.deck[0].duration){
+                                } else if (cards.deck[0].duration) {
                                     setDuration(duration + cards.deck[0].duration)
                                 }
+                                // várakozás a többi játékos lépésére modal elrejtése.
+                                document.getElementById("waitingModal").style.visibility = "hidden";
                                 dispatch(drawCard(cards.deck[0]))
+                                dispatch(setPlayersUnReady());
                             }}>Húz</button>
                         </div>
                         <div className="RoomControlsDiv">
@@ -279,6 +333,8 @@ export default function Game() {
                     <img alt={inspectedCard.name} className="InspectModalImg" src={require(`../../assets/cards/${inspectedCard.picture}`)} />
                 }
             </InspectModal>
+
+            <WaitingModal />
         </div>
     )
 }

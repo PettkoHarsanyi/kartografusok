@@ -12,7 +12,12 @@
     display: table-header-group;
 }
 
-.Game .BlocksTableCell,
+.Game .BlocksTableCell {
+    display: table-cell;
+    height: 3vh;
+    width: 3vh;
+}
+
 .Game .BlocksTableHead {
     display: table-cell;
     height: 3vh;

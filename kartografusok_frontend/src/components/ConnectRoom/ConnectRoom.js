@@ -36,7 +36,7 @@ export default function ConnectRoom() {
             payload: JSON.parse(obj.state)
         })
 
-        dispatch(addPlayer({...user,map: JSON.parse(obj.state).map.blocks }))
+        dispatch(addPlayer({...user,map: JSON.parse(obj.state).map.blocks,isReady: false }))
         
         navigate("/letrehozas");
     }

@@ -1,4 +1,4 @@
-import { ADD_MAP_TO_PLAYER, ADD_PLAYER, ADD_PLAYER_LOCAL, MODIFY_PLAYER, MODIFY_PLAYER_LOCAL, MUTE_PLAYER, REMOVE_PLAYER } from "./actions";
+import { ADD_MAP_TO_PLAYER, ADD_PLAYER, ADD_PLAYER_LOCAL, MODIFY_PLAYER, MODIFY_PLAYER_LOCAL, MUTE_PLAYER, REMOVE_PLAYER, UNREADY_PLAYERS, UNREADY_PLAYERS_LOCAL } from "./actions";
 
 export const playersInitialState = []
 
@@ -52,6 +52,18 @@ export const playersReducer = (state = playersInitialState, action) => {
                 return {...payload.user, map: payload.map}
             }
             return player;
+        })
+    }
+
+    if(type === UNREADY_PLAYERS){
+        return players.map(player => {
+            return {...player, isReady: false}
+        })
+    }
+
+    if(type === UNREADY_PLAYERS_LOCAL){
+        return players.map(player => {
+            return {...player, isReady: false}
         })
     }
 
