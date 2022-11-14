@@ -29,6 +29,7 @@ import DrawnCard from "./DrawnCard";
 import Blocks from "./Blocks";
 import { initDeck } from "../../state/cards/deck/actions";
 import WaitingModal from "./WaitingModal";
+import RuinModal from "./RuinModal";
 
 
 export default function Game() {
@@ -112,47 +113,47 @@ export default function Game() {
     const [blocksAndTypes, setBlocksAndTypes] = useState([]);
 
     useEffect(() => {
-        if (cards.drawnCards.length < 1) return;
-        const card = cards.drawnCards[cards.drawnCards.length - 1];
+        if (cards.drawnCards.length < 1) return;        // HA VAN HÚZVA KÁRTYA, MINDEN KÁRTYAHÚZÁSNÁL LEFUT
+        const card = cards.drawnCards[cards.drawnCards.length - 1];     // A LEGFELSŐ HÚZOTT LAP
 
         let _blocksAndTypes = [];
 
         if (card.fieldType1 && card.fieldType1 === "ANY") {
-            _blocksAndTypes =
+            _blocksAndTypes =                                       // _blocksAndTypesnek BERAKJA MINDET, HA ANY
                 FIELD_TYPES.map((fieldType) => {
                     return { type: fieldType, block: card.blocks1 }
                 })
         }
 
-        if (card.fieldType1 && card.fieldType1 !== "ANY" && card.blocks1) {
+        if (card.fieldType1 && card.fieldType1 !== "ANY" && card.blocks1) {     // HA NEM ANY, ÉS VAN fieldtype1, blocks1-JE, HOZZÁADJA AZT.
             _blocksAndTypes = [
                 ..._blocksAndTypes,
                 { type: card.fieldType1, block: card.blocks1 }
             ]
         }
 
-        if (card.fieldType1 && card.fieldType1 !== "ANY" && card.blocks2) {
+        if (card.fieldType1 && card.fieldType1 !== "ANY" && card.blocks2) {     // HA NEM ANY, ÉS VAN fieldtype1, blocks2-JE, HOZZÁADJA AZT.
             _blocksAndTypes = [
                 ..._blocksAndTypes,
                 { type: card.fieldType1, block: card.blocks2 }
             ]
         }
 
-        if (card.fieldType2 && card.fieldType1 !== "ANY" && card.blocks1) {
+        if (card.fieldType2 && card.fieldType1 !== "ANY" && card.blocks1) {     // HA NEM ANY, ÉS VAN fieldtype2, blocks1-JE, HOZZÁADJA AZT.
             _blocksAndTypes = [
                 ..._blocksAndTypes,
                 { type: card.fieldType2, block: card.blocks1 }
             ]
         }
 
-        if (card.fieldType2 && card.fieldType1 !== "ANY" && card.blocks2) {
+        if (card.fieldType2 && card.fieldType1 !== "ANY" && card.blocks2) {     // HA NEM ANY, ÉS VAN fieldtype2, blocks2-JE, HOZZÁADJA AZT.
             _blocksAndTypes = [
                 ..._blocksAndTypes,
                 { type: card.fieldType2, block: card.blocks2 }
             ]
         }
 
-        setBlocksAndTypes(_blocksAndTypes);
+        setBlocksAndTypes(_blocksAndTypes);         // BERAKJA A blocksAndTypes STATEJÉBE
     }, [cards.drawnCards])
 
     const [selectedBlockIndex, setSelectedBlockIndex] = useState(0);
@@ -160,44 +161,53 @@ export default function Game() {
     useEffect(() => {
         setSelectedBlockIndex(0);
     }, [cards.drawnCards])
+    // HA VÁLTOZIK A HÚZOTT KÁRTYA, AKKOR A KIVÁLASZTOTT INDEXNEK BERAKJA A 0.-AT
 
     useEffect(() => {
         setSelectedBlock({ type: blocksAndTypes[selectedBlockIndex]?.type ?? "", blocks: blocksAndTypes[selectedBlockIndex]?.block ?? "" })
     }, [blocksAndTypes])
+    // HA VÁLTOZNAK A blocksAndTypes AKKOR BERAKJA KIVÁLASZTOTTNAK A selectedBlockIndex INDEXŰT
+    // A SELECTEDBLOCKOK ADJA TOVÁBB A MAP-NAK, AZT RAJZOLJA KI
 
     useEffect(() => {
-        if (room.roomCode && cards.deck.length === 0) {
-            const shuffled = cards.drawnCards.sort(() => 0.5 - Math.random());
-            dispatch(initDeck(shuffled));
+        if (room.roomCode && cards.deck.length === 0) {             // room.roomCode AZÉRT KELL, MERT REFRESHNÉL LEFUTNA, HIBÁT OKOZNAú
+            const shuffled = cards.drawnCards.sort(() => 0.5 - Math.random());          // HA ELFOGY A PAKLI, ÚJRAKEVERI
+            dispatch(initDeck(shuffled));                                               // SZINKRONITÁS JÁTÉKOSOK KÖZÖTT ?!?!?!
             dispatch(clearDrawnCards());
         }
     }, [cards.deck])
 
+    const pickCard = () => {
+        if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
+            setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
+            setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
+            if (cards.deck[0].duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
+                setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
+            } else {
+                setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+            }
+        } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
+            setDuration(duration + cards.deck[0].duration)              // AZ IDŐ SUMHOZ HOZZÁADJUK A KÖVI KÁRTYA IDEJÉT
+        }
+        // várakozás a többi játékos lépésére modal elrejtése.
+        document.getElementById("waitingModal").style.visibility = "hidden";
+        dispatch(drawCard(cards.deck[0]))
+        dispatch(setPlayersUnReady());
+    }
+
     useEffect(() => {
+        // MINDEN JÁTÉKOS VÁLTOZÁSNÁL, AKA BLOCK LERAKÁSNÁL BEVÁRJUK A TÖBBI JÁTÉKOST IS.
+
         let allReady = true;
 
         players.forEach(player => {
             if (!player.isReady) {
-                allReady = false;
+                allReady = false;       // HA NEM MINDENKI isReady, AKKOR allReady = FALSE
             }
         });
 
         if (room.roomCode && allReady) {
-            if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
-                setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
-                setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
-                if (cards.deck[0].duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
-                    setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
-                } else {
-                    setDuration(0);                                         // KÜLÖNBEN NULLÁRA
-                }
-            } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
-                setDuration(duration + cards.deck[0].duration)              // AZ IDŐ SUMHOZ HOZZÁADJUK A KÖVI KÁRTYA IDEJÉT
-            }
-            // várakozás a többi játékos lépésére modal elrejtése.
-            document.getElementById("waitingModal").style.visibility = "hidden";
-            dispatch(drawCard(cards.deck[0]))
-            dispatch(setPlayersUnReady());
+            pickCard();
         }
 
         if (!allReady && actualPlayer.isReady) {
@@ -206,22 +216,31 @@ export default function Game() {
         }
     }, [players])
 
-    useEffect(()=>{
-        if(cards.drawnCards[cards.drawnCards.length-1]?.fieldType1 === "MONSTER"){
+    useEffect(() => {
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER") {  // HA A SZÖRNY KÖR VAN
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
-            const direction = cards.drawnCards[cards.drawnCards.length-1].direction
-            players.forEach((player,index)=>{
-                dispatch(modifyPlayer({...player,map: players[(index+direction)%players.length].map, fields: players[(index+direction)%players.length].fields}))
+            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+            players.forEach((player, index) => {
+                dispatch(modifyPlayer({ ...player, map: players[(index + direction) % players.length].map, fields: players[(index + direction) % players.length].fields }))
             })
         }
-        if(cards.drawnCards[cards.drawnCards.length-2]?.fieldType1 === "MONSTER"){
+        if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
-            const direction = cards.drawnCards[cards.drawnCards.length-1].direction
-            players.forEach((player,index)=>{
-                dispatch(modifyPlayer({...player,map: players[Math.abs((index-direction)%players.length)].map, fields: players[Math.abs((index-direction)%players.length)].fields}))
+            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+            players.forEach((player, index) => {
+                dispatch(modifyPlayer({ ...player, map: players[Math.abs((index - direction) % players.length)].map, fields: players[Math.abs((index - direction) % players.length)].fields }))
             })
         }
-    },[cards.drawnCards])
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN") {  // HA A ROM KÖR VAN
+            document.getElementById("ruinModal").style.visibility = "visible";
+            document.getElementById("time").className = "Time Animate"
+            setTimeout(pickCard,3000);
+        }
+        if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" || cards.drawnCards.length === 0) {  // HA A ROM KÖR VAN
+            document.getElementById("ruinModal").style.visibility = "hidden";
+            document.getElementById("time").className = "Time"
+        }
+    }, [cards.drawnCards])
 
     return (
         <div className="Game">
@@ -335,6 +354,8 @@ export default function Game() {
             </InspectModal>
 
             <WaitingModal />
+
+            <RuinModal />
         </div>
     )
 }

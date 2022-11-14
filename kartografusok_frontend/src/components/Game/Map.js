@@ -141,7 +141,7 @@ export default function Map({ mapTable, selectedBlock, children }) {
                                         }}>
                                         <div className='MapLayer' id={`${rowindex},` + `${cellindex}`}
                                             onMouseEnter={(e) => {
-                                                if (!actualPlayer.isReady) {
+                                                if (!actualPlayer.isReady && selectedBlock.blocks !== '') {
                                                     const map = JSON.parse(actualPlayer.map);
                                                     let succesful = true;
 
