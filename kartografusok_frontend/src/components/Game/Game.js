@@ -177,6 +177,12 @@ export default function Game() {
         }
     }, [cards.deck])
 
+    useEffect(()=>{
+        if(room.roomCode && cards._allDrawnCards.length > 0 && cards.drawnCards.length === 0){
+            pickCard();
+        }
+    },[cards.deck])
+
     const pickCard = () => {
         if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
             setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
@@ -216,6 +222,8 @@ export default function Game() {
         }
     }, [players])
 
+    const [canBuildAnywhere,setCanBuildAnywhere] = useState(true);
+
     useEffect(() => {
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER") {  // HA A SZÖRNY KÖR VAN
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
@@ -231,23 +239,48 @@ export default function Game() {
                 dispatch(modifyPlayer({ ...player, map: players[Math.abs((index - direction) % players.length)].map, fields: players[Math.abs((index - direction) % players.length)].fields }))
             })
         }
-        if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN") {  // HA A ROM KÖR VAN
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
             document.getElementById("ruinModal").style.visibility = "visible";
             document.getElementById("time").className = "Time Animate"
             setTimeout(pickCard,3000);
         }
-        if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" || cards.drawnCards.length === 0) {  // HA A ROM KÖR VAN
+        if ((cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN") || cards.drawnCards.length === 0) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
+            // LEELLENŐRIZZÜK, HOGY EGYÁLTALÁN VAN E MÉG SZABAD ROM HELY, HA NEM -> SELECTEDBLOCK ÚJ: 1 BLOCK ANY
+            // AKKOR IS SELECTEDBLOCK ÚJ: 1 BLOCK ANY, HA A SELECTEDBLOCK NEM FÉR ODA SEHOGY FORGATVA (NA EZ GEC...)
+
+            let canBuildOnRuin = true;
+
+            if(room.roomCode && !actualPlayer.map.includes('1') /* ||  NINCS HELY */){
+                canBuildOnRuin = false;
+            }
+
+            if(!canBuildOnRuin){
+                const _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
+                    return { type: fieldType, block: "[[1]]" }
+                })
+                setCanBuildAnywhere(true);
+                setBlocksAndTypes(_blocksAndTypes)
+            }else{
+                setCanBuildAnywhere(false);
+            }
+
             document.getElementById("ruinModal").style.visibility = "hidden";
             document.getElementById("time").className = "Time"
+        }else{
+            setCanBuildAnywhere(true);
         }
     }, [cards.drawnCards])
+
+    useEffect(()=>{
+        console.log(blocksAndTypes)
+    },[blocksAndTypes])
 
     return (
         <div className="Game">
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} />
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere}/>
                 </div>
             }
             <div className="DrawnCardDiv">
