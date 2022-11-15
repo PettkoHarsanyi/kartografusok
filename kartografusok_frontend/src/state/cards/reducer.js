@@ -6,7 +6,6 @@ import { exploreCardsInitialState, exploreCardsReducer } from "./exploreCards/re
 import { pointCardsInitialState, pointCardsReducer } from "./pointCards/reducer";
 import { raidCardsInitialState, raidCardsReducer } from "./raidCards/reducer";
 import { seasonCardsInitialState, seasonCardsReducer } from "./seasonCards/reducer";
-import { _allDrawnCardsInitialState, _allDrawnCardsReducer } from "./_allDrawnCards/recuder";
 
 export const cardsReducerInitialState = {
     exploreCards: exploreCardsInitialState,
@@ -16,7 +15,6 @@ export const cardsReducerInitialState = {
     decreeCards: decreeCardsInitialState,
     deck: deckInitialState,
     drawnCards: drawnCardsInitialState,
-    _allDrawnCards: _allDrawnCardsInitialState,
 }
 
 export const cardsReducer = combineReducers({
@@ -27,5 +25,4 @@ export const cardsReducer = combineReducers({
     decreeCards: decreeCardsReducer,
     deck: deckReducer,
     drawnCards: drawnCardsReducer,
-    _allDrawnCards: _allDrawnCardsReducer,
 })

@@ -69,6 +69,24 @@ export default function CreateRoom() {
         // console.log(obj);
     }
 
+    const shuffle = (array) => {
+        let currentIndex = array.length, randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    }
+
     const randomize4PointCards = () => {
         // console.log(cards.pointCards);
         const shuffled = cards.pointCards.sort(() => 0.5 - Math.random());
@@ -77,23 +95,104 @@ export default function CreateRoom() {
     }
 
     const randomizeExploreCards = () => {
-        const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
-        let selectedRaidCards = shuffledRaidCards.slice(0, 4);
-        const merged = cards.exploreCards.concat(selectedRaidCards)
-        console.log(merged);
-        const shuffledMerged = merged.sort(() => 0.5 - Math.random());
-        console.log(shuffledMerged);
-        dispatch(initDeck(shuffledMerged));
-        // const shuffled = cards.exploreCards.
+        // const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
+        // let selectedRaidCards = shuffledRaidCards.slice(0, 4);
+        // const merged = cards.exploreCards.concat(selectedRaidCards)
+        // const shuffledMerged = merged.sort(() => 0.5 - Math.random());
+        // const temp = [].concat(shuffledMerged.sort(() => 0.5 - Math.random()));
+        // let secondShuffledMerged = temp.sort(()=> 0.5 - Math.random());
+        // const shuffledMergedDeck = shuffledMerged.concat(secondShuffledMerged);
+        // dispatch(initDeck(shuffledMergedDeck));
+
+
+        const ruinThenRaidTestDeck = [
+            {
+                id: 8,
+                name: 'Elfeledett erdő',
+                duration: 1,
+                picture: 'elfeledetterdo.png',
+                official: true,
+                cardType: 'EXPLORE',
+                fieldType1: 'FOREST',
+                fieldType2: null,
+                direction: null,
+                blocks1: '[[1,0],[0,1]]',
+                blocks2: '[[1,0],[1,1],[0,1]]',
+                createdAt: '2022-10-18T21:39:00.521Z',
+                modifiedAt: '2022-10-18T21:39:00.521Z'
+            },
+            {
+                id: 16,
+                name: 'Templomrom',
+                duration: null,
+                picture: 'templomrom.png',
+                official: true,
+                cardType: 'RUIN',
+                fieldType1: null,
+                fieldType2: null,
+                direction: null,
+                blocks1: null,
+                blocks2: null,
+                createdAt: '2022-10-18T21:47:30.887Z',
+                modifiedAt: '2022-10-18T21:47:30.887Z'
+            },
+            {
+                id: 17,
+                name: 'Előőrsrom',
+                duration: null,
+                picture: 'eloorsrom.png',
+                official: true,
+                cardType: 'RUIN',
+                fieldType1: null,
+                fieldType2: null,
+                direction: null,
+                blocks1: null,
+                blocks2: null,
+                createdAt: '2022-10-18T21:47:43.965Z',
+                modifiedAt: '2022-10-18T21:47:43.965Z'
+            },
+            {
+                id: 39,
+                name: 'Ózdi roham',
+                duration: null,
+                picture: 'customraid.png',
+                official: false,
+                cardType: 'RAID',
+                fieldType1: 'MONSTER',
+                fieldType2: null,
+                direction: 1,
+                blocks1: '[[1,1,1],[1,1,1]]',
+                blocks2: null,
+                createdAt: '2022-10-27T20:16:19.683Z',
+                modifiedAt: '2022-10-27T20:16:19.683Z'
+            },
+            {
+                id: 11,
+                name: 'Község',
+                duration: 1,
+                picture: 'kozseg.png',
+                official: true,
+                cardType: 'EXPLORE',
+                fieldType1: 'VILLAGE',
+                fieldType2: null,
+                direction: null,
+                blocks1: '[[1,0],[1,1]]',
+                blocks2: '[[1,1,1],[1,1,0]]',
+                createdAt: '2022-10-18T21:41:10.312Z',
+                modifiedAt: '2022-10-18T21:41:10.312Z'
+            },
+        ]
+        dispatch(initDeck(ruinThenRaidTestDeck));
+
     }
 
     useEffect(() => {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             const randomMap = getRandomMap();
             dispatch(initMap(randomMap));
-            dispatch(initActualPlayer({...user,isReady: false}));
+            dispatch(initActualPlayer({ ...user, isReady: false }));
             dispatch(addMapToActualPlayer(randomMap.blocks));
-            dispatch(addPlayer({...user,map:randomMap.blocks,isReady: false}))
+            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false }))
             // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));

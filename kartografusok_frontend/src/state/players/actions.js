@@ -30,6 +30,11 @@ export const modifyPlayer = (user) => ({
     payload: user,
 })
 
+export const modifyLocalPlayer = (user) => ({
+    type: MODIFY_PLAYER_LOCAL,
+    payload: user,
+})
+
 export const addMapToPlayer = (user,map) => ({
     type: ADD_MAP_TO_PLAYER,
     payload: {user,map},

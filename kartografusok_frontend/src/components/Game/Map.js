@@ -112,7 +112,6 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
 
                                                 let ruinIsUnderBlock = true;  // HA RUIN KÖR VAN, AKKOR A ruinIsUnderBlock-ot FALSERA INICIALIZÁLJUK
                                                 if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && !canBuildAnywhere) {
-                                                    console.log("ITS A RUIN ROUND SO I SET FOUND FALSE, IT SHOULD FIND ONE TO MAKE IT TRUE")
                                                     ruinIsUnderBlock = false;
                                                 }
 
@@ -159,11 +158,6 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                                         }}>
                                         <div className='MapLayer' id={`${rowindex},` + `${cellindex}`}
                                             onMouseEnter={(e) => {
-                                                if(canBuildAnywhere){
-                                                    console.log("I CAN BUILD ANYWHERE BECAUSE THERE IS NO RUIN OR IT CANT FIT OR IS NO RUIN ROUND - ONE BLOCK ANY TYPE");
-                                                }else{
-                                                    console.log("I CAN'T BUILD ANYWHERE ONLY ON RUIN, BECAUSE THERE IS RUIN AND CAN FIT - ORIGINAL BLOCK");
-                                                }
                                                 if (!actualPlayer.isReady && selectedBlock.blocks !== '') {
                                                     const map = JSON.parse(actualPlayer.map);
                                                     let succesful = true;
@@ -195,12 +189,6 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
 
                                                         });
                                                     });
-
-                                                    if (foundRuinInRuinRound) {
-                                                        console.log("I found ruin under the intended blocks");
-                                                    } else {
-                                                        console.log("I haven't found ruin under the intended blocks");
-                                                    }
 
                                                     if (!foundRuinInRuinRound) {
                                                         succesful = false;

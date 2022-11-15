@@ -8,7 +8,7 @@ import "../../css/Chat.css";
 import { getRoom } from "../../state/room/selectors";
 import GameModal from "./DrawModal";
 import { containerClasses } from "@mui/system";
-import { modifyPlayer, setPlayersUnReady } from "../../state/players/actions";
+import { modifyLocalPlayer, modifyPlayer, setPlayersUnReady } from "../../state/players/actions";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 import DrawCanvas from "./DrawCanvas";
 import { getPlayers } from "../../state/players/selectors";
@@ -169,19 +169,20 @@ export default function Game() {
     // HA VÁLTOZNAK A blocksAndTypes AKKOR BERAKJA KIVÁLASZTOTTNAK A selectedBlockIndex INDEXŰT
     // A SELECTEDBLOCKOK ADJA TOVÁBB A MAP-NAK, AZT RAJZOLJA KI
 
-    useEffect(() => {
-        if (room.roomCode && cards.deck.length === 0) {             // room.roomCode AZÉRT KELL, MERT REFRESHNÉL LEFUTNA, HIBÁT OKOZNAú
-            const shuffled = cards.drawnCards.sort(() => 0.5 - Math.random());          // HA ELFOGY A PAKLI, ÚJRAKEVERI
-            dispatch(initDeck(shuffled));                                               // SZINKRONITÁS JÁTÉKOSOK KÖZÖTT ?!?!?!
-            dispatch(clearDrawnCards());
-        }
-    }, [cards.deck])
+    // TESZTELÉS ALATT, TÖRLENDŐEK
+    // useEffect(() => {
+    //     if (room.roomCode && cards.deck.length === 0) {             // room.roomCode AZÉRT KELL, MERT REFRESHNÉL LEFUTNA, HIBÁT OKOZNAú
+    //         const shuffled = cards.drawnCards.sort(() => 0.5 - Math.random());          // HA ELFOGY A PAKLI, ÚJRAKEVERI
+    //         dispatch(initDeck(shuffled));                                               // SZINKRONITÁS JÁTÉKOSOK KÖZÖTT ?!?!?!
+    //         dispatch(clearDrawnCards());
+    //     }
+    // }, [cards.deck])
 
-    useEffect(()=>{
-        if(room.roomCode && cards._allDrawnCards.length > 0 && cards.drawnCards.length === 0){
-            pickCard();
-        }
-    },[cards.deck])
+    // useEffect(()=>{
+    //     if(room.roomCode && cards._allDrawnCards.length > 0 && cards.drawnCards.length === 0){
+    //         pickCard();
+    //     }
+    // },[cards.deck])
 
     const pickCard = () => {
         if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
@@ -225,26 +226,60 @@ export default function Game() {
     const [canBuildAnywhere,setCanBuildAnywhere] = useState(true);
 
     useEffect(() => {
-        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER") {  // HA A SZÖRNY KÖR VAN
+        // HA AZ ELŐZŐ ÉS A MOSTANI KÖR IS MONSTER, ELŐSZÖR VISSZA KELL ÁLLÍTANI EREDETI JÁTÉKOSHOZ (ELŐZŐ SZÖRNY DIRECTIONJA, AZTÁN AZ ÚJ DIRECTIONJÁBA)
+        if(cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER")
+        {
+            console.log("ÉN LEFUTOTTAM");
+            const firstDirection = cards.drawnCards[cards.drawnCards.length - 2].direction
+            const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
+
+            players.forEach((player, index) => {
+                dispatch(modifyPlayer({ ...player, map: players[(Math.abs(index - firstDirection + secondDirection)) % players.length].map, fields: players[(Math.abs(index - firstDirection + secondDirection)) % players.length].fields }))
+            })
+        }
+        
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
+            console.log("ÉN LEFUTOTTAM");
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
             const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
             players.forEach((player, index) => {
-                dispatch(modifyPlayer({ ...player, map: players[(index + direction) % players.length].map, fields: players[(index + direction) % players.length].fields }))
+                dispatch(modifyLocalPlayer({ ...player, map: players[Math.abs((index + direction)) % players.length].map, fields: players[Math.abs((index + direction)) % players.length].fields }))
             })
         }
-        if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
+        if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
+            console.log("ÉN LEFUTOTTAM");
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
-            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+            const direction = cards.drawnCards[cards.drawnCards.length - 2].direction
             players.forEach((player, index) => {
                 dispatch(modifyPlayer({ ...player, map: players[Math.abs((index - direction) % players.length)].map, fields: players[Math.abs((index - direction) % players.length)].fields }))
             })
         }
-        if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
-            document.getElementById("ruinModal").style.visibility = "visible";
-            document.getElementById("time").className = "Time Animate"
-            setTimeout(pickCard,3000);
+
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
+            // document.getElementById("time").style.width = "100%"
+            // document.getElementById("ruinModal").style.visibility = "visible";
+            // document.getElementById("time").className = "Time Animate"
+            document.getElementById("time").className = "Animate"
+            document.getElementById("time").style.width = "100%"
+            document.getElementById("ruinModal").style.display = "flex";
+            setTimeout(()=>{
+                document.getElementById("ruinModal").style.display = "none";
+                document.getElementById("time").className = "Time"
+                pickCard()
+            },3000);
         }
-        if ((cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN") || cards.drawnCards.length === 0) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
+
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 2]?.cardType !== "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
+            document.getElementById("ruinModal").style.display = "flex";
+            document.getElementById("time").className = "Time Animate"
+            setTimeout(()=>{
+                document.getElementById("ruinModal").style.display = "none";
+                document.getElementById("time").className = "Time"
+                pickCard()
+            },3000);
+        }
+
+        if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN" /* || cards.drawnCards.length === 0*/) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
             // LEELLENŐRIZZÜK, HOGY EGYÁLTALÁN VAN E MÉG SZABAD ROM HELY, HA NEM -> SELECTEDBLOCK ÚJ: 1 BLOCK ANY
             // AKKOR IS SELECTEDBLOCK ÚJ: 1 BLOCK ANY, HA A SELECTEDBLOCK NEM FÉR ODA SEHOGY FORGATVA (NA EZ GEC...)
 
@@ -263,17 +298,10 @@ export default function Game() {
             }else{
                 setCanBuildAnywhere(false);
             }
-
-            document.getElementById("ruinModal").style.visibility = "hidden";
-            document.getElementById("time").className = "Time"
         }else{
             setCanBuildAnywhere(true);
         }
     }, [cards.drawnCards])
-
-    useEffect(()=>{
-        console.log(blocksAndTypes)
-    },[blocksAndTypes])
 
     return (
         <div className="Game">
@@ -342,27 +370,8 @@ export default function Game() {
                     <div className="PlayersDiv">
                         <div className="PlayersInfoDiv">
                             {players && players.map((player) => {
-                                return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "gray" : "" }}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
+                                return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "dodgerblue" : "" }}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
                             })}
-                            <button onClick={(e) => {
-
-                                e.preventDefault();
-                                if (actualSeasonCard.duration <= duration) {
-                                    setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);
-                                    setSeasonIndex(seasonIndex + 1);
-                                    if (cards.deck[0].duration) {
-                                        setDuration(cards.deck[0].duration)
-                                    } else {
-                                        setDuration(0);
-                                    }
-                                } else if (cards.deck[0].duration) {
-                                    setDuration(duration + cards.deck[0].duration)
-                                }
-                                // várakozás a többi játékos lépésére modal elrejtése.
-                                document.getElementById("waitingModal").style.visibility = "hidden";
-                                dispatch(drawCard(cards.deck[0]))
-                                dispatch(setPlayersUnReady());
-                            }}>Húz</button>
                         </div>
                         <div className="RoomControlsDiv">
                             <Link to="/">Kilépés</Link>
