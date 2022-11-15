@@ -15,7 +15,9 @@ export default function DrawnCard({ card, index }) {
             zIndex: index
         }}>
 
-            <img src={`api/cards/${card.id}/cardimage`} className="DrawnGameCardDivImg" />
+            <img src={
+                (card.duplicate) ? `api/cards/${card.pictureId}/cardimage` :`api/cards/${card.id}/cardimage`
+            } className="DrawnGameCardDivImg" />
 
             {
                 !card.official &&

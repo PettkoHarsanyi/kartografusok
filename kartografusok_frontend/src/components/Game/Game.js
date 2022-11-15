@@ -30,6 +30,7 @@ import Blocks from "./Blocks";
 import { initDeck } from "../../state/cards/deck/actions";
 import WaitingModal from "./WaitingModal";
 import RuinModal from "./RuinModal";
+import GameEndModal from "./GameEndModal";
 
 
 export default function Game() {
@@ -184,22 +185,31 @@ export default function Game() {
     //     }
     // },[cards.deck])
 
+    const [gameEnd, setGameEnd] = useState(false);
+
     const pickCard = () => {
-        if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
-            setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
-            setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
-            if (cards.deck[0].duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
-                setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
-            } else {
-                setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+        if (!gameEnd) {
+            if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
+                setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
+                setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
+                if (cards.deck[0]?.duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
+                    setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
+                } else {
+                    setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+                }
+            } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
+
+                if (cards.drawnCards.length === 0) { // ELSŐ KÁRTYÁNÁL
+                    setDuration(cards.deck[0].duration)              // AZ IDŐ SUMHOZ HOZZÁADJUK A KÖVI KÁRTYA IDEJÉT
+                } else {
+                    setDuration(duration + cards.deck[0].duration)              // AZ IDŐ SUMHOZ HOZZÁADJUK A KÖVI KÁRTYA IDEJÉT
+                }
             }
-        } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
-            setDuration(duration + cards.deck[0].duration)              // AZ IDŐ SUMHOZ HOZZÁADJUK A KÖVI KÁRTYA IDEJÉT
+            // várakozás a többi játékos lépésére modal elrejtése.
+            document.getElementById("waitingModal").style.visibility = "hidden";
+            dispatch(drawCard(cards.deck[0]))
+            dispatch(setPlayersUnReady());
         }
-        // várakozás a többi játékos lépésére modal elrejtése.
-        document.getElementById("waitingModal").style.visibility = "hidden";
-        dispatch(drawCard(cards.deck[0]))
-        dispatch(setPlayersUnReady());
     }
 
     useEffect(() => {
@@ -223,12 +233,11 @@ export default function Game() {
         }
     }, [players])
 
-    const [canBuildAnywhere,setCanBuildAnywhere] = useState(true);
+    const [canBuildAnywhere, setCanBuildAnywhere] = useState(true);
 
     useEffect(() => {
         // HA AZ ELŐZŐ ÉS A MOSTANI KÖR IS MONSTER, ELŐSZÖR VISSZA KELL ÁLLÍTANI EREDETI JÁTÉKOSHOZ (ELŐZŐ SZÖRNY DIRECTIONJA, AZTÁN AZ ÚJ DIRECTIONJÁBA)
-        if(cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER")
-        {
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER") {
             console.log("ÉN LEFUTOTTAM");
             const firstDirection = cards.drawnCards[cards.drawnCards.length - 2].direction
             const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
@@ -237,7 +246,7 @@ export default function Game() {
                 dispatch(modifyPlayer({ ...player, map: players[(Math.abs(index - firstDirection + secondDirection)) % players.length].map, fields: players[(Math.abs(index - firstDirection + secondDirection)) % players.length].fields }))
             })
         }
-        
+
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
             console.log("ÉN LEFUTOTTAM");
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
@@ -256,27 +265,33 @@ export default function Game() {
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
-            // document.getElementById("time").style.width = "100%"
-            // document.getElementById("ruinModal").style.visibility = "visible";
-            // document.getElementById("time").className = "Time Animate"
-            document.getElementById("time").className = "Animate"
-            document.getElementById("time").style.width = "100%"
             document.getElementById("ruinModal").style.display = "flex";
-            setTimeout(()=>{
+            const element = document.getElementById("time")
+            element.classList.remove("Animate");
+            void element.offsetWidth;
+            element.classList.add("Animate");
+
+            setTimeout(() => {
                 document.getElementById("ruinModal").style.display = "none";
-                document.getElementById("time").className = "Time"
+                element.classList.remove("Animate");
                 pickCard()
-            },3000);
+            }, 3000);
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 2]?.cardType !== "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
             document.getElementById("ruinModal").style.display = "flex";
-            document.getElementById("time").className = "Time Animate"
-            setTimeout(()=>{
+
+            const element = document.getElementById("time")
+            element.classList.add("Animate");
+
+            setTimeout(() => {
+
                 document.getElementById("ruinModal").style.display = "none";
-                document.getElementById("time").className = "Time"
+                element.classList.remove("Animate");
+                void element.offsetWidth;
+
                 pickCard()
-            },3000);
+            }, 3000);
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN" /* || cards.drawnCards.length === 0*/) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
@@ -285,30 +300,37 @@ export default function Game() {
 
             let canBuildOnRuin = true;
 
-            if(room.roomCode && !actualPlayer.map.includes('1') /* ||  NINCS HELY */){
+            if (room.roomCode && !actualPlayer.map.includes('1') /* ||  NINCS HELY */) {
                 canBuildOnRuin = false;
             }
 
-            if(!canBuildOnRuin){
+            if (!canBuildOnRuin) {
                 const _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
                     return { type: fieldType, block: "[[1]]" }
                 })
                 setCanBuildAnywhere(true);
                 setBlocksAndTypes(_blocksAndTypes)
-            }else{
+            } else {
                 setCanBuildAnywhere(false);
             }
-        }else{
+        } else {
             setCanBuildAnywhere(true);
         }
     }, [cards.drawnCards])
+
+    useEffect(() => {
+        if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration) {
+            setSeasonIndex(0);
+            setGameEnd(true);
+        }
+    }, [duration])
 
     return (
         <div className="Game">
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere}/>
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} />
                 </div>
             }
             <div className="DrawnCardDiv">
@@ -370,7 +392,7 @@ export default function Game() {
                     <div className="PlayersDiv">
                         <div className="PlayersInfoDiv">
                             {players && players.map((player) => {
-                                return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "dodgerblue" : "" }}><div>{player.name}</div><div>{player.points}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
+                                return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "dodgerblue" : "" }}><div>{player.name}</div><div>{player.gamePoints}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
                             })}
                         </div>
                         <div className="RoomControlsDiv">
@@ -398,6 +420,8 @@ export default function Game() {
             <WaitingModal />
 
             <RuinModal />
+
+            <GameEndModal />
         </div>
     )
 }

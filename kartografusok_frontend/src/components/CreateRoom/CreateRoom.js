@@ -28,7 +28,7 @@ import { initDeck } from '../../state/cards/deck/actions';
 import { getMap } from '../../state/map/selectors';
 
 export default function CreateRoom() {
-    const [user, setUser] = useState(authService.getCurrentUser() ?? { id: 0, name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png" });
+    const [user, setUser] = useState(authService.getCurrentUser() ?? { id: Math.floor(((Math.random() * 201) + 100)), name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png", isReady: false, gamePoints: 0, isGuest: true });
     // const [users,setUsers] = useState([user]);
     // const [messages, setMessages] = useState([]);
     const loadedData = useLoaderData();
@@ -95,104 +95,35 @@ export default function CreateRoom() {
     }
 
     const randomizeExploreCards = () => {
-        // const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
-        // let selectedRaidCards = shuffledRaidCards.slice(0, 4);
-        // const merged = cards.exploreCards.concat(selectedRaidCards)
-        // const shuffledMerged = merged.sort(() => 0.5 - Math.random());
-        // const temp = [].concat(shuffledMerged.sort(() => 0.5 - Math.random()));
-        // let secondShuffledMerged = temp.sort(()=> 0.5 - Math.random());
-        // const shuffledMergedDeck = shuffledMerged.concat(secondShuffledMerged);
-        // dispatch(initDeck(shuffledMergedDeck));
+        const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
+        let selectedRaidCards = shuffledRaidCards.slice(0, 4);
+        const merged = cards.exploreCards.concat(selectedRaidCards)
+        const shuffledMerged = merged.sort(() => 0.5 - Math.random());
+        const temp = [].concat(cards.exploreCards.sort(() => 0.5 - Math.random()));
+        let secondShuffledMerged = temp.sort(()=> 0.5 - Math.random());
 
+        // Második pakli id-jainak cseréje
+        secondShuffledMerged = secondShuffledMerged.map((card)=>{
+            return {...card, id: card.id+merged.length+50, duplicate: true, pictureId: card.id}
+        })
 
-        const ruinThenRaidTestDeck = [
-            {
-                id: 8,
-                name: 'Elfeledett erdő',
-                duration: 1,
-                picture: 'elfeledetterdo.png',
-                official: true,
-                cardType: 'EXPLORE',
-                fieldType1: 'FOREST',
-                fieldType2: null,
-                direction: null,
-                blocks1: '[[1,0],[0,1]]',
-                blocks2: '[[1,0],[1,1],[0,1]]',
-                createdAt: '2022-10-18T21:39:00.521Z',
-                modifiedAt: '2022-10-18T21:39:00.521Z'
-            },
-            {
-                id: 16,
-                name: 'Templomrom',
-                duration: null,
-                picture: 'templomrom.png',
-                official: true,
-                cardType: 'RUIN',
-                fieldType1: null,
-                fieldType2: null,
-                direction: null,
-                blocks1: null,
-                blocks2: null,
-                createdAt: '2022-10-18T21:47:30.887Z',
-                modifiedAt: '2022-10-18T21:47:30.887Z'
-            },
-            {
-                id: 17,
-                name: 'Előőrsrom',
-                duration: null,
-                picture: 'eloorsrom.png',
-                official: true,
-                cardType: 'RUIN',
-                fieldType1: null,
-                fieldType2: null,
-                direction: null,
-                blocks1: null,
-                blocks2: null,
-                createdAt: '2022-10-18T21:47:43.965Z',
-                modifiedAt: '2022-10-18T21:47:43.965Z'
-            },
-            {
-                id: 39,
-                name: 'Ózdi roham',
-                duration: null,
-                picture: 'customraid.png',
-                official: false,
-                cardType: 'RAID',
-                fieldType1: 'MONSTER',
-                fieldType2: null,
-                direction: 1,
-                blocks1: '[[1,1,1],[1,1,1]]',
-                blocks2: null,
-                createdAt: '2022-10-27T20:16:19.683Z',
-                modifiedAt: '2022-10-27T20:16:19.683Z'
-            },
-            {
-                id: 11,
-                name: 'Község',
-                duration: 1,
-                picture: 'kozseg.png',
-                official: true,
-                cardType: 'EXPLORE',
-                fieldType1: 'VILLAGE',
-                fieldType2: null,
-                direction: null,
-                blocks1: '[[1,0],[1,1]]',
-                blocks2: '[[1,1,1],[1,1,0]]',
-                createdAt: '2022-10-18T21:41:10.312Z',
-                modifiedAt: '2022-10-18T21:41:10.312Z'
-            },
-        ]
-        dispatch(initDeck(ruinThenRaidTestDeck));
+        const shuffledMergedDeck = shuffledMerged.concat(secondShuffledMerged);
+        dispatch(initDeck(shuffledMergedDeck));
 
+        // const ruinThenRaidTestDeck = [{id: 8,name: 'Elfeledett erdő',duration: 1,picture: 'elfeledetterdo.png',official: true,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: null,direction: null,blocks1: '[[1,0],[0,1]]',blocks2: '[[1,0],[1,1],[0,1]]',createdAt: '2022-10-18T21:39:00.521Z',modifiedAt: '2022-10-18T21:39:00.521Z'},{id: 17,name: 'Előőrsrom',duration: null,picture: 'eloorsrom.png',official: true,cardType: 'RUIN',fieldType1: null,fieldType2: null,direction: null,blocks1: null,blocks2: null,createdAt: '2022-10-18T21:47:43.965Z',modifiedAt: '2022-10-18T21:47:43.965Z'},{id: 39,name: 'Ózdi roham',duration: null,picture: 'customraid.png',official: false,cardType: 'RAID',fieldType1: 'MONSTER',fieldType2: null,direction: 1,blocks1: '[[1,1,1],[1,1,1]]',blocks2: null,createdAt: '2022-10-27T20:16:19.683Z',modifiedAt: '2022-10-27T20:16:19.683Z'},{id: 11,name: 'Község',duration: 1,picture: 'kozseg.png',official: true,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: null,direction: null,blocks1: '[[1,0],[1,1]]',blocks2: '[[1,1,1],[1,1,0]]',createdAt: '2022-10-18T21:41:10.312Z',modifiedAt: '2022-10-18T21:41:10.312Z'},]
+        // dispatch(initDeck(ruinThenRaidTestDeck));
+
+        // const twoRuinTestDeck = [{id: 8,name: 'Elfeledett erdő',duration: 1,picture: 'elfeledetterdo.png',official: true,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: null,direction: null,blocks1: '[[1,0],[0,1]]',blocks2: '[[1,0],[1,1],[0,1]]',createdAt: '2022-10-18T21:39:00.521Z',modifiedAt: '2022-10-18T21:39:00.521Z'},{id: 16,name: 'Templomrom',duration: null,picture: 'templomrom.png',official: true,cardType: 'RUIN',fieldType1: null,fieldType2: null,direction: null,blocks1: null,blocks2: null,createdAt: '2022-10-18T21:47:30.887Z',modifiedAt: '2022-10-18T21:47:30.887Z'},{id: 17,name: 'Előőrsrom',duration: null,picture: 'eloorsrom.png',official: true,cardType: 'RUIN',fieldType1: null,fieldType2: null,direction: null,blocks1: null,blocks2: null,createdAt: '2022-10-18T21:47:43.965Z',modifiedAt: '2022-10-18T21:47:43.965Z'},{id: 11,name: 'Község',duration: 1,picture: 'kozseg.png',official: true,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: null,direction: null,blocks1: '[[1,0],[1,1]]',blocks2: '[[1,1,1],[1,1,0]]',createdAt: '2022-10-18T21:41:10.312Z',modifiedAt: '2022-10-18T21:41:10.312Z'},]
+        // dispatch(initDeck(twoRuinTestDeck));
     }
 
     useEffect(() => {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             const randomMap = getRandomMap();
             dispatch(initMap(randomMap));
-            dispatch(initActualPlayer({ ...user, isReady: false }));
+            dispatch(initActualPlayer({ ...user, isReady: false, gamePoints: 0 }));
             dispatch(addMapToActualPlayer(randomMap.blocks));
-            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false }))
+            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false, gamePoints: 0 }))
             // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));
@@ -362,7 +293,7 @@ export default function CreateRoom() {
                                         </>}
                                     </div>
                                     <div className='PicsDiv'>
-                                        <img src={_user.id === 0 ? guestpic : `api/users/${_user.id}/profileimage`} style={getBorderAndBoxShadow(_user.division)} draggable="false" className="PictureDiv" alt="profilpics" />
+                                        <img src={_user.isGuest ? guestpic : `api/users/${_user.id}/profileimage`} style={getBorderAndBoxShadow(_user.division)} draggable="false" className="PictureDiv" alt="profilpics" />
                                     </div>
                                     <div className='InfoDiv'>{_user.name}<br />{_user.division.name}</div>
                                 </div>)

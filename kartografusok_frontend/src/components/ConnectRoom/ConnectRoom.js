@@ -6,6 +6,7 @@ import authService from '../../auth/auth.service';
 import "../../css/ConnectRoom.css";
 import { socketApi } from '../../socket/SocketApi';
 import { addMapToActualPlayer, initActualPlayer } from '../../state/actualPlayer/actions';
+import { getActualPlayer } from '../../state/actualPlayer/selectors';
 import { addMapToPlayer, addPlayer } from '../../state/players/actions';
 import { joinRoom } from '../../state/room/actions';
 import { getState } from '../../state/selector';
@@ -15,14 +16,15 @@ export default function ConnectRoom() {
     const [code, setCode] = useState("");
     const [user] = useState(authService.getCurrentUser());
     const state = useSelector(getState);
+    const actualPlayer = useSelector(getActualPlayer);
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(wsConnect());
         dispatch(initActualPlayer(user));
-    },[])
+    }, [])
 
     const handleChange = async (e) => {
         await setCode(e.target.value);
@@ -36,26 +38,30 @@ export default function ConnectRoom() {
             payload: JSON.parse(obj.state)
         })
 
-        dispatch(addPlayer({...user,map: JSON.parse(obj.state).map.blocks,isReady: false }))
-        
+        dispatch(addPlayer({ ...user, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0 }))
+
         navigate("/letrehozas");
     }
 
     const handleJoinRoom = (e) => {
         e.preventDefault();
-        socketApi.joinRoom(code,user,joinRoomAck);
+        socketApi.joinRoom(code, user, joinRoomAck);
     }
 
-    return(
+    return (
         <div className='ConnectRoom'>
-            <div className='Div2'>
-                <div className='Div3'>
+            <div className='Context'>
+                {(actualPlayer)?"":<div className='Div1'>
+                    <div className='Div4'>Név:</div>
+                    <input className='Div5' onChange={(e) => { handleChange(e) }}></input>
+                </div>}
+                <div className='Div1'>
                     <div className='Div4'>Szobakód:</div>
-                    <input className='Div5' onChange={(e)=>{handleChange(e)}}></input>
+                    <input className='Div5' onChange={(e) => { handleChange(e) }}></input>
                 </div>
-                <div className='Div6'>
+                <div className='Div3'>
                     <Link to="/">Vissza</Link>
-                    <Link onClick={(e)=>{handleJoinRoom(e)}}>Csatlakozás</Link>
+                    <Link onClick={(e) => { handleJoinRoom(e) }}>Csatlakozás</Link>
                 </div>
             </div>
             <Link className='CreateButton' to="/letrehozas">Szoba létrehozás</Link>

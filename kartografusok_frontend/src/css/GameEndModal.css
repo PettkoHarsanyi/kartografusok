@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap");
+
+.GameEndModal{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.626);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1200;
+}
+
+.GameEndModal *{
+    font-size: 5vh;
+}
+
+.GameEndModal .Context{
+    position: relative;
+    width: 50vw;
+    height: 90vh;
+    background-color: gainsboro;
+    box-shadow: inset 0 0 8vh 2vh rgba(228, 129, 0, 0.5);
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.GameEndModal .Div1{
+    height: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 13vh;
+    font-family: 'Grenze Gotisch', cursive;
+    font-weight: 900;
+}
+
+.GameEndModal .Div2{
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.GameEndModal .Div2 *{
+    font-family: 'Grenze Gotisch', cursive;
+    font-weight: 900;
+    font-size: 7vh;
+}
+
+.GameEndModal .Div3{
+    width: 100%;
+    height: 25%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.GameEndModal .Div3 a, .GameEndModal .Div3 button{
+    all:unset;
+    cursor: pointer;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+    padding: 1vh 2vh;
+    background-color: gray;
+    transition: 0.5s;
+}
+
+.GameEndModal .Div3 a:hover, .GameEndModal .Div3 button:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(68, 68, 68);
+}
+
+.GameEndModal .ResultsDiv{
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    background-color: white;
+    height: 70%;
+    width: 50%;
+    z-index: 1;
+    overflow-y: scroll;
+}
+
+.GameEndModal .Player{
+    width: 100%;
+    font-size: 4vh;
+    font-weight: 100;
+    font-family: "Alfa Slab One", cursive;
+    border-bottom: 0.5vh solid black;
+    z-index: 0;
+}
+
+.GameEndModal .Player:nth-of-type(1){
+    background-color: gold;
+}
+
+.GameEndModal .Player:nth-of-type(2){
+    background-color: silver;
+}
+
+.GameEndModal .Player:nth-of-type(3){
+    background-color: #cd7f32;
+}
