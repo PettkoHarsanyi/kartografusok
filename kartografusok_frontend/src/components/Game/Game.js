@@ -79,7 +79,7 @@ export default function Game() {
         };
     }, [])
 
-    const clearState = (e,to) => {
+    const clearState = (e, to) => {
         e.preventDefault();
         dispatch({
             type: "CLEAR_STATE"
@@ -97,15 +97,43 @@ export default function Game() {
         ))
     }
 
-    const canFitOnRuin = (block) => {
+    const canFitOnRuin = (_block) => {
         let canFit = true;
+        let block = _block
+        let playerMap = JSON.parse(actualPlayer.map);
 
-        block.forEach((row,rowIndex)=>{
-            row.forEach((cell,cellIndex)=>{
-                console.log("Megnézem (" + rowIndex+","+cellIndex+")="+cell+"-tól kezdve");
+        // FELADAT: VÉGIGMENNI A TÉRKÉP ÖSSZES RUINJÁN, ELKÉRNI AZ INDEXÉT, ABBÓL AZ INDEXBŐL KIINDULVA MEGNÉZNI
+        // A BLOCK MINDEN CELLJÉBŐL KIINDULVA, HOGY A TÖBBI CELL BELEÜTKÖZIK E VALAMI MÁSBA,
+        // FORGATVA, TÜKRÖZVE, AKÁRHOGY.
+
+        let ruins = []
+        playerMap.forEach((row,rowIndex)=>{
+            return row.forEach((cell,cellIndex)=>{
+                if(cell === 1){
+                    ruins.push({rowIndex: rowIndex, cellIndex: cellIndex})
+                }
             })
         })
 
+        ruins.forEach((ruin) => {
+            
+            console.log("("+ruin.rowIndex+","+ruin.cellIndex+")-es ruinból kiindulva megnézem, hogy jó e az:")
+            block.forEach((row, rowIndex) => {
+                row.forEach((cell, cellIndex) => {
+                    
+                })
+            })
+
+        })
+        console.log(ruins);
+
+        block.forEach((row, rowIndex) => {
+            row.forEach((cell, cellIndex) => {
+                console.log("Megnézem (" + rowIndex + "," + cellIndex + ")=" + cell + "-tól kezdve");
+            })
+        })
+
+        console.log(canFit);
         return canFit
     }
 
@@ -320,24 +348,9 @@ export default function Game() {
 
             let canBuildOnRuin = true;
 
-            if (room.roomCode && (!actualPlayer.map.includes('1'))/* ||  NINCS HELY */) {
+            if (room.roomCode && !actualPlayer.map.includes('1')/* ||  NINCS HELY */) {
                 canBuildOnRuin = false;
             }
-
-            // let atLeastOneCanFit = false;   // PESSZIMISTA KERESÉS
-            // let fittingBlocksAndTypes = blocksAndTypes.filter((blockAndType)=>{     // csak azok kerülnek a fittingblocksandtypesba amiket le lehet 
-            //     if(canFitOnRuin(JSON.parse(blockAndType.block))){                   // helyezni ruinra
-            //         atLeastOneCanFit = true;
-            //         return true;
-            //     }
-            //     return false;
-            // })
-
-            // if(!atLeastOneCanFit){                  // ha az összes false akkor nem tudunk ruinra építeni, ilyenkor bárhova [[1]]-et
-            //     canBuildOnRuin = false;
-            // }else{
-            //     setBlocksAndTypes(fittingBlocksAndTypes);
-            // }
 
             if (!canBuildOnRuin) {
                 const _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
@@ -352,6 +365,44 @@ export default function Game() {
             setCanBuildAnywhere(true);
         }
     }, [cards.drawnCards])
+
+    const [modifyBlockOnce, setModifyBlockOnce] = useState(0);
+    // KELL EGY USEEFFECT ARRA, HOGY HA MÁR VAN BLOCKSANDTYPES, AKKOR ELLENŐRIZZÜK LE AZ ÉPÍTHETŐSÉGET, ÉS AKKOR MANIPULÁLJA A CANBUILDANYWHERET
+    useEffect(() => {
+        if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN" /* || cards.drawnCards.length === 0*/) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
+            if (modifyBlockOnce === 0) {
+                let atLeastOneCanFit = false;   // PESSZIMISTA KERESÉS
+
+                // KIKOMMENTEZVE ELVÁRT MŰKÖDÉS: NEM FÉR ODA EGY RUINHOZ SE TEHÁT EGYESRE VÁLT ÉS AKÁRHOVA RAKHATJA
+                let fittingBlocksAndTypes = blocksAndTypes.map((blockAndType) => {     // csak azok kerülnek a fittingblocksandtypesba amiket le lehet 
+                    if (canFitOnRuin(JSON.parse(blockAndType.block))) {                   // helyezni ruinra
+                        console.log("OKÉS, EZ ODAFÉR")
+                        atLeastOneCanFit = true;
+                        return blockAndType;
+                    }else{
+                        console.log("NEM FÉR ODA!!! :)")
+                    }
+                })
+
+                if (atLeastOneCanFit) {
+                    setBlocksAndTypes(fittingBlocksAndTypes);
+                    setModifyBlockOnce(1);
+                } else {
+                    const _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
+                        return { type: fieldType, block: "[[1]]" }
+                    })
+                    setBlocksAndTypes(_blocksAndTypes)
+                    setCanBuildAnywhere(true);
+                    setModifyBlockOnce(1);
+                }
+
+            } else {
+                setModifyBlockOnce(0);
+            }
+
+
+        }
+    }, [blocksAndTypes])
 
     useEffect(() => {
         if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration) {
@@ -431,8 +482,8 @@ export default function Game() {
                             })}
                         </div>
                         <div className="RoomControlsDiv">
-                            <Link onClick={(e)=>clearState(e,"/")}>Kilépés</Link>
-                            <Link onClick={(e)=>clearState(e,"/")}>Játék befejezése</Link>
+                            <Link onClick={(e) => clearState(e, "/")}>Kilépés</Link>
+                            <Link onClick={(e) => clearState(e, "/")}>Játék befejezése</Link>
                         </div>
                     </div>
                 </div>
