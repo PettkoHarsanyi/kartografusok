@@ -30,22 +30,46 @@ export default function ConnectRoom() {
         await setCode(e.target.value);
     }
 
+    const [name, setName] = useState("");
+
+    const handleChangeName = async (e) => {
+        await setName(e.target.value);
+    }
+
     const joinRoomAck = (obj) => {
-        dispatch(addMapToActualPlayer(JSON.parse(obj.state).map.blocks))
-
-        dispatch({
-            type: "SET_STATE",
-            payload: JSON.parse(obj.state)
-        })
-
-        dispatch(addPlayer({ ...user, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0 }))
-
-        navigate("/letrehozas");
+        console.log(obj);
+        if(obj.status === "error"){
+            document.getElementById("errorDiv").style.visibility = "visible"
+            document.getElementById("errorDiv").innerText = "Nincs ilyen szobakód!";
+        }else{
+            dispatch(addMapToActualPlayer(JSON.parse(obj.state).map.blocks))
+    
+            dispatch({
+                type: "SET_STATE",
+                payload: JSON.parse(obj.state)
+            })
+    
+            dispatch(addPlayer({ ...user, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 200 }))
+    
+            navigate("/letrehozas");
+        }
     }
 
     const handleJoinRoom = (e) => {
         e.preventDefault();
-        socketApi.joinRoom(code, user, joinRoomAck);
+        if(!user && name===""){
+            document.getElementById("errorDiv").style.visibility = "visible"
+            document.getElementById("errorDiv").innerText = "Kérlek, adj meg játékosnevet!";
+        }else if(code===""){
+            document.getElementById("errorDiv").style.visibility = "visible"
+            document.getElementById("errorDiv").innerText = "Kérlek, add meg a szobakódot";
+        }else if(!actualPlayer){
+            dispatch(initActualPlayer({name:name}))
+            socketApi.joinRoom(code, actualPlayer, joinRoomAck);
+        }
+        if(user && code!==""){
+            socketApi.joinRoom(code, user, joinRoomAck);
+        }
     }
 
     return (
@@ -53,18 +77,36 @@ export default function ConnectRoom() {
             <div className='Context'>
                 {(actualPlayer)?"":<div className='Div1'>
                     <div className='Div4'>Név:</div>
-                    <input className='Div5' onChange={(e) => { handleChange(e) }}></input>
+                    <input className='Div5' onChange={(e) => { handleChangeName(e) }}></input>
                 </div>}
-                <div className='Div1'>
+                {(actualPlayer)?<div className='Div1'>
+                    <div className='Div4' style={{fontSize: "7vh"}}>Szia {actualPlayer.name}!</div>
+                </div>:""}
+                <div className='Div2' id="div2">
                     <div className='Div4'>Szobakód:</div>
                     <input className='Div5' onChange={(e) => { handleChange(e) }}></input>
                 </div>
                 <div className='Div3'>
                     <Link to="/">Vissza</Link>
-                    <Link onClick={(e) => { handleJoinRoom(e) }}>Csatlakozás</Link>
+                    <Link id="connectButton" onClick={(e) => { handleJoinRoom(e) }}>Csatlakozás</Link>
                 </div>
+
+                <div className='ErrorDiv' id="errorDiv"></div>
             </div>
-            <Link className='CreateButton' to="/letrehozas">Szoba létrehozás</Link>
+            <button className='CreateButton' onClick={()=>{
+                if(!user && name===""){
+                    document.getElementById("div2").style.display = "none";
+                    document.getElementById("connectButton").style.display = "none";
+                    document.getElementById("errorDiv").style.visibility = "visible"
+                    document.getElementById("errorDiv").innerText = "Kérlek, adj meg játékosnevet!";
+                }
+                if(!user && !actualPlayer && name !== ""){
+                    dispatch(initActualPlayer({name:name}))
+                }
+                if(name || user){
+                    navigate("/letrehozas");
+                }
+            }}>Szoba létrehozás</button>
         </div>
     );
 }

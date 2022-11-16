@@ -143,6 +143,9 @@ export class UsersService {
         user.userName = userAuthDto.userName;
         
         user.password = await this.authService.hashPassword(userAuthDto.password);
+
+        user.points = userAuthDto.points || 0;
+        user.weekly = userAuthDto.points || 0;
         
         user.role = UserRole.User;
         user.division = this.divisionRepository.getReference(1);

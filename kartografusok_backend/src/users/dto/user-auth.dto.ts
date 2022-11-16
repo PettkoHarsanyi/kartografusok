@@ -35,11 +35,16 @@ export class UserAuthDto{
     })
     password?: string;
 
+    points?: number;
+    weekly?: number;
+
     constructor(user?: User){
         if(user){
             this.name = user.name;
             this.userName = user.userName;
             this.password = user.password;
+            this.points = user.points;
+            this.weekly = user.weekly;
         }
     }
 }

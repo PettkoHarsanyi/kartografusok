@@ -26,9 +26,11 @@ import { getCards } from '../../state/cards/selector';
 import { initPointCards } from '../../state/cards/pointCards/actions';
 import { initDeck } from '../../state/cards/deck/actions';
 import { getMap } from '../../state/map/selectors';
+import { getActualPlayer } from '../../state/actualPlayer/selectors';
 
 export default function CreateRoom() {
-    const [user, setUser] = useState(authService.getCurrentUser() ?? { id: Math.floor(((Math.random() * 201) + 100)), name: "Vendég", userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Nincs" }, picture: "profileimage.png", isReady: false, gamePoints: 0, isGuest: true });
+    const actualPlayer = useSelector(getActualPlayer);
+    const [user, setUser] = useState(authService.getCurrentUser() ?? { ...actualPlayer, id: Math.floor(((Math.random() * 201) + 100)), userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Vendég" }, picture: "profileimage.png", isReady: false, gamePoints: 0, isGuest: true });
     // const [users,setUsers] = useState([user]);
     // const [messages, setMessages] = useState([]);
     const loadedData = useLoaderData();
@@ -121,9 +123,9 @@ export default function CreateRoom() {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             const randomMap = getRandomMap();
             dispatch(initMap(randomMap));
-            dispatch(initActualPlayer({ ...user, isReady: false, gamePoints: 0 }));
+            dispatch(initActualPlayer({ ...user, isReady: false, gamePoints: 200 }));
             dispatch(addMapToActualPlayer(randomMap.blocks));
-            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false, gamePoints: 0 }))
+            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false, gamePoints: 200 }))
             // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));

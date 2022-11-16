@@ -1,12 +1,22 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { getPlayers } from "../../state/players/selectors"
 import "../../css/GameEndModal.css"
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 
 export default function GameEndModal({ }) {
     const players = useSelector(getPlayers);
     const actualPlayer = useSelector(getActualPlayer);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const clearState = (e,to) => {
+        e.preventDefault();
+        dispatch({
+            type: "CLEAR_STATE"
+        });
+        navigate(to);
+    }
 
     return (
         <div className="GameEndModal" id="gameEndModal">
@@ -26,8 +36,8 @@ export default function GameEndModal({ }) {
                     <button onClick={(e) => {
                         document.getElementById("gameEndModal").style.display = "none";
                     }}>Vissza</button>
-                    {(actualPlayer.guest ? <Link to="/regisztracio">Regisztráció</Link> : "")}
-                    <Link to="/">Kilépés</Link>
+                    {(actualPlayer.isGuest ? <Link to="/regisztracio">Regisztráció</Link> : "")}
+                    <Link onClick={(e)=>clearState(e,"/")}>Kilépés</Link>
                 </div>
             </div>
         </div>

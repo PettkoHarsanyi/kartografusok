@@ -26,6 +26,7 @@
 
 .ConnectRoom .Context {
     width: 50vw;
+    position: relative;
     height: max-content;
     border: 0.5vh solid black;
     border-radius: 2vh;
@@ -38,6 +39,7 @@
     align-items: center;
     gap: 3vh;
     padding: 5vh;
+    transition: 0.5s;
 }
 
 .ConnectRoom .Div1{
@@ -47,6 +49,16 @@
     justify-content: center;
     align-items: center;
     gap: 2vh;
+}
+
+.ConnectRoom .Div2{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    transition: 1s;
 }
 
 .ConnectRoom .Div4{
@@ -91,4 +103,29 @@
     color: white;
     border-radius: 2vh;
     font-size: 3vh;
+    cursor: pointer;
+}
+
+.ConnectRoom .Animate{
+    height: 0pt;
+    transition: height 1s;
+}
+
+.ConnectRoom .ErrorDiv{
+    position: absolute;
+    width: 15vw;
+    height: 15vw;
+    background-color: gainsboro;
+    right: -40%;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    box-shadow: 0 0 4vh 2vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 1vh red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vh;
+    text-align: center;
+    padding: 4vh;
+    visibility: hidden;
 }

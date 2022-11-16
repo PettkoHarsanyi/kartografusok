@@ -2,12 +2,13 @@ import axios from "axios"
 import jwt_decode from "jwt-decode";
 import authHeader from "./auth-header";
 
-const signUp = (name, userName, password) => {
+const signUp = (name, userName, password, points) => {
     return axios
     .post("api/users", {
         name,
         userName,
-        password
+        password,
+        points
     })
     .then((response)=>{
         if(response.data.access_token){
