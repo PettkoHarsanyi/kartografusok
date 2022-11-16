@@ -3,6 +3,8 @@ import { getPlayers } from "../../state/players/selectors"
 import "../../css/GameEndModal.css"
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export default function GameEndModal({ }) {
     const players = useSelector(getPlayers);
@@ -18,6 +20,13 @@ export default function GameEndModal({ }) {
         navigate(to);
     }
 
+    const [ordered,setOrdered] = useState([]);
+
+    useEffect(()=>{
+        const orderedArray = players.sort((a,b)=> a.gamePoints - b.gamePoints)
+        setOrdered(orderedArray);
+    },[players])
+
     return (
         <div className="GameEndModal" id="gameEndModal">
             <div className="Context">
@@ -25,7 +34,7 @@ export default function GameEndModal({ }) {
                 <div className="Div2">
                     <div>Eredmények:</div>
                     <div className="ResultsDiv">
-                        {players && players.map((player,index) => {
+                        {ordered && ordered.map((player,index) => {
                             return (
                                 <div key={index} className="Player">{index+1}. {player.name} - {player.gamePoints} pont</div>
                             )

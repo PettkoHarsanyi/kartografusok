@@ -79,6 +79,14 @@ export default function Game() {
         };
     }, [])
 
+    const clearState = (e,to) => {
+        e.preventDefault();
+        dispatch({
+            type: "CLEAR_STATE"
+        });
+        navigate(to);
+    }
+
     const rotateMatrix = (matrix) => {
         return flipMajorDiagonal(matrix.reverse());
     }
@@ -87,6 +95,18 @@ export default function Game() {
         return matrix[0].map((column, index) => (
             matrix.map(row => row[index])
         ))
+    }
+
+    const canFitOnRuin = (block) => {
+        let canFit = true;
+
+        block.forEach((row,rowIndex)=>{
+            row.forEach((cell,cellIndex)=>{
+                console.log("Megnézem (" + rowIndex+","+cellIndex+")="+cell+"-tól kezdve");
+            })
+        })
+
+        return canFit
     }
 
     const handleUserKeyPress = (event) => {
@@ -300,9 +320,24 @@ export default function Game() {
 
             let canBuildOnRuin = true;
 
-            if (room.roomCode && !actualPlayer.map.includes('1') /* ||  NINCS HELY */) {
+            if (room.roomCode && (!actualPlayer.map.includes('1'))/* ||  NINCS HELY */) {
                 canBuildOnRuin = false;
             }
+
+            // let atLeastOneCanFit = false;   // PESSZIMISTA KERESÉS
+            // let fittingBlocksAndTypes = blocksAndTypes.filter((blockAndType)=>{     // csak azok kerülnek a fittingblocksandtypesba amiket le lehet 
+            //     if(canFitOnRuin(JSON.parse(blockAndType.block))){                   // helyezni ruinra
+            //         atLeastOneCanFit = true;
+            //         return true;
+            //     }
+            //     return false;
+            // })
+
+            // if(!atLeastOneCanFit){                  // ha az összes false akkor nem tudunk ruinra építeni, ilyenkor bárhova [[1]]-et
+            //     canBuildOnRuin = false;
+            // }else{
+            //     setBlocksAndTypes(fittingBlocksAndTypes);
+            // }
 
             if (!canBuildOnRuin) {
                 const _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
@@ -396,8 +431,8 @@ export default function Game() {
                             })}
                         </div>
                         <div className="RoomControlsDiv">
-                            <Link to="/">Kilépés</Link>
-                            <Link to="/">Játék befejezése</Link>
+                            <Link onClick={(e)=>clearState(e,"/")}>Kilépés</Link>
+                            <Link onClick={(e)=>clearState(e,"/")}>Játék befejezése</Link>
                         </div>
                     </div>
                 </div>
