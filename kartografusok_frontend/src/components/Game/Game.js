@@ -98,40 +98,54 @@ export default function Game() {
     }
 
     const canFitOnRuin = (_block) => {
-        let canFit = true;
+        let canFit = false;
         let block = _block
         let playerMap = JSON.parse(actualPlayer.map);
 
         // FELADAT: VÉGIGMENNI A TÉRKÉP ÖSSZES RUINJÁN, ELKÉRNI AZ INDEXÉT, ABBÓL AZ INDEXBŐL KIINDULVA MEGNÉZNI
         // A BLOCK MINDEN CELLJÉBŐL KIINDULVA, HOGY A TÖBBI CELL BELEÜTKÖZIK E VALAMI MÁSBA,
         // FORGATVA, TÜKRÖZVE, AKÁRHOGY.
+        console.log("A BLOCK:");
+        console.log(block);
 
         let ruins = []
-        playerMap.forEach((row,rowIndex)=>{
-            return row.forEach((cell,cellIndex)=>{
-                if(cell === 1){
-                    ruins.push({rowIndex: rowIndex, cellIndex: cellIndex})
+        playerMap.forEach((row, rowIndex) => {
+            return row.forEach((cell, cellIndex) => {
+                if (cell === 1) {
+                    ruins.push({ rowIndex: rowIndex, cellIndex: cellIndex })
                 }
             })
         })
 
         ruins.forEach((ruin) => {
-            
-            console.log("("+ruin.rowIndex+","+ruin.cellIndex+")-es ruinból kiindulva megnézem, hogy jó e az:")
-            block.forEach((row, rowIndex) => {
-                row.forEach((cell, cellIndex) => {
-                    
-                })
-            })
+            console.log("Megnézem ("+ruin.rowIndex+","+ruin.cellIndex+") ruint");
 
+            // block.forEach((row,rowIndex)=>{
+            //     row.forE
+            // })
+            // block.forEach((row, rowIndex) => {
+            //     row.forEach((cell, cellIndex) => {
+            //         let allFieldsFit = true;
+            //         if (cell === 1) {
+            //             block.forEach((otherBlockRow, otherBlockRowIndex) => {
+            //                 otherBlockRow.forEach((otherBlockCell, otherBlockCellIndex) => {
+            //                     console.log(ruin)
+            //                     console.log("Most megnézem (" + rowIndex+","+cellIndex+")-ból kiindulva");
+            //                     console.log("("+(ruin.rowIndex + (otherBlockRowIndex - rowIndex))+","+(ruin.cellIndex + (otherBlockCellIndex - cellIndex))+")-et");
+            //                     if (inBounds(ruin.rowIndex + (otherBlockRowIndex - rowIndex), ruin.cellIndex + (otherBlockCellIndex - cellIndex))) {
+            //                         allFieldsFit = allFieldsFit && (playerMap[ruin.rowIndex + (otherBlockRowIndex - rowIndex)][ruin.cellIndex + (otherBlockCellIndex - cellIndex)] !== 0)
+            //                     }else{
+            //                         allFieldsFit = false;
+            //                     }
+            //                 })
+            //             })
+            //         }
+            //         canFit = canFit || allFieldsFit;
+            //     })
+            // })
         })
-        console.log(ruins);
 
-        block.forEach((row, rowIndex) => {
-            row.forEach((cell, cellIndex) => {
-                console.log("Megnézem (" + rowIndex + "," + cellIndex + ")=" + cell + "-tól kezdve");
-            })
-        })
+        canFit = true;
 
         console.log(canFit);
         return canFit
@@ -379,10 +393,12 @@ export default function Game() {
                         console.log("OKÉS, EZ ODAFÉR")
                         atLeastOneCanFit = true;
                         return blockAndType;
-                    }else{
+                    } else {
                         console.log("NEM FÉR ODA!!! :)")
                     }
                 })
+
+                console.log(fittingBlocksAndTypes);
 
                 if (atLeastOneCanFit) {
                     setBlocksAndTypes(fittingBlocksAndTypes);
@@ -410,6 +426,12 @@ export default function Game() {
             setGameEnd(true);
         }
     }, [duration])
+
+    const inBounds = (rowindex, cellindex) => {
+        return (
+            rowindex < JSON.parse(map.blocks).length &&
+            cellindex < JSON.parse(map.blocks).length)
+    }
 
     return (
         <div className="Game">
