@@ -23,11 +23,6 @@ export default function Blocks({ blocks, type }) {
     }
     const actualPlayer = useSelector(getActualPlayer);
 
-    useEffect(()=>{
-        console.log(actualPlayer.fields)
-        console.log(actualPlayer.fields[getFieldPos(type)])
-    },[actualPlayer])
-
     return (
         <div className="BlocksTable">
             <div className="BlocksTableBody">

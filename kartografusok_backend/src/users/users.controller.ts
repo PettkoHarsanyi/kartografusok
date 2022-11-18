@@ -137,6 +137,12 @@ export class UsersController {
         return new UserDto(newUser);
     }
 
+    @Patch(':id/points')
+    async updatePoints(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto){
+        const newUser = await this.usersService.updatePoints(id, updateUserDto);
+        return new UserDto(newUser);
+    }
+
     @Post(':id/upload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({

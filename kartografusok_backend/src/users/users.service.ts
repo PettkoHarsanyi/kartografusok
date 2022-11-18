@@ -28,6 +28,8 @@ export class UsersService {
     updateDivision(id: number, divisionDto: DivisionDto) {
         throw new Error("Method not implemented.");
     }
+
+    
     
     async promotePlayers(ids: number[],up?: boolean) {
         const users = await this.userRepository.find({
@@ -123,6 +125,16 @@ export class UsersService {
 
         await this.userRepository.persistAndFlush(user);
 
+        return user;
+    }
+
+    async updatePoints(id: number, updateUserDto: UpdateUserDto) {
+        const user = await this.userRepository.findOne({id});
+        user.points = (user.points + updateUserDto.points)
+        user.weekly = (user.weekly + updateUserDto.weekly)
+
+        await this.userRepository.persistAndFlush(user);
+        
         return user;
     }
 

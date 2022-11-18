@@ -261,11 +261,11 @@ export default function Game() {
 
     const [gameEnd, setGameEnd] = useState(false);
 
-    const [season0Points,setSeason0Points] = useState(0); 
-    const [season1Points,setSeason1Points] = useState(0); 
-    const [season2Points,setSeason2Points] = useState(0); 
-    const [season3Points,setSeason3Points] = useState(0); 
-    const [allSeasonPoints,setAllSeasonPoints] = useState(0);
+    const [season0Points, setSeason0Points] = useState(0);
+    const [season1Points, setSeason1Points] = useState(0);
+    const [season2Points, setSeason2Points] = useState(0);
+    const [season3Points, setSeason3Points] = useState(0);
+    const [allSeasonPoints, setAllSeasonPoints] = useState(0);
 
     const pickCard = () => {
         if (!gameEnd) {
@@ -278,28 +278,37 @@ export default function Game() {
                     setDuration(0);                                         // KÜLÖNBEN NULLÁRA
                 }
 
-                if(seasonIndex === 0){
-                    const point = pointRound(cards.pointCards[0],cards.pointCards[1],actualPlayer.map)
-                    setSeason0Points(point)
+                let playerPoints = actualPlayer.gamePoints;
+
+                if (seasonIndex === 0) {   
+                    console.log("0. évszak pontozása")
+                    const point = pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map)
+                    setSeason0Points(season0Points + point)
                     setAllSeasonPoints(allSeasonPoints + point);
+                    playerPoints = playerPoints + point
                 }
-                if(seasonIndex === 1){
-                    const point = pointRound(cards.pointCards[1],cards.pointCards[2],actualPlayer.map)
-                    setSeason1Points(point)
-                    (pointRound(cards.pointCards[0],cards.pointCards[1],actualPlayer.map))
+                if (seasonIndex === 1) {
+                    console.log("1. évszak pontozása")
+                    const point = pointRound(cards.pointCards[1], cards.pointCards[2], actualPlayer.map)
+                    console.log(point);
+                    setSeason1Points(season1Points + point);
+                    (pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map))
                     setAllSeasonPoints(allSeasonPoints + point);
+                    playerPoints = playerPoints + point
 
                 }
-                if(seasonIndex === 2){
-                    const point = pointRound(cards.pointCards[2],cards.pointCards[3],actualPlayer.map)
-                    setSeason2Points(point)
+                if (seasonIndex === 2) {
+                    console.log("2. évszak pontozása")
+                    const point = pointRound(cards.pointCards[2], cards.pointCards[3], actualPlayer.map)
+                    setSeason2Points(season2Points + point)
                     setAllSeasonPoints(allSeasonPoints + point);
+                    playerPoints = playerPoints + point
                 }
-                if(seasonIndex === 3){
-                    const point = pointRound(cards.pointCards[3],cards.pointCards[0],actualPlayer.map)
-                    setSeason3Points(point)
-                    setAllSeasonPoints(allSeasonPoints + point);
+                if (seasonIndex === 3) {
+                    // JÁTÉK BEFEJEZÉSE RÉSZNÉL
                 }
+
+                dispatch(modifyPlayer({...actualPlayer, gamePoints: playerPoints}))
 
             } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
 
@@ -317,11 +326,11 @@ export default function Game() {
         }
     }
 
-    useEffect(()=>{
-        if(allSeasonPoints > 0){
-            dispatch(modifyPlayer({...actualPlayer,gamePoints: allSeasonPoints}))
+    useEffect(() => {
+        if (allSeasonPoints > 0) {
+            dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints }))
         }
-    },[allSeasonPoints])
+    }, [allSeasonPoints])
 
     useEffect(() => {
         // MINDEN JÁTÉKOS VÁLTOZÁSNÁL, AKA BLOCK LERAKÁSNÁL BEVÁRJUK A TÖBBI JÁTÉKOST IS.
@@ -355,15 +364,15 @@ export default function Game() {
 
             players.forEach((player, index) => {
                 let whose;
-                if ((index-firstDirection+secondDirection) >= players.length) {
+                if ((index - firstDirection + secondDirection) >= players.length) {
                     whose = 0;
-                }else if((index-firstDirection+secondDirection) < 0) {
+                } else if ((index - firstDirection + secondDirection) < 0) {
                     whose = players.length - 1
-                }else{
-                    whose = (index-firstDirection+secondDirection);
+                } else {
+                    whose = (index - firstDirection + secondDirection);
                 }
 
-                
+
                 dispatch(modifyPlayer({ ...player, map: players[whose].map, fields: players[whose].fields }))
             })
         }
@@ -378,9 +387,9 @@ export default function Game() {
                 let whose;
                 if (index + direction >= players.length) {
                     whose = 0;
-                }else if(index + direction < 0) {
+                } else if (index + direction < 0) {
                     whose = players.length - 1
-                }else{
+                } else {
                     whose = index + direction;
                 }
 
@@ -404,9 +413,9 @@ export default function Game() {
                 let whose;
                 if (index - direction >= players.length) {
                     whose = 0;
-                }else if(index - direction < 0) {
+                } else if (index - direction < 0) {
                     whose = players.length - 1
-                }else{
+                } else {
                     whose = index - direction;
                 }
 
@@ -528,11 +537,36 @@ export default function Game() {
             });
             return resultResponse;
         }
+
+        const modifyUserPoints = async (user) => {
+            console.log(user+ " -nek adok " + user.gamePoints + " pontot");
+            await axios.patch(`api/users/${user.id}/points`, { id: user.id, points: user.gamePoints, weekly: user.gamePoints }, {
+                headers: authHeader()
+            });
+        }
+
         // ÁLLÍTSD VISSZA 3-RA
         if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
             // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
             setSeasonIndex(0);
             setGameEnd(true);
+
+            // const point = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
+            // setSeason3Points(season3Points + point)
+            // setAllSeasonPoints(allSeasonPoints + point);
+
+            console.log("3. évszak pontozása")
+            console.log("LE SE FUTOK VAGY DE?")
+            const point = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
+            setSeason3Points(season3Points + point)
+            setAllSeasonPoints(allSeasonPoints + point);
+            dispatch(modifyPlayer({...actualPlayer, gamePoints: allSeasonPoints}))
+
+            // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
+            const newPlayers = players.map(player=>{
+                const point = pointRound(cards.pointCards[3], cards.pointCards[0], player.map)
+                return {...player, gamePoints: player.gamePoints + point}
+            })
 
             if (room.leader.id === actualPlayer.id) {
                 const gameEndDate = new Date();
@@ -545,10 +579,12 @@ export default function Game() {
                 const validPlayers = players.filter(player => player.id > 0);
 
                 let results = [];
-                players.forEach(player => {
+                newPlayers.forEach(player => {
                     if (player.id > 0) {
                         const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
                         results.push(postResult(player, player.gamePoints, place))
+
+                        modifyUserPoints(player);
                     }
                 });
 
