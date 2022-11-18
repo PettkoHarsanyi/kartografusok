@@ -1,4 +1,4 @@
-import { GAME_FINISHED, GAME_FINISHED_LOCAL, GAME_STARTED, GAME_STARTED_LOCAL, INIT_ROOM } from "./actions";
+import { END_GAME, END_GAME_LOCAL, GAME_FINISHED, GAME_FINISHED_LOCAL, GAME_STARTED, GAME_STARTED_LOCAL, INIT_ROOM, UPDATE_ROOM, UPDATE_ROOM_LOCAL } from "./actions";
 
 export const roomInitialState = {}
 
@@ -24,6 +24,22 @@ export const roomReducer = (state = roomInitialState,action) => {
 
     if(type === GAME_FINISHED_LOCAL){
         return {...state, gameResult: payload}
+    }
+
+    if(type === UPDATE_ROOM){
+        return {...state, leader: payload}
+    }
+
+    if(type === UPDATE_ROOM_LOCAL){
+        return {...state, leader: payload}
+    }
+
+    if(type === END_GAME){
+        return {...state, gameEnded: true}
+    }
+    
+    if(type === END_GAME_LOCAL){
+        return {...state, gameEnded: true}
     }
 
     return state;

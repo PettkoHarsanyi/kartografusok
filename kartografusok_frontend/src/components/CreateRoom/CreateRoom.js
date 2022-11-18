@@ -17,7 +17,7 @@ import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
 import { initMap } from '../../state/map/actions';
 import { addMapToActualPlayer, initActualPlayer } from '../../state/actualPlayer/actions';
-import { createRoom, gameStarted, initRoom } from '../../state/room/actions';
+import { createRoom, gameStarted, initRoom, updateRoom } from '../../state/room/actions';
 import { wsConnect } from '../../state/store';
 import { getRoom } from '../../state/room/selectors';
 import { getState } from '../../state/selector';
@@ -90,10 +90,12 @@ export default function CreateRoom() {
     }
 
     const randomize4PointCards = () => {
-        // console.log(cards.pointCards);
         const shuffled = cards.pointCards.sort(() => 0.5 - Math.random());
         let selected = shuffled.slice(0, 4);
         dispatch(initPointCards(selected));
+
+        // const testPointCards = [{id: 0,name: "Gazdag síkság",points: 3,picture: "pointcards/gazdagsiksag.png",backPicture: "pointcards/villageback.png"},{id: 1,name: "Nagyváros",points: 1,picture: "pointcards/nagyvaros.png",backPicture: "pointcards/villageback.png"},{id: 2,name: "Üstvidék",points: 1,picture: "pointcards/ustvidek.png",backPicture: "pointcards/diagonalback.png"},{id: 3,name: "Pajzsfal",points: 2,picture: "pointcards/pajzsfal.png",backPicture: "pointcards/villageback.png"},]
+        // dispatch(initPointCards(testPointCards));
     }
 
     const randomizeExploreCards = () => {
@@ -197,27 +199,33 @@ export default function CreateRoom() {
         // }
     }, [room])
 
+    // useEffect(()=>{
+    //     if(players.length > 0){
+    //         socketApi.syncState(room.roomCode, state, true, (ack) => {/*console.log(ack)*/ })
+    //     }
+    // },[players])
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         const input = document.getElementById('input')
 
         if (input.value !== "") {
             let message = "";
-            if(!user.isGuest){
+            if (!user.isGuest) {
                 const response = await axios.post(`api/users/${user.id}/message`, {
                     message: input.value,
                 }, {
                     headers: authHeader()
                 });
-    
+
                 message = response.data;
-    
+
                 message.user = user; // Azért kell, mert a responseban nem tudom populálni a user-t
             }
-            else{
-                message = {user: user,id: -messages.length, message: input.value}
+            else {
+                message = { user: user, id: -messages.length, message: input.value }
             }
-            
+
 
             // dispatch(addMessage(message))
             dispatch(addMessage(message))
@@ -302,6 +310,17 @@ export default function CreateRoom() {
         dispatch(gameStarted(true));
     }
 
+    const clearState = (e, to) => {
+        // EMIATT BAJ LEHET
+        if(e !== null){
+            e.preventDefault();
+        }
+        dispatch({
+            type: "CLEAR_STATE"
+        });
+        navigate(to);
+    }
+
     return (
         <div className='CreateRoom'>
             <div className='Div2'>
@@ -352,9 +371,13 @@ export default function CreateRoom() {
                             </div>
                         </div>
                         <div className='ButtonDiv'>
-                            <Link to="/" onClick={() => dispatch({
-                                type: "CLEAR_STATE"
-                            })}>Kilépés</Link>
+                            <Link to="/" onClick={(e) => {
+                                if(players.length > 1){
+                                    dispatch(updateRoom(players[1]));
+                                }
+                                dispatch(removePlayer(actualPlayer));
+                                clearState(e, "/");
+                            }}>Kilépés</Link>
                             <Link onClick={e => handleStartGame(e)} >Indítás</Link>
                         </div>
                     </div>

@@ -8,7 +8,7 @@ import "../../css/Chat.css";
 import { getRoom } from "../../state/room/selectors";
 import GameModal from "./DrawModal";
 import { containerClasses } from "@mui/system";
-import { modifyLocalPlayer, modifyPlayer, setPlayersUnReady } from "../../state/players/actions";
+import { modifyLocalPlayer, modifyPlayer, removePlayer, setPlayersUnReady } from "../../state/players/actions";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 import DrawCanvas from "./DrawCanvas";
 import { getPlayers } from "../../state/players/selectors";
@@ -31,7 +31,7 @@ import { initDeck } from "../../state/cards/deck/actions";
 import WaitingModal from "./WaitingModal";
 import RuinModal from "./RuinModal";
 import GameEndModal from "./GameEndModal";
-import { gameFinished } from "../../state/room/actions";
+import { endGame, gameFinished, updateRoom } from "../../state/room/actions";
 import { pointRound } from "./PointRound";
 
 
@@ -85,7 +85,10 @@ export default function Game() {
     }, [])
 
     const clearState = (e, to) => {
-        e.preventDefault();
+        // EMIATT BAJ LEHET
+        if(e !== null){
+            e.preventDefault();
+        }
         dispatch({
             type: "CLEAR_STATE"
         });
@@ -280,7 +283,7 @@ export default function Game() {
 
                 let playerPoints = actualPlayer.gamePoints;
 
-                if (seasonIndex === 0) {   
+                if (seasonIndex === 0) {
                     console.log("0. évszak pontozása")
                     const point = pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map)
                     setSeason0Points(season0Points + point)
@@ -308,7 +311,7 @@ export default function Game() {
                     // JÁTÉK BEFEJEZÉSE RÉSZNÉL
                 }
 
-                dispatch(modifyPlayer({...actualPlayer, gamePoints: playerPoints}))
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints }))
 
             } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
 
@@ -539,7 +542,7 @@ export default function Game() {
         }
 
         const modifyUserPoints = async (user) => {
-            console.log(user+ " -nek adok " + user.gamePoints + " pontot");
+            console.log(user + " -nek adok " + user.gamePoints + " pontot");
             await axios.patch(`api/users/${user.id}/points`, { id: user.id, points: user.gamePoints, weekly: user.gamePoints }, {
                 headers: authHeader()
             });
@@ -560,12 +563,12 @@ export default function Game() {
             const point = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
             setSeason3Points(season3Points + point)
             setAllSeasonPoints(allSeasonPoints + point);
-            dispatch(modifyPlayer({...actualPlayer, gamePoints: allSeasonPoints}))
+            dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints }))
 
             // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
-            const newPlayers = players.map(player=>{
+            const newPlayers = players.map(player => {
                 const point = pointRound(cards.pointCards[3], cards.pointCards[0], player.map)
-                return {...player, gamePoints: player.gamePoints + point}
+                return { ...player, gamePoints: player.gamePoints + point }
             })
 
             if (room.leader.id === actualPlayer.id) {
@@ -611,6 +614,12 @@ export default function Game() {
             rowindex < JSON.parse(map.blocks).length &&
             cellindex < JSON.parse(map.blocks).length)
     }
+
+    useEffect(()=>{
+        if(room.gameEnded){
+            clearState(null,"/");
+        }
+    },[room])
 
     return (
         <div className="Game">
@@ -683,8 +692,16 @@ export default function Game() {
                             })}
                         </div>
                         <div className="RoomControlsDiv">
-                            <Link onClick={(e) => clearState(e, "/")}>Kilépés</Link>
-                            <Link onClick={(e) => clearState(e, "/")}>Játék befejezése</Link>
+                            <Link onClick={(e) => {
+                                if(players.length > 1){
+                                    dispatch(updateRoom(players[1]));
+                                }
+                                dispatch(removePlayer(actualPlayer));
+                                clearState(e, "/");
+                            }}
+                            >
+                                Kilépés</Link>
+                            <Link onClick={(e) => {dispatch(endGame()); clearState(e, "/")}}>Játék befejezése</Link>
                         </div>
                     </div>
                 </div>

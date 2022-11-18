@@ -4,6 +4,8 @@ export const pointRound = (pointCard1,pointCard2,_map) => {
 
     if(pointCard1.id === 0 || pointCard2.id === 0){
         console.log("Gazdag síkság")
+
+        console.log(map);
     }
 
     if(pointCard1.id === 1 || pointCard2.id === 1){

@@ -9,6 +9,7 @@ export const MODIFY_PLAYER_LOCAL = "MODIFY_PLAYER_LOCAL"
 export const ADD_MAP_TO_PLAYER = "ADD_MAP_TO_PLAYER"
 export const UNREADY_PLAYERS = "UNREADY_PLAYERS"
 export const UNREADY_PLAYERS_LOCAL = "UNREADY_PLAYERS_LOCAL"
+export const REMOVE_PLAYER_LOCAL = "REMOVE_PLAYER_LOCAL"
 
 export const addPlayer = (user) => ({
     type: ADD_PLAYER,
