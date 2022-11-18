@@ -21,15 +21,21 @@ export default function Chat() {
         const input = document.getElementById('input')
 
         if (input.value !== "") {
-            const response = await axios.post(`api/users/${actualPlayer.id}/message`, {
-                message: input.value,
-            }, {
-                headers: authHeader()
-            });
+            let message = "";
+            if (!actualPlayer.isGuest) {
+                const response = await axios.post(`api/users/${actualPlayer.id}/message`, {
+                    message: input.value,
+                }, {
+                    headers: authHeader()
+                });
 
-            let message = response.data;
+                let message = response.data;
 
-            message.user = actualPlayer; // Azért kell, mert a responseban nem tudom populálni a user-t
+                message.user = actualPlayer; // Azért kell, mert a responseban nem tudom populálni a user-t
+
+            }else{
+                message = {user: actualPlayer, id: -messages.length, message: input.value}
+            }
 
             // dispatch(addMessage(message))
             dispatch(addMessage(message))
@@ -44,8 +50,8 @@ export default function Chat() {
     useEffect(() => {
         var chat = document.getElementById("chat");
         chat.scrollTop = chat.scrollHeight;
-        if(room.roomCode){
-            socketApi.syncState(room.roomCode,state,true,(ack)=>{/*console.log(ack)*/})
+        if (room.roomCode) {
+            socketApi.syncState(room.roomCode, state, true, (ack) => {/*console.log(ack)*/ })
         }
     }, [messages])
 

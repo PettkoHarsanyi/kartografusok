@@ -2,7 +2,7 @@ import { socketApi } from "../socket/SocketApi";
 import { DRAW_CARD } from "./cards/drawnCards/actions";
 import { ADD_MESSAGE } from "./messages/actions";
 import { ADD_PLAYER, MODIFY_PLAYER, UNREADY_PLAYERS } from "./players/actions";
-import { GAME_STARTED } from "./room/actions";
+import { GAME_FINISHED, GAME_STARTED } from "./room/actions";
 
 export const sync = (store) => (next) => (action) => {
   let isSync = false;
@@ -13,6 +13,7 @@ export const sync = (store) => (next) => (action) => {
     MODIFY_PLAYER,
     GAME_STARTED,
     UNREADY_PLAYERS,
+    GAME_FINISHED
   ];
 
   if (types.includes(action.type)) {

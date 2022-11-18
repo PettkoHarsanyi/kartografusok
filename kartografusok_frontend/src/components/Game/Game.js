@@ -31,6 +31,7 @@ import { initDeck } from "../../state/cards/deck/actions";
 import WaitingModal from "./WaitingModal";
 import RuinModal from "./RuinModal";
 import GameEndModal from "./GameEndModal";
+import { gameFinished } from "../../state/room/actions";
 
 
 export default function Game() {
@@ -50,10 +51,12 @@ export default function Game() {
     const map = useSelector(getMap)
     const room = useSelector(getRoom)
     const cards = useSelector(getCards)
+    const messages = useSelector(getMessages)
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const states = [INIT_DRAWING, CARD_DRAW, CARD_PLACE]
     const [currentState, setCurrentState] = useState(0);
+    const [gameStartDate] = useState(new Date());
 
     const [inspectedCard, setInspectedCard] = useState(null);
     const [seasonIndex, setSeasonIndex] = useState(0);
@@ -77,6 +80,7 @@ export default function Game() {
         } else {
             // dispatch(drawCard(cards.deck[0]))
         };
+        console.log(gameStartDate);
     }, [])
 
     const clearState = (e, to) => {
@@ -97,6 +101,33 @@ export default function Game() {
         ))
     }
 
+    const fitCheck = (_block, _ruin) => {
+        let block = _block;
+        let ruin = _ruin;
+        let playerMap = JSON.parse(actualPlayer.map);
+        let canFit = false;
+
+        block.forEach((row, rowIndex) => {
+            row.forEach((cell, cellIndex) => {
+                let allFieldsFit = true;
+                if (cell === 1 && inBounds(ruin.rowIndex - rowIndex, ruin.cellIndex - cellIndex)) {
+                    block.forEach((otherBlockRow, otherBlockRowIndex) => {
+                        otherBlockRow.forEach((otherBlockCell, otherBlockCellIndex) => {
+                            if (otherBlockCell === 1 && inBounds(ruin.rowIndex + (otherBlockRowIndex - rowIndex), ruin.cellIndex + (otherBlockCellIndex - cellIndex))) {
+                                allFieldsFit = allFieldsFit && (playerMap[ruin.rowIndex + (otherBlockRowIndex - rowIndex)][ruin.cellIndex + (otherBlockCellIndex - cellIndex)] === 0 || playerMap[ruin.rowIndex + (otherBlockRowIndex - rowIndex)][ruin.cellIndex + (otherBlockCellIndex - cellIndex)] === 1);
+                            }
+                        })
+                    })
+                } else {
+                    allFieldsFit = false;
+                }
+                canFit = canFit || allFieldsFit;
+            })
+        })
+
+        return canFit;
+    }
+
     const canFitOnRuin = (_block) => {
         let canFit = false;
         let block = _block
@@ -105,8 +136,6 @@ export default function Game() {
         // FELADAT: VÉGIGMENNI A TÉRKÉP ÖSSZES RUINJÁN, ELKÉRNI AZ INDEXÉT, ABBÓL AZ INDEXBŐL KIINDULVA MEGNÉZNI
         // A BLOCK MINDEN CELLJÉBŐL KIINDULVA, HOGY A TÖBBI CELL BELEÜTKÖZIK E VALAMI MÁSBA,
         // FORGATVA, TÜKRÖZVE, AKÁRHOGY.
-        console.log("A BLOCK:");
-        console.log(block);
 
         let ruins = []
         playerMap.forEach((row, rowIndex) => {
@@ -118,36 +147,18 @@ export default function Game() {
         })
 
         ruins.forEach((ruin) => {
-            console.log("Megnézem ("+ruin.rowIndex+","+ruin.cellIndex+") ruint");
-
-            // block.forEach((row,rowIndex)=>{
-            //     row.forE
-            // })
-            // block.forEach((row, rowIndex) => {
-            //     row.forEach((cell, cellIndex) => {
-            //         let allFieldsFit = true;
-            //         if (cell === 1) {
-            //             block.forEach((otherBlockRow, otherBlockRowIndex) => {
-            //                 otherBlockRow.forEach((otherBlockCell, otherBlockCellIndex) => {
-            //                     console.log(ruin)
-            //                     console.log("Most megnézem (" + rowIndex+","+cellIndex+")-ból kiindulva");
-            //                     console.log("("+(ruin.rowIndex + (otherBlockRowIndex - rowIndex))+","+(ruin.cellIndex + (otherBlockCellIndex - cellIndex))+")-et");
-            //                     if (inBounds(ruin.rowIndex + (otherBlockRowIndex - rowIndex), ruin.cellIndex + (otherBlockCellIndex - cellIndex))) {
-            //                         allFieldsFit = allFieldsFit && (playerMap[ruin.rowIndex + (otherBlockRowIndex - rowIndex)][ruin.cellIndex + (otherBlockCellIndex - cellIndex)] !== 0)
-            //                     }else{
-            //                         allFieldsFit = false;
-            //                     }
-            //                 })
-            //             })
-            //         }
-            //         canFit = canFit || allFieldsFit;
-            //     })
-            // })
+            canFit = canFit || fitCheck(block, ruin)
+            if (canFit) { return canFit }
+            let block90 = rotateMatrix(block);
+            canFit = canFit || fitCheck(block90, ruin)
+            if (canFit) { return canFit }
+            let block180 = rotateMatrix(block90)
+            canFit = canFit || fitCheck(block180, ruin)
+            if (canFit) { return canFit }
+            let block270 = rotateMatrix(block180)
+            canFit = canFit || fitCheck(block270, ruin)
         })
 
-        canFit = true;
-
-        console.log(canFit);
         return canFit
     }
 
@@ -388,25 +399,33 @@ export default function Game() {
                 let atLeastOneCanFit = false;   // PESSZIMISTA KERESÉS
 
                 // KIKOMMENTEZVE ELVÁRT MŰKÖDÉS: NEM FÉR ODA EGY RUINHOZ SE TEHÁT EGYESRE VÁLT ÉS AKÁRHOVA RAKHATJA
-                let fittingBlocksAndTypes = blocksAndTypes.map((blockAndType) => {     // csak azok kerülnek a fittingblocksandtypesba amiket le lehet 
+                let fittingBlocksAndTypes = blocksAndTypes.filter((blockAndType) => {     // csak azok kerülnek a fittingblocksandtypesba amiket le lehet 
                     if (canFitOnRuin(JSON.parse(blockAndType.block))) {                   // helyezni ruinra
-                        console.log("OKÉS, EZ ODAFÉR")
                         atLeastOneCanFit = true;
-                        return blockAndType;
+                        return true;
                     } else {
-                        console.log("NEM FÉR ODA!!! :)")
+                        return false;
                     }
                 })
 
                 console.log(fittingBlocksAndTypes);
 
                 if (atLeastOneCanFit) {
+                    console.log("LEGALÁBB EGY ELFÉRT");
+                    console.log(fittingBlocksAndTypes);
                     setBlocksAndTypes(fittingBlocksAndTypes);
                     setModifyBlockOnce(1);
                 } else {
-                    const _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
-                        return { type: fieldType, block: "[[1]]" }
-                    })
+                    let _blocksAndTypes = []
+
+                    if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER") {
+                        _blocksAndTypes = [{ type: "MONSTER", block: "[[1]]" }]
+                    } else {
+                        _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
+                            return { type: fieldType, block: "[[1]]" }
+                        })
+                    }
+
                     setBlocksAndTypes(_blocksAndTypes)
                     setCanBuildAnywhere(true);
                     setModifyBlockOnce(1);
@@ -415,20 +434,67 @@ export default function Game() {
             } else {
                 setModifyBlockOnce(0);
             }
-
-
         }
     }, [blocksAndTypes])
 
     useEffect(() => {
-        if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration) {
+        const postGame = async (duration, results, users, messages) => {
+            const gameResponse = await axios.post(`api/games`, { duration: duration, results, users, messages }, {
+                headers: authHeader()
+            });
+            return gameResponse;
+        }
+
+        const postResult = async (user, points, place) => {
+            const resultResponse = await axios.post(`api/users/${user.id}/result`, { user: user.id, points, place }, {
+                headers: authHeader()
+            });
+            return resultResponse;
+        }
+        // ÁLLÍTSD VISSZA 3-RA
+        // if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration) {
+        if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
             setSeasonIndex(0);
             setGameEnd(true);
+
+            if (room.leader.id === actualPlayer.id) {
+                const gameEndDate = new Date();
+                const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
+
+                const validMessages = messages.filter(message => message.id > 0);
+
+                const orderedArray = players.sort((a, b) => a.gamePoints - b.gamePoints)
+
+                const validPlayers = players.filter(player => player.id > 0);
+
+                let results = [];
+                players.forEach(player => {
+                    if (player.id > 0) {
+                        const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
+                        results.push(postResult(player, player.gamePoints, place))
+                    }
+                });
+
+                Promise.all(results).then(
+                    (responses) => {
+                        console.log("-----------")
+                        const newResults = responses.map(response => response.data)
+                        console.log(newResults);
+                        console.log(validPlayers);
+                        console.log("-----------")
+                        postGame(gameDuration, newResults, validPlayers, validMessages);
+
+                    }
+                )
+
+            }
         }
     }, [duration])
 
     const inBounds = (rowindex, cellindex) => {
         return (
+            rowindex >= 0 &&
+            cellindex >= 0 &&
             rowindex < JSON.parse(map.blocks).length &&
             cellindex < JSON.parse(map.blocks).length)
     }
@@ -529,7 +595,7 @@ export default function Game() {
 
             <RuinModal />
 
-            <GameEndModal />
+            {gameEnd && <GameEndModal />}
         </div>
     )
 }

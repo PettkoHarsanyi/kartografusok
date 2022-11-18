@@ -1,4 +1,4 @@
-import { GAME_STARTED, GAME_STARTED_LOCAL, INIT_ROOM } from "./actions";
+import { GAME_FINISHED, GAME_FINISHED_LOCAL, GAME_STARTED, GAME_STARTED_LOCAL, INIT_ROOM } from "./actions";
 
 export const roomInitialState = {}
 
@@ -16,6 +16,14 @@ export const roomReducer = (state = roomInitialState,action) => {
 
     if(type === GAME_STARTED_LOCAL){
         return {...state, gameStarted: payload}
+    }
+
+    if(type === GAME_FINISHED){
+        return {...state, gameResult: payload}
+    }
+
+    if(type === GAME_FINISHED_LOCAL){
+        return {...state, gameResult: payload}
     }
 
     return state;
