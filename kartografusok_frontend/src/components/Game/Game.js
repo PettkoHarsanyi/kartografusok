@@ -280,6 +280,7 @@ export default function Game() {
             }
             // várakozás a többi játékos lépésére modal elrejtése.
             document.getElementById("waitingModal").style.visibility = "hidden";
+
             dispatch(drawCard(cards.deck[0]))
             dispatch(setPlayersUnReady());
         }
@@ -297,7 +298,7 @@ export default function Game() {
         });
 
         if (room.roomCode && allReady) {
-            pickCard();
+            pickCard()
         }
 
         if (!allReady && actualPlayer.isReady) {
@@ -316,7 +317,17 @@ export default function Game() {
             const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
 
             players.forEach((player, index) => {
-                dispatch(modifyPlayer({ ...player, map: players[(Math.abs(index - firstDirection + secondDirection)) % players.length].map, fields: players[(Math.abs(index - firstDirection + secondDirection)) % players.length].fields }))
+                let whose;
+                if ((index-firstDirection+secondDirection) >= players.length) {
+                    whose = 0;
+                }else if((index-firstDirection+secondDirection) < 0) {
+                    whose = players.length - 1
+                }else{
+                    whose = (index-firstDirection+secondDirection);
+                }
+
+                
+                dispatch(modifyPlayer({ ...player, map: players[whose].map, fields: players[whose].fields }))
             })
         }
 
@@ -324,16 +335,45 @@ export default function Game() {
             console.log("ÉN LEFUTOTTAM");
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
             const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+
+            const unShiftedPlayers = players;
             players.forEach((player, index) => {
-                dispatch(modifyLocalPlayer({ ...player, map: players[Math.abs((index + direction)) % players.length].map, fields: players[Math.abs((index + direction)) % players.length].fields }))
+                let whose;
+                if (index + direction >= players.length) {
+                    whose = 0;
+                }else if(index + direction < 0) {
+                    whose = players.length - 1
+                }else{
+                    whose = index + direction;
+                }
+
+                console.log(index + " kapja " + whose + " cuccait")
+                console.log("index:" + index);
+                console.log("direction:" + direction);
+                console.log("players.length:" + players.length);
+                console.log("index+direciton:" + (index + direction));
+                console.log("players.length % index+direction:" + whose)
+
+                dispatch(modifyLocalPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
             })
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
             console.log("ÉN LEFUTOTTAM");
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
+
             const direction = cards.drawnCards[cards.drawnCards.length - 2].direction
+            const unShiftedPlayers = players;
             players.forEach((player, index) => {
-                dispatch(modifyPlayer({ ...player, map: players[Math.abs((index - direction) % players.length)].map, fields: players[Math.abs((index - direction) % players.length)].fields }))
+                let whose;
+                if (index - direction >= players.length) {
+                    whose = 0;
+                }else if(index - direction < 0) {
+                    whose = players.length - 1
+                }else{
+                    whose = index - direction;
+                }
+
+                dispatch(modifyPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
             })
         }
 
@@ -452,8 +492,8 @@ export default function Game() {
             return resultResponse;
         }
         // ÁLLÍTSD VISSZA 3-RA
-        // if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration) {
-        if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
+        if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
+            // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
             setSeasonIndex(0);
             setGameEnd(true);
 

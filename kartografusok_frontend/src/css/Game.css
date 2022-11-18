@@ -347,6 +347,29 @@
     font-weight: 900;
 }
 
+.Game .GameStartModal{
+    position: absolute;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    background-color: gainsboro;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 900;
+    padding: 5vh 15vh;
+    box-shadow: rgba(0, 0, 0, 0.764) 0vh 2vh 20vh 5vh, rgba(0, 0, 0, 0.928) 0vh 2vh 20vh 5vh, inset 0 0 4vh 1vh rgba(228, 129, 0, 0.5);
+    top: 10vh;
+    right: 10vw;
+    transition: 0.5s;
+}
+
+.Game .GameStartModal *{
+    font-family: 'Grenze Gotisch', cursive;
+    font-size: 5vh;
+    font-weight: 900;
+}
+
 .Game .Timer{
     margin-top: 5vh;
     border: 0.5vh solid black;
@@ -364,6 +387,10 @@
 
 .Game .Animate{
     animation: shrink 3s linear forwards;
+}
+
+.Game .Animate2{
+    animation: shrink 1s linear forwards;
 }
 
 @keyframes shrink {

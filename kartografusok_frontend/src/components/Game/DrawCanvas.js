@@ -222,7 +222,9 @@ export default function DrawCanvas({ handleCloseModal }) {
                             <button
                                 onClick={(e) => {
                                     saveDrawing()
-                                    dispatch(modifyPlayer({ ...actualPlayer, isReady: true }))
+                                    let newFields = drawings;
+                                    newFields[currentDrawingState] = canvasRef.current.toDataURL()
+                                    dispatch(modifyPlayer({ ...actualPlayer, fields: newFields, isReady: true }))
                                     /*
                                     Synchronize state
                                     */

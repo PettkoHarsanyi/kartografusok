@@ -21,7 +21,8 @@ export default function Chat() {
         const input = document.getElementById('input')
 
         if (input.value !== "") {
-            let message = "";
+            let message = {};
+            console.log(actualPlayer.isGuest);
             if (!actualPlayer.isGuest) {
                 const response = await axios.post(`api/users/${actualPlayer.id}/message`, {
                     message: input.value,
@@ -29,10 +30,9 @@ export default function Chat() {
                     headers: authHeader()
                 });
 
-                let message = response.data;
+                message = response.data;
 
                 message.user = actualPlayer; // Azért kell, mert a responseban nem tudom populálni a user-t
-
             }else{
                 message = {user: actualPlayer, id: -messages.length, message: input.value}
             }

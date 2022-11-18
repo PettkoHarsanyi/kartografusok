@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import "../../css/Blocks.css";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
@@ -21,6 +22,11 @@ export default function Blocks({ blocks, type }) {
         }
     }
     const actualPlayer = useSelector(getActualPlayer);
+
+    useEffect(()=>{
+        console.log(actualPlayer.fields)
+        console.log(actualPlayer.fields[getFieldPos(type)])
+    },[actualPlayer])
 
     return (
         <div className="BlocksTable">
