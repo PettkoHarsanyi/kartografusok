@@ -32,6 +32,7 @@ import WaitingModal from "./WaitingModal";
 import RuinModal from "./RuinModal";
 import GameEndModal from "./GameEndModal";
 import { gameFinished } from "../../state/room/actions";
+import { pointRound } from "./PointRound";
 
 
 export default function Game() {
@@ -260,6 +261,12 @@ export default function Game() {
 
     const [gameEnd, setGameEnd] = useState(false);
 
+    const [season0Points,setSeason0Points] = useState(0); 
+    const [season1Points,setSeason1Points] = useState(0); 
+    const [season2Points,setSeason2Points] = useState(0); 
+    const [season3Points,setSeason3Points] = useState(0); 
+    const [allSeasonPoints,setAllSeasonPoints] = useState(0);
+
     const pickCard = () => {
         if (!gameEnd) {
             if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
@@ -270,6 +277,30 @@ export default function Game() {
                 } else {
                     setDuration(0);                                         // KÜLÖNBEN NULLÁRA
                 }
+
+                if(seasonIndex === 0){
+                    const point = pointRound(cards.pointCards[0],cards.pointCards[1],actualPlayer.map)
+                    setSeason0Points(point)
+                    setAllSeasonPoints(allSeasonPoints + point);
+                }
+                if(seasonIndex === 1){
+                    const point = pointRound(cards.pointCards[1],cards.pointCards[2],actualPlayer.map)
+                    setSeason1Points(point)
+                    (pointRound(cards.pointCards[0],cards.pointCards[1],actualPlayer.map))
+                    setAllSeasonPoints(allSeasonPoints + point);
+
+                }
+                if(seasonIndex === 2){
+                    const point = pointRound(cards.pointCards[2],cards.pointCards[3],actualPlayer.map)
+                    setSeason2Points(point)
+                    setAllSeasonPoints(allSeasonPoints + point);
+                }
+                if(seasonIndex === 3){
+                    const point = pointRound(cards.pointCards[3],cards.pointCards[0],actualPlayer.map)
+                    setSeason3Points(point)
+                    setAllSeasonPoints(allSeasonPoints + point);
+                }
+
             } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
 
                 if (cards.drawnCards.length === 0) { // ELSŐ KÁRTYÁNÁL
@@ -285,6 +316,12 @@ export default function Game() {
             dispatch(setPlayersUnReady());
         }
     }
+
+    useEffect(()=>{
+        if(allSeasonPoints > 0){
+            dispatch(modifyPlayer({...actualPlayer,gamePoints: allSeasonPoints}))
+        }
+    },[allSeasonPoints])
 
     useEffect(() => {
         // MINDEN JÁTÉKOS VÁLTOZÁSNÁL, AKA BLOCK LERAKÁSNÁL BEVÁRJUK A TÖBBI JÁTÉKOST IS.
