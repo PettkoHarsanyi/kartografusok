@@ -40,13 +40,11 @@ export default function ConnectRoom() {
     }
 
     const joinRoomAck = (obj) => {
-        console.log(obj);
         if (obj.status === "error") {
             document.getElementById("errorDiv").style.visibility = "visible"
             document.getElementById("errorDiv").innerText = "Nincs ilyen szobakód!";
         } else {
             // dispatch(addMapToActualPlayer(JSON.parse(obj.state).map.blocks))
-            console.log(actualPlayer);
             let playerToBeAdded = { ...actualPlayer };
             if (user) {   // NEM VENDÉGNÉL MÉG BE KELL ÁLLÍTANI
                 dispatch(modifyActualPlayer({ ...actualPlayer, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0 }))

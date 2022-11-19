@@ -47,8 +47,8 @@ export default function Profil() {
     }, [user])
 
     const uploadPicture = async (e) => {
-        console.log(e.target.files[0]);
-        console.log(fileInput.current.files[0]);
+        // console.log(e.target.files[0]);
+        // console.log(fileInput.current.files[0]);
         if (fileInput.current.files.length > 0) {
             const response = await axios.post(`api/users/${user.id}/upload`, {
                 "file": e.target.files[0]

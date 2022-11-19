@@ -33,6 +33,7 @@ import RuinModal from "./RuinModal";
 import GameEndModal from "./GameEndModal";
 import { endGame, gameFinished, updateRoom } from "../../state/room/actions";
 import { pointRound } from "./PointRound";
+import { socketApi } from "../../socket/SocketApi";
 
 
 export default function Game() {
@@ -81,12 +82,12 @@ export default function Game() {
         } else {
             // dispatch(drawCard(cards.deck[0]))
         };
-        console.log(gameStartDate);
+        // console.log(gameStartDate);
     }, [])
 
     const clearState = (e, to) => {
         // EMIATT BAJ LEHET
-        if(e !== null){
+        if (e !== null) {
             e.preventDefault();
         }
         dispatch({
@@ -293,7 +294,6 @@ export default function Game() {
                 if (seasonIndex === 1) {
                     console.log("1. évszak pontozása")
                     const point = pointRound(cards.pointCards[1], cards.pointCards[2], actualPlayer.map)
-                    console.log(point);
                     setSeason1Points(season1Points + point);
                     (pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map))
                     setAllSeasonPoints(allSeasonPoints + point);
@@ -361,7 +361,6 @@ export default function Game() {
     useEffect(() => {
         // HA AZ ELŐZŐ ÉS A MOSTANI KÖR IS MONSTER, ELŐSZÖR VISSZA KELL ÁLLÍTANI EREDETI JÁTÉKOSHOZ (ELŐZŐ SZÖRNY DIRECTIONJA, AZTÁN AZ ÚJ DIRECTIONJÁBA)
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER") {
-            console.log("ÉN LEFUTOTTAM");
             const firstDirection = cards.drawnCards[cards.drawnCards.length - 2].direction
             const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
 
@@ -381,7 +380,6 @@ export default function Game() {
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
-            console.log("ÉN LEFUTOTTAM");
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
             const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
 
@@ -396,18 +394,10 @@ export default function Game() {
                     whose = index + direction;
                 }
 
-                console.log(index + " kapja " + whose + " cuccait")
-                console.log("index:" + index);
-                console.log("direction:" + direction);
-                console.log("players.length:" + players.length);
-                console.log("index+direciton:" + (index + direction));
-                console.log("players.length % index+direction:" + whose)
-
                 dispatch(modifyLocalPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
             })
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
-            console.log("ÉN LEFUTOTTAM");
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
 
             const direction = cards.drawnCards[cards.drawnCards.length - 2].direction
@@ -497,11 +487,8 @@ export default function Game() {
                     }
                 })
 
-                console.log(fittingBlocksAndTypes);
 
                 if (atLeastOneCanFit) {
-                    console.log("LEGALÁBB EGY ELFÉRT");
-                    console.log(fittingBlocksAndTypes);
                     setBlocksAndTypes(fittingBlocksAndTypes);
                     setModifyBlockOnce(1);
                 } else {
@@ -526,27 +513,27 @@ export default function Game() {
         }
     }, [blocksAndTypes])
 
+    const postGame = async (duration, results, users, messages) => {
+        const gameResponse = await axios.post(`api/games`, { duration: duration, results, users, messages }, {
+            headers: authHeader()
+        });
+        return gameResponse;
+    }
+
+    const postResult = async (user, points, place) => {
+        const resultResponse = await axios.post(`api/users/${user.id}/result`, { user: user.id, points, place }, {
+            headers: authHeader()
+        });
+        return resultResponse;
+    }
+
+    const modifyUserPoints = async (user) => {
+        await axios.patch(`api/users/${user.id}/points`, { id: user.id, points: user.gamePoints, weekly: user.gamePoints }, {
+            headers: authHeader()
+        });
+    }
+
     useEffect(() => {
-        const postGame = async (duration, results, users, messages) => {
-            const gameResponse = await axios.post(`api/games`, { duration: duration, results, users, messages }, {
-                headers: authHeader()
-            });
-            return gameResponse;
-        }
-
-        const postResult = async (user, points, place) => {
-            const resultResponse = await axios.post(`api/users/${user.id}/result`, { user: user.id, points, place }, {
-                headers: authHeader()
-            });
-            return resultResponse;
-        }
-
-        const modifyUserPoints = async (user) => {
-            console.log(user + " -nek adok " + user.gamePoints + " pontot");
-            await axios.patch(`api/users/${user.id}/points`, { id: user.id, points: user.gamePoints, weekly: user.gamePoints }, {
-                headers: authHeader()
-            });
-        }
 
         // ÁLLÍTSD VISSZA 3-RA
         if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
@@ -559,7 +546,6 @@ export default function Game() {
             // setAllSeasonPoints(allSeasonPoints + point);
 
             console.log("3. évszak pontozása")
-            console.log("LE SE FUTOK VAGY DE?")
             const point = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
             setSeason3Points(season3Points + point)
             setAllSeasonPoints(allSeasonPoints + point);
@@ -577,7 +563,7 @@ export default function Game() {
 
                 const validMessages = messages.filter(message => message.id > 0);
 
-                const orderedArray = players.sort((a, b) => a.gamePoints - b.gamePoints)
+                const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
 
                 const validPlayers = players.filter(player => player.id > 0);
 
@@ -593,11 +579,7 @@ export default function Game() {
 
                 Promise.all(results).then(
                     (responses) => {
-                        console.log("-----------")
                         const newResults = responses.map(response => response.data)
-                        console.log(newResults);
-                        console.log(validPlayers);
-                        console.log("-----------")
                         postGame(gameDuration, newResults, validPlayers, validMessages);
 
                     }
@@ -615,11 +597,43 @@ export default function Game() {
             cellindex < JSON.parse(map.blocks).length)
     }
 
-    useEffect(()=>{
-        if(room.gameEnded){
-            clearState(null,"/");
+    useEffect(() => {
+        if (room.gameEnded) {
+            // EREDMÉNY MUTATÁSA
+            setBlocksAndTypes([]);
+            setGameEnd(true);
+
+            if (room.leader.id === actualPlayer.id) {
+                const gameEndDate = new Date();
+                const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
+
+                const validMessages = messages.filter(message => message.id > 0);
+
+                const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
+
+                const validPlayers = players.filter(player => player.id > 0);
+
+                let results = [];
+                players.forEach(player => {
+                    if (player.id > 0) {
+                        const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
+                        results.push(postResult(player, player.gamePoints, place))
+
+                        modifyUserPoints(player);
+                    }
+                });
+
+                Promise.all(results).then(
+                    (responses) => {
+                        const newResults = responses.map(response => response.data)
+                        postGame(gameDuration, newResults, validPlayers, validMessages);
+
+                    }
+                )
+
+            }
         }
-    },[room])
+    }, [room])
 
     return (
         <div className="Game">
@@ -693,15 +707,21 @@ export default function Game() {
                         </div>
                         <div className="RoomControlsDiv">
                             <Link onClick={(e) => {
-                                if(players.length > 1){
+                                if (players.length > 1 && actualPlayer.id === room.leader.id) {
                                     dispatch(updateRoom(players[1]));
                                 }
                                 dispatch(removePlayer(actualPlayer));
+                                socketApi.leaveRoom(room.roomCode, (ack) => {/*console.log(ack)*/ })
                                 clearState(e, "/");
                             }}
                             >
                                 Kilépés</Link>
-                            <Link onClick={(e) => {dispatch(endGame()); clearState(e, "/")}}>Játék befejezése</Link>
+                            <Link onClick={(e) => {
+                                e.preventDefault();
+                                dispatch(endGame());
+                                socketApi.closeRoom(room.roomCode,(ack)=>{})
+                                if(gameEnd){document.getElementById("gameEndModal").style.display = "flex";}
+                            }}>{gameEnd?"Eredmények":"Játék befejezése"}</Link>
                         </div>
                     </div>
                 </div>

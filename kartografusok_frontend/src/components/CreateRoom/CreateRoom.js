@@ -49,6 +49,15 @@ export default function CreateRoom() {
     const map = useSelector(getMap);
 
     useEffect(() => {
+        if (!user.id) {
+            dispatch({
+                type: "CLEAR_STATE"
+            })
+            navigate("/")
+        }
+    }, [])
+
+    useEffect(() => {
         let actualUser = players.find(finduser => finduser.id === user.id)
         if (actualUser) {
             setUser(players.find(finduser => finduser.id === user.id))
@@ -154,7 +163,7 @@ export default function CreateRoom() {
 
     useEffect(() => {
         if (players.length === 1) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
-            console.log("cards have changed");          // ITT AZÉRT PLAYERS.LENGTH === 1, MERT ITT MÁR A LEADER BENT VAN, []-nál még nincs
+            //console.log("cards have changed");          // ITT AZÉRT PLAYERS.LENGTH === 1, MERT ITT MÁR A LEADER BENT VAN, []-nál még nincs
             randomizeExploreCards();
         }
 
@@ -166,9 +175,6 @@ export default function CreateRoom() {
                 // console.log("ITT LEFUTOTTAM, MEGCSINÁLTAM A SZOBÁT");
                 dispatch(wsConnect())
                 socketApi.createRoom(user, createRoomAck);
-            }
-            else {
-                console.log("ITT NEM FUTOTTAM LE, CSAK CSATLAKOZTAM A SZOBÁHOZ")
             }
         }
         // if(players.length===0){
@@ -312,7 +318,7 @@ export default function CreateRoom() {
 
     const clearState = (e, to) => {
         // EMIATT BAJ LEHET
-        if(e !== null){
+        if (e !== null) {
             e.preventDefault();
         }
         dispatch({
@@ -372,10 +378,11 @@ export default function CreateRoom() {
                         </div>
                         <div className='ButtonDiv'>
                             <Link to="/" onClick={(e) => {
-                                if(players.length > 1){
+                                if (players.length > 1 && actualPlayer.id === room.leader.id) {
                                     dispatch(updateRoom(players[1]));
                                 }
                                 dispatch(removePlayer(actualPlayer));
+                                socketApi.leaveRoom(room.roomCode, (ack) => {/*console.log(ack)*/ })
                                 clearState(e, "/");
                             }}>Kilépés</Link>
                             <Link onClick={e => handleStartGame(e)} >Indítás</Link>

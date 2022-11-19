@@ -136,7 +136,7 @@ export default function Admin() {
         const name = target.name;
 
         if (name === "cardType") {
-            console.log(value);
+            // console.log(value);
             setSelectedCardType(value);
 
             if (value === exploreCardObject.cardType) {
@@ -186,18 +186,6 @@ export default function Admin() {
         }
 
     }
-
-    useEffect(() => {
-        console.log(exploreCardObject);
-    }, [exploreCardObject])
-
-    useEffect(() => {
-        console.log(ruinCardObject);
-    }, [ruinCardObject])
-
-    useEffect(() => {
-        console.log(raidCardObject);
-    }, [raidCardObject])
 
     const handleOpen = async () => {
         setOpen(true);

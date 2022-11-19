@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getActualPlayer } from '../../state/actualPlayer/selectors';
 import { modifyPlayer } from '../../state/actualPlayer/actions';
 import { getCards } from '../../state/cards/selector';
+import { getRoom } from '../../state/room/selectors';
 
 export default function Map({ mapTable, selectedBlock, canBuildAnywhere, children }) {
 
     const actualPlayer = useSelector(getActualPlayer);
     const cards = useSelector(getCards);
+    const room = useSelector(getRoom);
     const dispatch = useDispatch();
 
     let divsToColorGray = []
@@ -106,7 +108,7 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                                 return (
                                     <div key={cellindex} className='MapTableCell'
                                         onClick={(e) => {
-                                            if (!actualPlayer.isReady) {
+                                            if (!actualPlayer.isReady && !room.gameEnded) {
                                                 let succesful = true;
                                                 let newMap = JSON.parse(actualPlayer.map);
 
@@ -158,7 +160,7 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                                         }}>
                                         <div className='MapLayer' id={`${rowindex},` + `${cellindex}`}
                                             onMouseEnter={(e) => {
-                                                if (!actualPlayer.isReady && selectedBlock.blocks !== '') {
+                                                if (!actualPlayer.isReady && selectedBlock.blocks !== '' && !room.gameEnded) {
                                                     const map = JSON.parse(actualPlayer.map);
                                                     let succesful = true;
 

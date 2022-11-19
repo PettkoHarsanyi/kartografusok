@@ -138,7 +138,7 @@ export default function DrawCanvas({ handleCloseModal }) {
             const base64 = drawings[currentDrawingState + direction]
             let img = new Image();
             img.src = base64;
-            console.log("WIDTH: " + base64.width);
+            // console.log("WIDTH: " + base64.width);
 
             img.onload = function () {
                 contextRef.current.drawImage(img, 0, 0, img.width, img.height);

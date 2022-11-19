@@ -60,6 +60,7 @@ export const sync = (store) => (next) => (action) => {
   // console.log(store.getState());
   if(action.type === ADD_PLAYER && store.getState().room.roomCode){
     if(store.getState().players.some((player)=> player.id !== store.getState().actualPlayer.id)){
+      console.log("ASD")
       socketApi.syncAction(store.getState().room.roomCode, action, true);
     }
   }

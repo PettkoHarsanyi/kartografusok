@@ -22,7 +22,7 @@ export default function Chat() {
 
         if (input.value !== "") {
             let message = {};
-            console.log(actualPlayer.isGuest);
+            // console.log(actualPlayer.isGuest);
             if (!actualPlayer.isGuest) {
                 const response = await axios.post(`api/users/${actualPlayer.id}/message`, {
                     message: input.value,

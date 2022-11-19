@@ -40,12 +40,36 @@ class SocketApi {
     );
   }
 
+  leaveRoom(roomId,ack){
+    this.socket.emit(
+      "leave-room",
+      roomId,
+      ack
+    );
+  }
+
+  closeRoom(roomId,ack){
+    this.socket.emit(
+      "close-room",
+      roomId,
+      ack
+    );
+  }
+
   joinRoom(id,user,ack) {
     this.socket.emit("join-room", id, user, ack);
   }
   
   startGame(roomId,broadcast,ack){
     this.socket.emit("start-game",roomId,broadcast,ack)
+  }
+
+  onPlayerLeft(callback){
+    const listener = (message) => {
+      callback(message);
+    }
+    this.socket.on("player-left",listener);
+    return () => this.socket.off("player-left",listener);
   }
 
   onMessageReceived(callback) {

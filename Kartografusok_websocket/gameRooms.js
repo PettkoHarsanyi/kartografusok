@@ -94,8 +94,6 @@ export const gameRoom = (io) => {
         }
         sender.emit("state-changed", { roomId: uuid, state });
         
-        console.log(state);
-
         ack({ status: "ok" });
       } catch (e) {
         if (typeof ack === "function") {
@@ -163,6 +161,8 @@ export const gameRoom = (io) => {
     });
 
     socket.on("leave-room", async (uuid, ack) => {
+      console.log("socket: " + socket)
+      console.log("sikeresen elhagyta a szobát: " + uuid);
       try {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
@@ -191,6 +191,7 @@ export const gameRoom = (io) => {
 
     socket.on("close-room", async (uuid, ack) => {
       try {
+        console.log(uuid + " szoba be lett zárva");
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
