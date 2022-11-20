@@ -37,6 +37,7 @@ export class UserAuthDto{
 
     points?: number;
     weekly?: number;
+    reports?: number;
 
     constructor(user?: User){
         if(user){
@@ -45,6 +46,7 @@ export class UserAuthDto{
             this.password = user.password;
             this.points = user.points;
             this.weekly = user.weekly;
+            this.reports = user.reports;
         }
     }
 }

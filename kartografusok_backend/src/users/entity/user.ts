@@ -36,6 +36,9 @@ export class User{
     @Property()
     muted?: boolean = false;
 
+    @Property({nullable: true})
+    reports?: number = 0;
+
     @Enum()
     role?: UserRole;
     

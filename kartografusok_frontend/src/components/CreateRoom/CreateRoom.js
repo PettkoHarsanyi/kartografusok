@@ -327,6 +327,13 @@ export default function CreateRoom() {
         navigate(to);
     }
 
+    useEffect(() => {
+        if (actualPlayer.kicked) {
+            socketApi.leaveRoom(room.roomCode, (ack) => {/*console.log(ack)*/ })
+            clearState(null, "/");
+        }
+    }, [actualPlayer])
+
     return (
         <div className='CreateRoom'>
             <div className='Div2'>
@@ -384,8 +391,24 @@ export default function CreateRoom() {
                                 dispatch(removePlayer(actualPlayer));
                                 socketApi.leaveRoom(room.roomCode, (ack) => {/*console.log(ack)*/ })
                                 clearState(e, "/");
-                            }}>Kilépés</Link>
-                            <Link onClick={e => handleStartGame(e)} >Indítás</Link>
+                            }}
+                            >Kilépés</Link>
+                            <Link onClick={e => {
+                                e.preventDefault();
+                                if (actualPlayer.id === room.leader.id) {
+                                    handleStartGame(e)
+                                }
+                            }}
+                                style={{
+                                    cursor: (actualPlayer.id === room?.leader?.id) ? "pointer" : "not-allowed",
+                                    backgroundColor: (actualPlayer.id === room?.leader?.id) ? "" : "#1f1f1f",
+                                    color: (actualPlayer.id === room?.leader?.id) ? "" : "#5c5c5c",
+                                    boxShadow: (actualPlayer.id === room?.leader?.id) ? "" : "none",
+                                    opacity: (actualPlayer.id === room?.leader?.id) ? "1" : "0.7"
+                                }}
+                            >
+                                Indítás
+                            </Link>
                         </div>
                     </div>
                 </div>

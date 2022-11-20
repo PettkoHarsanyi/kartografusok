@@ -20,6 +20,7 @@ export class UserDto{
     games?: GameDto[];
     messages?: MessageDto[];
     results?: ResultDto[];
+    reports?: number;
 
     constructor(user?: User){
         if(user){
@@ -32,6 +33,7 @@ export class UserDto{
             this.muted = user.muted;
             this.banned = user.banned;
             this.division = user.division;
+            this.reports = user.reports;
         }
     }
 }

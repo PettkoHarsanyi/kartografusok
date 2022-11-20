@@ -1,4 +1,4 @@
-import { MODIFY_PLAYER_LOCAL, UNREADY_PLAYERS } from "../players/actions";
+import { MODIFY_PLAYER_LOCAL, REMOVE_PLAYER, REMOVE_PLAYER_LOCAL, UNREADY_PLAYERS } from "../players/actions";
 import { ADD_MAP_TO_ACTUAL_PLAYER, INIT_PLAYER,MODIFY_ACTUAL_PLAYER,MODIFY_PLAYER } from "./actions";
 
 export const actualPlayerReducerInitialState = {}
@@ -37,6 +37,20 @@ export const actualPlayerReducer = (state = actualPlayerReducerInitialState, act
 
     if(type === UNREADY_PLAYERS){
         return {...state,isReady: false};
+    }
+
+    if(type === REMOVE_PLAYER){
+        if(payload.id === state.id){
+            return {...state, kicked: true};
+        }
+        return state;
+    }
+
+    if(type === REMOVE_PLAYER_LOCAL){
+        if(payload.id === state.id){
+            return {...state, kicked: true};
+        }
+        return state;
     }
 
     return state;

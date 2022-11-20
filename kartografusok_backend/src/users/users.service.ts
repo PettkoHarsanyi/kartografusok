@@ -138,6 +138,15 @@ export class UsersService {
         return user;
     }
 
+    async reportUser(id: number) {
+        const user = await this.userRepository.findOne({id});
+        user.reports = user.reports + 1;
+
+        await this.userRepository.persistAndFlush(user);
+
+        return user;
+    }
+
     async updatePicture(id: number, file: string) {
         const user = await this.userRepository.findOne({id});
 
@@ -158,6 +167,7 @@ export class UsersService {
 
         user.points = userAuthDto.points || 0;
         user.weekly = userAuthDto.points || 0;
+        user.reports = userAuthDto.reports || 0;
         
         user.role = UserRole.User;
         user.division = this.divisionRepository.getReference(1);

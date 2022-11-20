@@ -34,7 +34,10 @@ import GameEndModal from "./GameEndModal";
 import { endGame, gameFinished, updateRoom } from "../../state/room/actions";
 import { pointRound } from "./PointRound";
 import { socketApi } from "../../socket/SocketApi";
-
+import unmuted from "../../assets/playerunmute.png"
+import muted from "../../assets/playermute.png"
+import kick from "../../assets/delete.png"
+import report from "../../assets/report.png"
 
 export default function Game() {
     const INIT_DRAWING = "INIT_DRAWING";
@@ -635,6 +638,32 @@ export default function Game() {
         }
     }, [room])
 
+    const muteUser = (_user) => {
+        dispatch(modifyPlayer({ ..._user, muted: !_user.muted }));
+    }
+
+    const kickUser = (_user) => {
+        dispatch(removePlayer(_user));
+    }
+
+    const [reportedUsers, setReportedUsers] = useState([]);
+
+    const reportUser = async (_user) => {
+        if (!_user.isGuest && !reportedUsers.some(user => user.id === _user.id)) {
+            await axios.patch(`api/users/${_user.id}/report`, {
+                headers: authHeader()
+            });
+            setReportedUsers([...reportedUsers, _user]);
+        }
+    }
+
+    useEffect(() => {
+        if (actualPlayer.kicked) {
+            socketApi.leaveRoom(room.roomCode, (ack) => {/*console.log(ack)*/ })
+            clearState(null, "/");
+        }
+    }, [actualPlayer])
+
     return (
         <div className="Game">
 
@@ -702,7 +731,20 @@ export default function Game() {
                     <div className="PlayersDiv">
                         <div className="PlayersInfoDiv">
                             {players && players.map((player) => {
-                                return (<div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "dodgerblue" : "" }}><div>{player.name}</div><div>{player.gamePoints}</div>{room.leader.id === actualPlayer.id && player.id !== actualPlayer.id && <div>Némít Kitilt</div>}</div>)
+                                return (
+                                    <div className="PlayerInfo" key={player.id} style={{ backgroundColor: player.id === actualPlayer.id ? "dodgerblue" : "" }}>
+                                        <div>{player.name}</div>
+                                        <div className="ButtonsDiv">
+                                            {player.id !== actualPlayer.id && <img className="MuteKickReportButton" onClick={() => reportUser(player)} src={report} draggable="false" alt="Jelent" />}
+                                            {room.leader.id === actualPlayer.id && player.id !== actualPlayer.id &&
+                                                <>
+                                                    <img className="MuteKickReportButton" onClick={() => muteUser(player)} src={player.muted ? muted : unmuted} draggable="false" alt="Némít" />
+                                                    <img className="MuteKickReportButton" onClick={() => kickUser(player)} src={kick} draggable="false" alt="Kitilt" />
+                                                </>
+                                            }
+                                        </div>
+                                        <div>{player.gamePoints}</div>
+                                    </div>)
                             })}
                         </div>
                         <div className="RoomControlsDiv">
@@ -718,10 +760,20 @@ export default function Game() {
                                 Kilépés</Link>
                             <Link onClick={(e) => {
                                 e.preventDefault();
-                                dispatch(endGame());
-                                socketApi.closeRoom(room.roomCode,(ack)=>{})
-                                if(gameEnd){document.getElementById("gameEndModal").style.display = "flex";}
-                            }}>{gameEnd?"Eredmények":"Játék befejezése"}</Link>
+                                if (actualPlayer.id === room.leader.id && !gameEnd) {
+                                    dispatch(endGame());
+                                    socketApi.closeRoom(room.roomCode, (ack) => { })
+                                }
+                                if (gameEnd) { document.getElementById("gameEndModal").style.display = "flex"; }
+                            }}
+                            style={{
+                                cursor: (actualPlayer.id === room?.leader?.id || gameEnd) ? "pointer":"not-allowed",
+                                backgroundColor: (actualPlayer.id === room?.leader?.id || gameEnd) ? "":"#1f1f1f",
+                                color: (actualPlayer.id === room?.leader?.id || gameEnd) ? "":"#5c5c5c",
+                                boxShadow: (actualPlayer.id === room?.leader?.id || gameEnd) ? "":"none",
+                                opacity: (actualPlayer.id === room?.leader?.id || gameEnd) ? "1":"0.7"
+                            }}
+                            >{gameEnd ? "Eredmények" : "Játék befejezése"}</Link>
                         </div>
                     </div>
                 </div>

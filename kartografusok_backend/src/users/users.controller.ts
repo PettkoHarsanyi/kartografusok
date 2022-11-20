@@ -94,6 +94,7 @@ export class UsersController {
         return new MessageDto(newMessage);
     }
 
+    @AllowAnonymous()
     @Post(':id/result')
     async addResult(@Body() resultDto: ResultDto, @Param('id', ParseIntPipe) id: number){
         const newResult = await this.resultService.create(resultDto,id);
@@ -137,9 +138,17 @@ export class UsersController {
         return new UserDto(newUser);
     }
 
+    @AllowAnonymous()
     @Patch(':id/points')
     async updatePoints(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto){
         const newUser = await this.usersService.updatePoints(id, updateUserDto);
+        return new UserDto(newUser);
+    }
+
+    @AllowAnonymous()
+    @Patch(':id/report')
+    async reportUser(@Param('id', ParseIntPipe) id: number){
+        const newUser = await this.usersService.reportUser(id);
         return new UserDto(newUser);
     }
 

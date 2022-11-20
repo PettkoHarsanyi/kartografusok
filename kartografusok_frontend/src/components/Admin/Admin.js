@@ -480,25 +480,28 @@ export default function Admin() {
                                             if (selectedUser.messages.length > 0) {
                                                 let gameDateTemp = new Date(game.createdAt);
                                                 let gameDate = gameDateTemp.toISOString().split("T")[0];
-                                                return (<div className='Match' key={game.id}>
-                                                    <div className='MatchHeader'>Játék időpontja: {gameDate}</div>
+                                                if (game.messages.length > 0) {
+                                                    return (
 
-                                                    {game.messages.length > 0 && game.messages.map((message) => {
-                                                        if (message.user === selectedUser.id) {
-                                                            let date = new Date(message.createdAt)
-                                                            let dateTemp = date.toISOString().split("T")[1];
-                                                            let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
+                                                        <div className='Match' key={game.id}>
+                                                            <div className='MatchHeader'>Játék időpontja: {gameDate}</div>
+                                                            {game.messages.map((message) => {
 
-                                                            return (
-                                                                <div className='MessageBox' key={message.id}>
-                                                                    <div className='Message'>{message.message}</div>
-                                                                    <div className='Time'>{hoursAndMinutes}</div>
-                                                                </div>)
-                                                        }
-                                                    })}
+                                                                if (message.user === selectedUser.id) {
+                                                                    let date = new Date(message.createdAt)
+                                                                    let dateTemp = date.toISOString().split("T")[1];
+                                                                    let hoursAndMinutes = dateTemp.split('.')[0].split(':')[0] + ":" + dateTemp.split('.')[0].split(':')[1];
 
-
-                                                </div>)
+                                                                    return (
+                                                                        <div className='MessageBox' key={message.id}>
+                                                                            <div className='Message'>{message.message}</div>
+                                                                            <div className='Time'>{hoursAndMinutes}</div>
+                                                                        </div>)
+                                                                }
+                                                            })}
+                                                        </div>
+                                                    )
+                                                }
                                             }
                                         })}
                                     </div>
@@ -694,6 +697,7 @@ export default function Admin() {
                                 <th>Játékos név</th>
                                 <th>E-Mail</th>
                                 <th>Jogosultság</th>
+                                <th>Jelentések</th>
                                 <th>Némítva</th>
                                 <th>Kitiltva</th>
                                 <th>Szerkesztés</th>
@@ -708,6 +712,7 @@ export default function Admin() {
                                         <td>{user.name}</td>
                                         <td>{user.email ? user.email : "Nincs megadva"}</td>
                                         <td>{user.role}</td>
+                                        <td>{user.reports}</td>
                                         <td className='Clickable' onClick={() => handleMute(user)}><img src={user.muted ? muted : unmuted} alt="muteicon" /></td>
                                         <td className='Clickable' onClick={() => handleBan(user)}><img src={user.banned ? banned : unbanned} alt="banicon" /></td>
                                         <td className='Clickable' onClick={() => { handleSelect(user.id); handleOpen() }}><img src={edit} alt="editicon" /></td>
