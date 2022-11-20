@@ -406,6 +406,93 @@
     animation: shrink 1s linear forwards;
 }
 
+.Game .PlayerInfos{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.Game .PlayerInfos * {
+    font-family: 'Grenze Gotisch', cursive;
+    font-weight: 900;
+    font-size: 3vh;
+    color: rgba(0, 0, 0, 0.471);
+}
+
+.Game .MapName{
+    position: absolute;
+    left: 9%;
+    top: 6.5%;
+}
+
+.Game .MapRank{
+    position: absolute;
+    left: 9%;
+    top: 13%;
+}
+
+.Game .MapPointDiv{
+    position: absolute;
+    width: 16.4%;
+    height: 6%;
+    left: 4.5%;
+    top: 88.9%;
+    border-radius: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .MapPointDiv *{
+    font-size: 2vh;
+    color: rgba(0, 0, 0, 0.661);
+}
+
+.Game .MapPointDivLeft{
+    width: 66%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Game .MapPointDivRight{
+    width: 34%;
+    height: 100%;
+    padding-bottom: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .PointingSection{
+    width: 50%;
+    height: 50%;
+    padding-top: 0.2vh;
+    line-height: 1;
+}
+
+.Game #firstSeason{
+    left:24%;
+}
+
+.Game #secondSeason{
+    left:43.6%;
+}
+
+.Game #thirdSeason{
+    left:63%;
+}
+
+.Game .MapAllPoints{
+    position: absolute;
+    width: 6%;
+    right: 8.5%;
+    bottom: 7.5%;
+    color: rgba(0, 0, 0, 0.661);
+    font-size: 2vh;
+    padding-bottom: 0.5vh;
+}
+
 @keyframes shrink {
     from {
         width: 100%;

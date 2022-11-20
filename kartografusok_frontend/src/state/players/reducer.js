@@ -28,7 +28,7 @@ export const playersReducer = (state = playersInitialState, action) => {
         })
     }
 
-    if(type=== MODIFY_PLAYER){
+    if(type === MODIFY_PLAYER){
         return players.map(player => {
             if(player.id === payload.id){
                 return payload

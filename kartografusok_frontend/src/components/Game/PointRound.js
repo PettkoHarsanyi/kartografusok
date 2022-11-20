@@ -1,9 +1,15 @@
 export const pointRound = (pointCard1,pointCard2,_map) => {
-    let point = Math.floor(((Math.random() * 201) + 100))
+    let point = 0;
     let map = JSON.parse(_map);
+    let A = Math.floor(((Math.random() * 201)));
+    let B = Math.floor(((Math.random() * 201)));
 
     if(pointCard1.id === 0 || pointCard2.id === 0){
         console.log("Gazdag síkság")
+        // A
+        if(pointCard1.id === 0 && pointCard2.id !== 0){
+
+        }
 
         console.log(map);
     }
@@ -68,5 +74,7 @@ export const pointRound = (pointCard1,pointCard2,_map) => {
         console.log("Határvidék")
     }
 
-    return point;
+    point = A+B;
+
+    return {A,B,point};
 }

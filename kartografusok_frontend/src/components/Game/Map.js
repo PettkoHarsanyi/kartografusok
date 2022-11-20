@@ -1,6 +1,5 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React from 'react';
 import scheme from "../../assets/maps/scheme.png"
-import empty from "../../assets/maps/empty.png"
 import ruin_transparent from "../../assets/maps/ruin_transparent.png"
 import gap_transparent from "../../assets/maps/gap_transparent.png"
 import mountain_transparent from "../../assets/maps/mountain_transparent.png"
@@ -10,7 +9,7 @@ import { modifyPlayer } from '../../state/actualPlayer/actions';
 import { getCards } from '../../state/cards/selector';
 import { getRoom } from '../../state/room/selectors';
 
-export default function Map({ mapTable, selectedBlock, canBuildAnywhere, children }) {
+export default function Map({ selectedBlock, canBuildAnywhere, season0Points, season1Points, season2Points, season3Points, mapPlayer }) {
 
     const actualPlayer = useSelector(getActualPlayer);
     const cards = useSelector(getCards);
@@ -37,24 +36,6 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
         divsToColorRed = [];
     }
 
-    const getFieldPos = (_type) => {
-        switch (_type) {
-            case "VILLAGE":
-                return 0
-            case "FOREST":
-                return 1
-            case "WATER":
-                return 2
-            case "FARM":
-                return 3
-            case "MONSTER":
-                return 4
-            default:
-                return 0
-                break;
-        }
-    }
-
     const parseToLetter = (_type) => {
         switch (selectedBlock.type) {
             case "VILLAGE":
@@ -69,7 +50,6 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                 return "M"
             default:
                 return 0
-                break;
         }
     }
 
@@ -87,7 +67,6 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                 return actualPlayer.fields[4]
             default:
                 return ""
-                break;
         }
     }
 
@@ -100,6 +79,88 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
     return (
         <>
             <img src={scheme} className="MapPic" alt='Map' />
+            <div className='PlayerInfos'>
+                <div className='MapName'>{mapPlayer.name}</div>
+                <div className='MapRank'>{mapPlayer.division.name}</div>
+                {season0Points.points > 0 && <div className='MapPointDiv'>
+                    <div className='MapPointDivLeft'>
+                        <div className='PointingSection'>
+                            {season0Points.A}
+                        </div>
+                        <div className='PointingSection'>
+                            {season0Points.B}
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                    </div>
+                    <div className='MapPointDivRight'>
+                        {season0Points.points}
+                    </div>
+                </div>}
+                {season1Points.points > 0 && <div className='MapPointDiv' id="firstSeason">
+                    <div className='MapPointDivLeft'>
+                        <div className='PointingSection'>
+                            {season1Points.A}
+                        </div>
+                        <div className='PointingSection'>
+                            {season1Points.B}
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                    </div>
+                    <div className='MapPointDivRight'>
+                        {season1Points.points}
+                    </div>
+                </div>}
+                {season2Points.points > 0 && <div className='MapPointDiv' id="secondSeason">
+                    <div className='MapPointDivLeft'>
+                        <div className='PointingSection'>
+                            {season2Points.A}
+                        </div>
+                        <div className='PointingSection'>
+                            {season2Points.B}
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                    </div>
+                    <div className='MapPointDivRight'>
+                        {season2Points.points}
+                    </div>
+                </div>}
+                {season3Points.points > 0 && <div className='MapPointDiv' id="thirdSeason">
+                    <div className='MapPointDivLeft'>
+                        <div className='PointingSection'>
+                            {season3Points.A}
+                        </div>
+                        <div className='PointingSection'>
+                            {season3Points.B}
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                        <div className='PointingSection'>
+                            0
+                        </div>
+                    </div>
+                    <div className='MapPointDivRight'>
+                        {season3Points.points}
+                    </div>
+                </div>}
+                <div className='MapAllPoints'>{(season0Points.points + season1Points.points + season2Points.points + season3Points.points)}</div>
+
+            </div>
             <div className='MapTable'>
                 <div className='MapTableBody'>
                     {JSON.parse(actualPlayer.map).map((row, rowindex) =>
@@ -158,7 +219,7 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                                                 :
                                                 `url('${parseToImage(JSON.parse(actualPlayer.map)[rowindex][cellindex])}')`
                                         }}>
-                                        <div className='MapLayer' id={`${rowindex},` + `${cellindex}`}
+                                        <div className='MapLayer' id={`${rowindex},${cellindex}`}
                                             onMouseEnter={(e) => {
                                                 if (!actualPlayer.isReady && selectedBlock.blocks !== '' && !room.gameEnded) {
                                                     const map = JSON.parse(actualPlayer.map);
@@ -176,13 +237,13 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                                                                 map[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 ||
                                                                 blockCell === 0)) {
                                                                 if (blockCell === 1) {
-                                                                    divsToColorGreen.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                    divsToColorGreen.push(document.getElementById(`${rowindex + blockRowIndex},${cellindex + blockCellIndex}`));
 
                                                                     if (JSON.parse(actualPlayer.map)[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 && blockCell === 1) {
                                                                         foundRuinInRuinRound = true;
                                                                     }
                                                                 } else {
-                                                                    divsToColorGray.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                    divsToColorGray.push(document.getElementById(`${rowindex + blockRowIndex},${cellindex + blockCellIndex}`));
                                                                 }
                                                             }
                                                             else {
@@ -205,7 +266,7 @@ export default function Map({ mapTable, selectedBlock, canBuildAnywhere, childre
                                                             blockRow.forEach((blockCell, blockCellIndex) => {
                                                                 if (inBounds(rowindex, cellindex, blockCellIndex, blockRowIndex) && (
                                                                     blockCell === 1)) {
-                                                                    divsToColorRed.push(document.getElementById(`${rowindex + blockRowIndex},` + `${cellindex + blockCellIndex}`));
+                                                                    divsToColorRed.push(document.getElementById(`${rowindex + blockRowIndex},${cellindex + blockCellIndex}`));
                                                                 }
                                                             });
                                                         });

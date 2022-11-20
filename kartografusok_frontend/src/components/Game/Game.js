@@ -62,6 +62,7 @@ export default function Game() {
     const states = [INIT_DRAWING, CARD_DRAW, CARD_PLACE]
     const [currentState, setCurrentState] = useState(0);
     const [gameStartDate] = useState(new Date());
+    const [mapPlayer, setMapPlayer] = useState(actualPlayer);
 
     const [inspectedCard, setInspectedCard] = useState(null);
     const [seasonIndex, setSeasonIndex] = useState(0);
@@ -268,10 +269,10 @@ export default function Game() {
 
     const [gameEnd, setGameEnd] = useState(false);
 
-    const [season0Points, setSeason0Points] = useState(0);
-    const [season1Points, setSeason1Points] = useState(0);
-    const [season2Points, setSeason2Points] = useState(0);
-    const [season3Points, setSeason3Points] = useState(0);
+    const [season0Points, setSeason0Points] = useState({A:0,B:0,points:0});
+    const [season1Points, setSeason1Points] = useState({A:0,B:0,points:0});
+    const [season2Points, setSeason2Points] = useState({A:0,B:0,points:0});
+    const [season3Points, setSeason3Points] = useState({A:0,B:0,points:0});
     const [allSeasonPoints, setAllSeasonPoints] = useState(0);
 
     const pickCard = () => {
@@ -289,26 +290,25 @@ export default function Game() {
 
                 if (seasonIndex === 0) {
                     console.log("0. évszak pontozása")
-                    const point = pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map)
-                    setSeason0Points(season0Points + point)
-                    setAllSeasonPoints(allSeasonPoints + point);
-                    playerPoints = playerPoints + point
+                    const result = pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map)
+                    setSeason0Points({A: result.A, B: result.B, points: season0Points.points + result.point})
+                    setAllSeasonPoints(allSeasonPoints + result.point);
+                    playerPoints = playerPoints + result.point
                 }
                 if (seasonIndex === 1) {
                     console.log("1. évszak pontozása")
-                    const point = pointRound(cards.pointCards[1], cards.pointCards[2], actualPlayer.map)
-                    setSeason1Points(season1Points + point);
-                    (pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map))
-                    setAllSeasonPoints(allSeasonPoints + point);
-                    playerPoints = playerPoints + point
+                    const result = pointRound(cards.pointCards[1], cards.pointCards[2], actualPlayer.map)
+                    setSeason1Points({A: result.A, B: result.B, points: season1Points.points + result.point});
+                    setAllSeasonPoints(allSeasonPoints + result.point);
+                    playerPoints = playerPoints + result.point
 
                 }
                 if (seasonIndex === 2) {
                     console.log("2. évszak pontozása")
-                    const point = pointRound(cards.pointCards[2], cards.pointCards[3], actualPlayer.map)
-                    setSeason2Points(season2Points + point)
-                    setAllSeasonPoints(allSeasonPoints + point);
-                    playerPoints = playerPoints + point
+                    const result = pointRound(cards.pointCards[2], cards.pointCards[3], actualPlayer.map)
+                    setSeason2Points({A: result.A, B: result.B, points: season2Points.points + result.point})
+                    setAllSeasonPoints(allSeasonPoints + result.point);
+                    playerPoints = playerPoints + result.point
                 }
                 if (seasonIndex === 3) {
                     // JÁTÉK BEFEJEZÉSE RÉSZNÉL
@@ -367,9 +367,10 @@ export default function Game() {
             const firstDirection = cards.drawnCards[cards.drawnCards.length - 2].direction
             const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
 
+            const unShiftedPlayers = players;
             players.forEach((player, index) => {
                 let whose;
-                if ((index - firstDirection + secondDirection) >= players.length) {
+                if ((index - firstDirection + secondDirection) > players.length-1) {
                     whose = 0;
                 } else if ((index - firstDirection + secondDirection) < 0) {
                     whose = players.length - 1
@@ -377,24 +378,28 @@ export default function Game() {
                     whose = (index - firstDirection + secondDirection);
                 }
 
-
-                dispatch(modifyPlayer({ ...player, map: players[whose].map, fields: players[whose].fields }))
+                dispatch(modifyPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
             })
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
             const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+            console.log("IRÁNY:" + direction);
 
             const unShiftedPlayers = players;
             players.forEach((player, index) => {
                 let whose;
-                if (index + direction >= players.length) {
+                if (index + direction > players.length-1) {
                     whose = 0;
                 } else if (index + direction < 0) {
                     whose = players.length - 1
                 } else {
                     whose = index + direction;
+                }
+
+                if(player.id === actualPlayer.id){
+                    setMapPlayer(unShiftedPlayers[whose])
                 }
 
                 dispatch(modifyLocalPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
@@ -407,7 +412,7 @@ export default function Game() {
             const unShiftedPlayers = players;
             players.forEach((player, index) => {
                 let whose;
-                if (index - direction >= players.length) {
+                if (index - direction > players.length-1) {
                     whose = 0;
                 } else if (index - direction < 0) {
                     whose = players.length - 1
@@ -417,6 +422,7 @@ export default function Game() {
 
                 dispatch(modifyPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
             })
+            setMapPlayer(actualPlayer)
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
@@ -549,14 +555,14 @@ export default function Game() {
             // setAllSeasonPoints(allSeasonPoints + point);
 
             console.log("3. évszak pontozása")
-            const point = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
-            setSeason3Points(season3Points + point)
-            setAllSeasonPoints(allSeasonPoints + point);
+            const result = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
+            setSeason3Points({A: result.A, B: result.B, points: season3Points.points + result.point})
+            setAllSeasonPoints(allSeasonPoints + result.point);
             dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints }))
 
             // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
             const newPlayers = players.map(player => {
-                const point = pointRound(cards.pointCards[3], cards.pointCards[0], player.map)
+                const point = pointRound(cards.pointCards[3], cards.pointCards[0], player.map).point
                 return { ...player, gamePoints: player.gamePoints + point }
             })
 
@@ -669,7 +675,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} />
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} season0Points={season0Points} season1Points={season1Points} season2Points={season2Points} season3Points={season3Points} mapPlayer={mapPlayer}/>
                 </div>
             }
             <div className="DrawnCardDiv">
