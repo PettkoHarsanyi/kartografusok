@@ -5,14 +5,19 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 import { useEffect } from "react";
 import { useState } from "react";
+import { updateRoom } from "../../state/room/actions";
+import { getRoom } from "../../state/room/selectors";
+import { removePlayer } from "../../state/players/actions";
+import { socketApi } from "../../socket/SocketApi";
 
 export default function GameEndModal({ }) {
     const players = useSelector(getPlayers);
     const actualPlayer = useSelector(getActualPlayer);
+    const room = useSelector(getRoom);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const clearState = (e,to) => {
+    const clearState = (e, to) => {
         e.preventDefault();
         dispatch({
             type: "CLEAR_STATE"
@@ -20,12 +25,12 @@ export default function GameEndModal({ }) {
         navigate(to);
     }
 
-    const [ordered,setOrdered] = useState([]);
+    const [ordered, setOrdered] = useState([]);
 
-    useEffect(()=>{
-        const orderedArray = players.sort((a,b)=> b.gamePoints - a.gamePoints)
+    useEffect(() => {
+        const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
         setOrdered(orderedArray);
-    },[players])
+    }, [players])
 
     return (
         <div className="GameEndModal" id="gameEndModal">
@@ -34,9 +39,9 @@ export default function GameEndModal({ }) {
                 <div className="Div2">
                     <div>Eredmények:</div>
                     <div className="ResultsDiv">
-                        {ordered && ordered.map((player,index) => {
+                        {ordered && ordered.map((player, index) => {
                             return (
-                                <div key={index} className="Player">{index+1}. {player.name} - {player.gamePoints} pont</div>
+                                <div key={index} className="Player">{index + 1}. {player.name} - {player.gamePoints} pont</div>
                             )
                         })}
                     </div>
@@ -46,7 +51,14 @@ export default function GameEndModal({ }) {
                         document.getElementById("gameEndModal").style.display = "none";
                     }}>Vissza</button>
                     {(actualPlayer.isGuest ? <Link to="/regisztracio">Regisztráció</Link> : "")}
-                    <Link onClick={(e)=>clearState(e,"/")}>Kilépés</Link>
+                    <Link onClick={(e) => {
+                        if (players.length > 1 && actualPlayer.id === room.leader.id) {
+                            dispatch(updateRoom(players[1]));
+                        }
+                        dispatch(removePlayer(actualPlayer));
+                        socketApi.leaveRoom(room.roomCode, (ack) => {/*console.log(ack)*/ })
+                        clearState(e, "/");
+                    }}>Kilépés</Link>
                 </div>
             </div>
         </div>
