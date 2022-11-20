@@ -368,18 +368,33 @@ export default function Game() {
             const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
 
             const unShiftedPlayers = players;
-            players.forEach((player, index) => {
-                let whose;
-                if ((index - firstDirection + secondDirection) > players.length - 1) {
-                    whose = 0;
-                } else if ((index - firstDirection + secondDirection) < 0) {
-                    whose = players.length - 1
-                } else {
-                    whose = (index - firstDirection + secondDirection);
-                }
 
-                dispatch(modifyPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
+            const index = unShiftedPlayers.findIndex(player => {
+                return player.id === actualPlayer.id;
             })
+
+            // players.forEach((player, index) => {
+            //     let whose;
+            //     if ((index - firstDirection + secondDirection) > players.length - 1) {
+            //         whose = 0;
+            //     } else if ((index - firstDirection + secondDirection) < 0) {
+            //         whose = players.length - 1
+            //     } else {
+            //         whose = (index - firstDirection + secondDirection);
+            //     }
+
+            // })
+
+            let whose;
+            if ((index - firstDirection + secondDirection) > players.length - 1) {
+                whose = 0;
+            } else if ((index - firstDirection + secondDirection) < 0) {
+                whose = players.length - 1
+            } else {
+                whose = (index - firstDirection + secondDirection);
+            }
+
+            dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
@@ -413,19 +428,6 @@ export default function Game() {
             const index = unShiftedPlayers.findIndex(player => {
                 return player.id === actualPlayer.id;
             })
-
-            // players.forEach((player, index) => {
-            //     let whose;
-            //     if (index - direction > players.length - 1) {
-            //         whose = 0;
-            //     } else if (index - direction < 0) {
-            //         whose = players.length - 1
-            //     } else {
-            //         whose = index - direction;
-            //     }
-
-            //     dispatch(modifyPlayer({ ...player, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
-            // })
 
             let whose;
             if (index - direction > players.length - 1) {

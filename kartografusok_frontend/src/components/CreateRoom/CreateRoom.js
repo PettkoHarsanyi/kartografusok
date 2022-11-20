@@ -108,18 +108,18 @@ export default function CreateRoom() {
     }
 
     const randomizeExploreCards = () => {
-        const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
-        let selectedRaidCards = shuffledRaidCards.slice(0, 4);
-        const merged = cards.exploreCards.concat(selectedRaidCards)
-        const shuffledMerged = merged.sort(() => 0.5 - Math.random());
-        const temp = [].concat(cards.exploreCards.sort(() => 0.5 - Math.random()));
-        let secondShuffledMerged = temp.sort(() => 0.5 - Math.random());
-        // Második pakli id-jainak cseréje
-        secondShuffledMerged = secondShuffledMerged.map((card) => {
-            return { ...card, id: card.id + merged.length + 50, duplicate: true, pictureId: card.id }
-        })
-        const shuffledMergedDeck = shuffledMerged.concat(secondShuffledMerged);
-        dispatch(initDeck(shuffledMergedDeck));
+        // const shuffledRaidCards = cards.raidCards.sort(() => 0.5 - Math.random());
+        // let selectedRaidCards = shuffledRaidCards.slice(0, 4);
+        // const merged = cards.exploreCards.concat(selectedRaidCards)
+        // const shuffledMerged = merged.sort(() => 0.5 - Math.random());
+        // const temp = [].concat(cards.exploreCards.sort(() => 0.5 - Math.random()));
+        // let secondShuffledMerged = temp.sort(() => 0.5 - Math.random());
+        // // Második pakli id-jainak cseréje
+        // secondShuffledMerged = secondShuffledMerged.map((card) => {
+        //     return { ...card, id: card.id + merged.length + 50, duplicate: true, pictureId: card.id }
+        // })
+        // const shuffledMergedDeck = shuffledMerged.concat(secondShuffledMerged);
+        // dispatch(initDeck(shuffledMergedDeck));
 
         // const ruinThenRaidTestDeck = [{id: 8,name: 'Elfeledett erdő',duration: 1,picture: 'elfeledetterdo.png',official: true,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: null,direction: null,blocks1: '[[1,0],[0,1]]',blocks2: '[[1,0],[1,1],[0,1]]',createdAt: '2022-10-18T21:39:00.521Z',modifiedAt: '2022-10-18T21:39:00.521Z'},{id: 17,name: 'Előőrsrom',duration: null,picture: 'eloorsrom.png',official: true,cardType: 'RUIN',fieldType1: null,fieldType2: null,direction: null,blocks1: null,blocks2: null,createdAt: '2022-10-18T21:47:43.965Z',modifiedAt: '2022-10-18T21:47:43.965Z'},{id: 39,name: 'Ózdi roham',duration: null,picture: 'customraid.png',official: false,cardType: 'RAID',fieldType1: 'MONSTER',fieldType2: null,direction: 1,blocks1: '[[1,1,1],[1,1,1]]',blocks2: null,createdAt: '2022-10-27T20:16:19.683Z',modifiedAt: '2022-10-27T20:16:19.683Z'},{id: 11,name: 'Község',duration: 1,picture: 'kozseg.png',official: true,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: null,direction: null,blocks1: '[[1,0],[1,1]]',blocks2: '[[1,1,1],[1,1,0]]',createdAt: '2022-10-18T21:41:10.312Z',modifiedAt: '2022-10-18T21:41:10.312Z'},]
         // dispatch(initDeck(ruinThenRaidTestDeck));
@@ -144,6 +144,9 @@ export default function CreateRoom() {
 
         // const secondMonsterRoundTestDeck = [{id: 8,name: 'Elfeledett erdő',duration: 1,picture: 'elfeledetterdo.png',official: true,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: null,direction: null,blocks1: '[[1,0],[0,1]]',blocks2: '[[1,0],[1,1],[0,1]]',createdAt: '2022-10-18T21:39:00.521Z',modifiedAt: '2022-10-18T21:39:00.521Z'},{id: 14,name: 'Gnoll fosztogatás',duration: null,picture: 'gnollfosztogatas.png',official: true,cardType: 'RAID',fieldType1: 'MONSTER',fieldType2: null,direction: -1,blocks1: '[[1,1],[1,0],[1,1]]',blocks2: null,createdAt: '2022-10-18T21:46:06.216Z',modifiedAt: '2022-10-18T21:46:06.216Z'},{id: 35,name: 'Uganda',duration: 1,picture: 'customexplore.png',official: false,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: 'VILLAGE',direction: null,blocks1: '[[1,1]]',blocks2: '[[1,1,1,1]]',createdAt: '2022-10-27T19:45:57.784Z',modifiedAt: '2022-10-27T19:45:57.784Z'},]
         // dispatch(initDeck(secondMonsterRoundTestDeck));
+
+        const twoMonsterRoundTestDeck = [{id: 5,name: 'Nagy folyó',duration: 1,picture: 'nagyfolyo.png',official: true,cardType: 'EXPLORE',fieldType1: 'WATER',fieldType2: null,direction: null,blocks1: '[[1],[1],[1]]',blocks2: '[[0,0,1],[0,1,1],[1,1,0]]',createdAt: '2022-10-18T21:34:45.096Z',modifiedAt: '2022-10-18T21:34:45.096Z'},{id: 47,name: 'Peti haragja',duration: null,picture: 'customraid.png',official: false,cardType: 'RAID',fieldType1: 'MONSTER',fieldType2: null,direction: 1,blocks1: '[[1,0,1],[1,1,1]]',blocks2: null,createdAt: '2022-10-28T17:23:31.272Z',modifiedAt: '2022-10-28T17:23:31.272Z'},{id: 44,name: 'Erős Pista',duration: null,picture: 'customraid.png',official: false,cardType: 'RAID',fieldType1: 'MONSTER',fieldType2: null,direction: 1,blocks1: '[[1,1]]',blocks2: null,createdAt: '2022-10-27T21:10:39.368Z',modifiedAt: '2022-10-27T21:10:39.368Z'},{id: 2,name: 'Tanya',duration: 2,picture: 'tanya.png',official: true,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: 'FARM',direction: null,blocks1: '[[1,0],[1,1],[1,0]]',blocks2: null,createdAt: '2022-10-18T21:31:21.834Z',modifiedAt: '2022-10-18T21:31:21.834Z'}]
+        dispatch(initDeck(twoMonsterRoundTestDeck));
     }
 
     useEffect(() => {

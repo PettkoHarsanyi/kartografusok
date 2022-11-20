@@ -17,6 +17,8 @@ export default function GameEndModal({ }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [playersResult] = useState(players);
+
     const clearState = (e, to) => {
         e.preventDefault();
         dispatch({
@@ -28,9 +30,9 @@ export default function GameEndModal({ }) {
     const [ordered, setOrdered] = useState([]);
 
     useEffect(() => {
-        const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
+        const orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
         setOrdered(orderedArray);
-    }, [players])
+    }, [room.gameEnded])
 
     return (
         <div className="GameEndModal" id="gameEndModal">
