@@ -291,30 +291,38 @@ export default function Game() {
                 if (seasonIndex === 0) {
                     console.log("0. évszak pontozása")
                     const result = pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map)
-                    setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
+                    
+                    // setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
                     setAllSeasonPoints(allSeasonPoints + result.point);
                     playerPoints = playerPoints + result.point
+
+                    dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: { A: result.A, B: result.B, points: season0Points.points + result.point } }))
                 }
                 if (seasonIndex === 1) {
                     console.log("1. évszak pontozása")
                     const result = pointRound(cards.pointCards[1], cards.pointCards[2], actualPlayer.map)
-                    setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
+
+                    // setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
                     setAllSeasonPoints(allSeasonPoints + result.point);
                     playerPoints = playerPoints + result.point
+
+                    dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: { A: result.A, B: result.B, points: season1Points.points + result.point } }))
 
                 }
                 if (seasonIndex === 2) {
                     console.log("2. évszak pontozása")
                     const result = pointRound(cards.pointCards[2], cards.pointCards[3], actualPlayer.map)
-                    setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
+                    // setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
                     setAllSeasonPoints(allSeasonPoints + result.point);
                     playerPoints = playerPoints + result.point
+
+                    dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: { A: result.A, B: result.B, points: season2Points.points + result.point } }))
                 }
                 if (seasonIndex === 3) {
                     // JÁTÉK BEFEJEZÉSE RÉSZNÉL
                 }
 
-                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints }))
+                // dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints }))
 
             } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
 
@@ -417,7 +425,12 @@ export default function Game() {
                 whose = index + direction;
             }
             setMapPlayer(unShiftedPlayers[whose])
-            dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
+            dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
+                                        season0Points: unShiftedPlayers[whose].season0Points,
+                                        season1Points: unShiftedPlayers[whose].season1Points,
+                                        season2Points: unShiftedPlayers[whose].season2Points,
+                                        season3Points: unShiftedPlayers[whose].season3Points,
+            }))
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
@@ -440,7 +453,11 @@ export default function Game() {
 
             setMapPlayer(actualPlayer)
             console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
-            dispatch(modifyPlayer({ ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields }))
+            dispatch(modifyPlayer({ ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
+                season0Points: actualPlayer.season0Points,
+                season1Points: actualPlayer.season1Points,
+                season2Points: actualPlayer.season2Points,
+                season3Points: actualPlayer.season3Points, }))
             // dispatch(modifyPlayer({ ...players[whose], map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
 
@@ -575,9 +592,9 @@ export default function Game() {
 
             console.log("3. évszak pontozása")
             const result = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
-            setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
+            // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
             setAllSeasonPoints(allSeasonPoints + result.point);
-            dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints }))
+            dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints, season3Points: { A: result.A, B: result.B, points: season3Points.points + result.point } }))
 
             // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
             const newPlayers = players.map(player => {
@@ -694,7 +711,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} season0Points={season0Points} season1Points={season1Points} season2Points={season2Points} season3Points={season3Points} mapPlayer={mapPlayer} />
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} mapPlayer={mapPlayer}/>
                 </div>
             }
             <div className="DrawnCardDiv">
