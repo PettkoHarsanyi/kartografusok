@@ -17,7 +17,11 @@ export default function GameEndModal({ }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [playersResult] = useState(players);
+    const [playersResult,setPlayersResult] = useState(players);
+
+    useEffect(()=>{
+        setPlayersResult(playersResult.map(player=> players.find(_player => player.id === _player.id).points))
+    },[players])
 
     const clearState = (e, to) => {
         e.preventDefault();

@@ -290,31 +290,35 @@ export default function Game() {
 
                 if (seasonIndex === 0) {
                     console.log("0. évszak pontozása")
-                    const result = pointRound(cards.pointCards[0], cards.pointCards[1], actualPlayer.map)
-                    
+                    const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+
                     // setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
                     setAllSeasonPoints(allSeasonPoints + result.point);
                     playerPoints = playerPoints + result.point
+
+                    console.log("A: " + result.A + ", B: " + result.B)
 
                     dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: { A: result.A, B: result.B, points: season0Points.points + result.point } }))
                 }
                 if (seasonIndex === 1) {
                     console.log("1. évszak pontozása")
-                    const result = pointRound(cards.pointCards[1], cards.pointCards[2], actualPlayer.map)
+                    const result = pointRound(cards.pointCards[1], cards.pointCards[2], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
 
                     // setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
                     setAllSeasonPoints(allSeasonPoints + result.point);
                     playerPoints = playerPoints + result.point
+                    console.log("A: " + result.A + ", B: " + result.B)
 
                     dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: { A: result.A, B: result.B, points: season1Points.points + result.point } }))
 
                 }
                 if (seasonIndex === 2) {
                     console.log("2. évszak pontozása")
-                    const result = pointRound(cards.pointCards[2], cards.pointCards[3], actualPlayer.map)
+                    const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                     // setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
                     setAllSeasonPoints(allSeasonPoints + result.point);
                     playerPoints = playerPoints + result.point
+                    console.log("A: " + result.A + ", B: " + result.B)
 
                     dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: { A: result.A, B: result.B, points: season2Points.points + result.point } }))
                 }
@@ -408,7 +412,7 @@ export default function Game() {
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
             // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
             const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
-            console.log("IRÁNY:" + direction);
+            // console.log("IRÁNY:" + direction);
 
             const unShiftedPlayers = players;
 
@@ -425,11 +429,12 @@ export default function Game() {
                 whose = index + direction;
             }
             setMapPlayer(unShiftedPlayers[whose])
-            dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
-                                        season0Points: unShiftedPlayers[whose].season0Points,
-                                        season1Points: unShiftedPlayers[whose].season1Points,
-                                        season2Points: unShiftedPlayers[whose].season2Points,
-                                        season3Points: unShiftedPlayers[whose].season3Points,
+            dispatch(modifyLocalPlayer({
+                ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
+                season0Points: unShiftedPlayers[whose].season0Points,
+                season1Points: unShiftedPlayers[whose].season1Points,
+                season2Points: unShiftedPlayers[whose].season2Points,
+                season3Points: unShiftedPlayers[whose].season3Points,
             }))
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
@@ -452,12 +457,14 @@ export default function Game() {
             }
 
             setMapPlayer(actualPlayer)
-            console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
-            dispatch(modifyPlayer({ ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
+            // console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
+            dispatch(modifyPlayer({
+                ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
                 season0Points: actualPlayer.season0Points,
                 season1Points: actualPlayer.season1Points,
                 season2Points: actualPlayer.season2Points,
-                season3Points: actualPlayer.season3Points, }))
+                season3Points: actualPlayer.season3Points,
+            }))
             // dispatch(modifyPlayer({ ...players[whose], map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
 
@@ -586,19 +593,17 @@ export default function Game() {
             setSeasonIndex(0);
             setGameEnd(true);
 
-            // const point = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
-            // setSeason3Points(season3Points + point)
-            // setAllSeasonPoints(allSeasonPoints + point);
-
             console.log("3. évszak pontozása")
-            const result = pointRound(cards.pointCards[3], cards.pointCards[0], actualPlayer.map)
+            const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
             // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
+            console.log("A: " + result.A + ", B: " + result.B);
+            
             setAllSeasonPoints(allSeasonPoints + result.point);
             dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints, season3Points: { A: result.A, B: result.B, points: season3Points.points + result.point } }))
 
             // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
             const newPlayers = players.map(player => {
-                const point = pointRound(cards.pointCards[3], cards.pointCards[0], player.map).point
+                const point = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks)).point
                 return { ...player, gamePoints: player.gamePoints + point }
             })
 
@@ -711,7 +716,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} mapPlayer={mapPlayer}/>
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} mapPlayer={mapPlayer} />
                 </div>
             }
             <div className="DrawnCardDiv">

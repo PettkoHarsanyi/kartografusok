@@ -82,7 +82,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
             <div className='PlayerInfos'>
                 <div className='MapName'>{mapPlayer.name}</div>
                 <div className='MapRank'>{mapPlayer.division.name}</div>
-                {actualPlayer.season0Points?.points > 0 &&
+                {actualPlayer.season0Points &&
                     <div className='MapPointDiv'>
                         <div className='MapPointDivLeft'>
                             <div className='PointingSection'>
@@ -102,63 +102,66 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                             {actualPlayer.season0Points?.points}
                         </div>
                     </div>}
-                {actualPlayer.season1Points?.points > 0 && <div className='MapPointDiv' id="firstSeason">
-                    <div className='MapPointDivLeft'>
-                        <div className='PointingSection'>
-                            {actualPlayer.season1Points?.A}
+                {actualPlayer.season1Points &&
+                    <div className='MapPointDiv' id="firstSeason">
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {actualPlayer.season1Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {actualPlayer.season1Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                0
+                            </div>
+                            <div className='PointingSection'>
+                                0
+                            </div>
                         </div>
-                        <div className='PointingSection'>
-                            {actualPlayer.season1Points?.B}
+                        <div className='MapPointDivRight'>
+                            {actualPlayer.season1Points?.points}
                         </div>
-                        <div className='PointingSection'>
-                            0
+                    </div>}
+                {actualPlayer.season2Points &&
+                    <div className='MapPointDiv' id="secondSeason">
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {actualPlayer.season2Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {actualPlayer.season2Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                0
+                            </div>
+                            <div className='PointingSection'>
+                                0
+                            </div>
                         </div>
-                        <div className='PointingSection'>
-                            0
+                        <div className='MapPointDivRight'>
+                            {actualPlayer.season2Points?.points}
                         </div>
-                    </div>
-                    <div className='MapPointDivRight'>
-                        {actualPlayer.season1Points?.points}
-                    </div>
-                </div>}
-                {actualPlayer.season2Points?.points > 0 && <div className='MapPointDiv' id="secondSeason">
-                    <div className='MapPointDivLeft'>
-                        <div className='PointingSection'>
-                            {actualPlayer.season2Points?.A}
+                    </div>}
+                {actualPlayer.season3Points &&
+                    <div className='MapPointDiv' id="thirdSeason">
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {actualPlayer.season3Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {actualPlayer.season3Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                0
+                            </div>
+                            <div className='PointingSection'>
+                                0
+                            </div>
                         </div>
-                        <div className='PointingSection'>
-                            {actualPlayer.season2Points?.B}
+                        <div className='MapPointDivRight'>
+                            {actualPlayer.season3Points?.points}
                         </div>
-                        <div className='PointingSection'>
-                            0
-                        </div>
-                        <div className='PointingSection'>
-                            0
-                        </div>
-                    </div>
-                    <div className='MapPointDivRight'>
-                        {actualPlayer.season2Points?.points}
-                    </div>
-                </div>}
-                {actualPlayer.season3Points?.points > 0 && <div className='MapPointDiv' id="thirdSeason">
-                    <div className='MapPointDivLeft'>
-                        <div className='PointingSection'>
-                            {actualPlayer.season3Points?.A}
-                        </div>
-                        <div className='PointingSection'>
-                            {actualPlayer.season3Points?.B}
-                        </div>
-                        <div className='PointingSection'>
-                            0
-                        </div>
-                        <div className='PointingSection'>
-                            0
-                        </div>
-                    </div>
-                    <div className='MapPointDivRight'>
-                        {actualPlayer.season3Points?.points}
-                    </div>
-                </div>}
+                    </div>}
                 <div className='MapAllPoints'>{((actualPlayer.season0Points?.points || 0) + (actualPlayer.season1Points?.points || 0) + (actualPlayer.season2Points?.points || 0) + (actualPlayer.season3Points?.points || 0))}</div>
 
             </div>
