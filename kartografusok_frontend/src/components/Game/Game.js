@@ -273,59 +273,25 @@ export default function Game() {
     const [season1Points, setSeason1Points] = useState({ A: 0, B: 0, points: 0 });
     const [season2Points, setSeason2Points] = useState({ A: 0, B: 0, points: 0 });
     const [season3Points, setSeason3Points] = useState({ A: 0, B: 0, points: 0 });
-    const [allSeasonPoints, setAllSeasonPoints] = useState(0);
 
     const pickCard = () => {
         if (!gameEnd) {
             if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
-                setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);    // KÖVI ÉVSZAK
-                setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
+                
+                if(seasonIndex + 1 === 4){
+                    setSeasonIndex(0);
+                    setActualSeasonCard(cards.seasonCards[0]);        // KÖVI ÉVSZAK
+                    setGameEnd(true);
+                }else{
+                    setActualSeasonCard(cards.seasonCards[seasonIndex+1]);        // KÖVI ÉVSZAK
+                    setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
+                }
+
                 if (cards.deck[0]?.duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
                     setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
                 } else {
                     setDuration(0);                                         // KÜLÖNBEN NULLÁRA
                 }
-
-                let playerPoints = actualPlayer.gamePoints;
-
-                if (seasonIndex === 0) {
-                    console.log("0. évszak pontozása")
-                    const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-
-                    // setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
-                    setAllSeasonPoints(allSeasonPoints + result.point);
-                    playerPoints = playerPoints + result.point
-
-                    console.log("A: " + result.A + ", B: " + result.B)
-
-                    dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: { A: result.A, B: result.B, points: season0Points.points + result.point } }))
-                }
-                if (seasonIndex === 1) {
-                    console.log("1. évszak pontozása")
-                    const result = pointRound(cards.pointCards[1], cards.pointCards[2], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-
-                    // setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
-                    setAllSeasonPoints(allSeasonPoints + result.point);
-                    playerPoints = playerPoints + result.point
-                    console.log("A: " + result.A + ", B: " + result.B)
-
-                    dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: { A: result.A, B: result.B, points: season1Points.points + result.point } }))
-
-                }
-                if (seasonIndex === 2) {
-                    console.log("2. évszak pontozása")
-                    const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                    // setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
-                    setAllSeasonPoints(allSeasonPoints + result.point);
-                    playerPoints = playerPoints + result.point
-                    console.log("A: " + result.A + ", B: " + result.B)
-
-                    dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: { A: result.A, B: result.B, points: season2Points.points + result.point } }))
-                }
-                if (seasonIndex === 3) {
-                    // JÁTÉK BEFEJEZÉSE RÉSZNÉL
-                }
-
                 // dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints }))
 
             } else if (cards.deck[0] && cards.deck[0].duration) {                            // HA AZ ÉVSZAKKÁRTYA TÖBB MINT A JELENLEGI IDŐ SUM
@@ -345,10 +311,91 @@ export default function Game() {
     }
 
     useEffect(() => {
-        if (allSeasonPoints > 0) {
-            dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints }))
+        if (cards.drawnCards.length > 0) {
+
+
+            let playerPoints = actualPlayer.gamePoints;
+
+            if (seasonIndex === 1) {
+                console.log("1. évszak pontozása")
+                const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+
+                // setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
+                playerPoints = playerPoints + result.points
+
+                console.log("A: " + result.A + ", B: " + result.B)
+
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result }))
+            }
+            if (seasonIndex === 2) {
+                console.log("2. évszak pontozása")
+                const result = pointRound(cards.pointCards[1], cards.pointCards[2], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+
+                // setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
+                playerPoints = playerPoints + result.points
+                console.log("A: " + result.A + ", B: " + result.B)
+
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: result }))
+
+            }
+            if (seasonIndex === 3) {
+                console.log("3. évszak pontozása")
+                const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+                // setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
+                playerPoints = playerPoints + result.points
+                console.log("A: " + result.A + ", B: " + result.B)
+
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result }))
+            }
+
+            if (seasonIndex === 0 && gameEnd === true) {
+                // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
+    
+                console.log("4. évszak pontozása")
+                const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+                // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
+                console.log("A: " + result.A + ", B: " + result.B);
+    
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: actualPlayer.gamePoints + result.points, season3Points: result }))
+    
+                // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
+                const newPlayers = players.map(player => {
+                    const seasonResult = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks))
+                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult }
+                })
+    
+                if (room.leader.id === actualPlayer.id) {
+                    const gameEndDate = new Date();
+                    const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
+    
+                    const validMessages = messages.filter(message => message.id > 0);
+    
+                    const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
+    
+                    const validPlayers = players.filter(player => player.id > 0);
+    
+                    let results = [];
+                    newPlayers.forEach(player => {
+                        if (player.id > 0) {
+                            const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
+                            results.push(postResult(player, player.gamePoints, place))
+    
+                            modifyUserPoints(player);
+                        }
+                    });
+    
+                    Promise.all(results).then(
+                        (responses) => {
+                            const newResults = responses.map(response => response.data)
+                            postGame(gameDuration, newResults, validPlayers, validMessages);
+    
+                        }
+                    )
+    
+                }
+            }
         }
-    }, [allSeasonPoints])
+    }, [seasonIndex])
 
     useEffect(() => {
         // MINDEN JÁTÉKOS VÁLTOZÁSNÁL, AKA BLOCK LERAKÁSNÁL BEVÁRJUK A TÖBBI JÁTÉKOST IS.
@@ -429,12 +476,16 @@ export default function Game() {
                 whose = index + direction;
             }
             setMapPlayer(unShiftedPlayers[whose])
+
+            // GYANÚS
             dispatch(modifyLocalPlayer({
-                ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
-                season0Points: unShiftedPlayers[whose].season0Points,
-                season1Points: unShiftedPlayers[whose].season1Points,
-                season2Points: unShiftedPlayers[whose].season2Points,
-                season3Points: unShiftedPlayers[whose].season3Points,
+                ...unShiftedPlayers[whose],
+                name: actualPlayer.name, id: actualPlayer.id, muted: actualPlayer.muted, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
+                isReady: actualPlayer.isReady, gamePoints: actualPlayer.gamePoints, division: actualPlayer.division,
+                // season0Points: unShiftedPlayers[whose].season0Points,
+                // season1Points: unShiftedPlayers[whose].season1Points,
+                // season2Points: unShiftedPlayers[whose].season2Points,
+                // season3Points: unShiftedPlayers[whose].season3Points,
             }))
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
@@ -458,12 +509,19 @@ export default function Game() {
 
             setMapPlayer(actualPlayer)
             // console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
+
+            // GYANÚS
             dispatch(modifyPlayer({
-                ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-                season0Points: actualPlayer.season0Points,
-                season1Points: actualPlayer.season1Points,
-                season2Points: actualPlayer.season2Points,
-                season3Points: actualPlayer.season3Points,
+                ...actualPlayer,
+                name: unShiftedPlayers[whose].name, id: unShiftedPlayers[whose].id, muted: unShiftedPlayers[whose].muted, map: actualPlayer.map, fields: actualPlayer.fields,
+                isReady: unShiftedPlayers[whose].isReady, gamePoints: unShiftedPlayers[whose].gamePoints, division: unShiftedPlayers[whose].division,
+
+
+                // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
+                // season0Points: actualPlayer.season0Points,
+                // season1Points: actualPlayer.season1Points,
+                // season2Points: actualPlayer.season2Points,
+                // season3Points: actualPlayer.season3Points,
             }))
             // dispatch(modifyPlayer({ ...players[whose], map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
@@ -584,60 +642,6 @@ export default function Game() {
             headers: authHeader()
         });
     }
-
-    useEffect(() => {
-
-        // ÁLLÍTSD VISSZA 3-RA
-        if (seasonIndex === 3 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
-            // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
-            setSeasonIndex(0);
-            setGameEnd(true);
-
-            console.log("3. évszak pontozása")
-            const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-            // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
-            console.log("A: " + result.A + ", B: " + result.B);
-            
-            setAllSeasonPoints(allSeasonPoints + result.point);
-            dispatch(modifyPlayer({ ...actualPlayer, gamePoints: allSeasonPoints, season3Points: { A: result.A, B: result.B, points: season3Points.points + result.point } }))
-
-            // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
-            const newPlayers = players.map(player => {
-                const point = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks)).point
-                return { ...player, gamePoints: player.gamePoints + point }
-            })
-
-            if (room.leader.id === actualPlayer.id) {
-                const gameEndDate = new Date();
-                const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
-
-                const validMessages = messages.filter(message => message.id > 0);
-
-                const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
-
-                const validPlayers = players.filter(player => player.id > 0);
-
-                let results = [];
-                newPlayers.forEach(player => {
-                    if (player.id > 0) {
-                        const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
-                        results.push(postResult(player, player.gamePoints, place))
-
-                        modifyUserPoints(player);
-                    }
-                });
-
-                Promise.all(results).then(
-                    (responses) => {
-                        const newResults = responses.map(response => response.data)
-                        postGame(gameDuration, newResults, validPlayers, validMessages);
-
-                    }
-                )
-
-            }
-        }
-    }, [duration])
 
     const inBounds = (rowindex, cellindex) => {
         return (

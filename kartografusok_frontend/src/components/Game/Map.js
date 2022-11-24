@@ -8,6 +8,8 @@ import { getActualPlayer } from '../../state/actualPlayer/selectors';
 import { modifyPlayer } from '../../state/actualPlayer/actions';
 import { getCards } from '../../state/cards/selector';
 import { getRoom } from '../../state/room/selectors';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
 
@@ -19,6 +21,38 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
     let divsToColorGray = []
     let divsToColorGreen = []
     let divsToColorRed = []
+
+    const [allPoints,setAllPoints] = useState(0);
+
+    useEffect(()=>{
+        let _allPoints = 0;
+        
+        if(actualPlayer.season0Points && actualPlayer.season0Points.points > 0){
+            _allPoints = _allPoints + actualPlayer.season0Points.points
+        }else{
+            _allPoints = _allPoints
+        }
+
+        if(actualPlayer.season1Points && actualPlayer.season1Points.points > 0){
+            _allPoints = _allPoints + actualPlayer.season1Points.points
+        }else{
+            _allPoints = _allPoints
+        }
+
+        if(actualPlayer.season2Points && actualPlayer.season2Points.points > 0){
+            _allPoints = _allPoints + actualPlayer.season2Points.points
+        }else{
+            _allPoints = _allPoints
+        }
+
+        if(actualPlayer.season3Points && actualPlayer.season3Points.points > 0){
+            _allPoints = _allPoints + actualPlayer.season3Points.points
+        }else{
+            _allPoints = _allPoints
+        }
+
+        setAllPoints(_allPoints);
+    },[actualPlayer.season0Points,actualPlayer.season1Points,actualPlayer.season2Points,actualPlayer.season3Points])
 
     const FieldTypes = {
         Empty: "",
@@ -92,7 +126,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season0Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season0Points?.mountains}
                             </div>
                             <div className='PointingSection'>
                                 0
@@ -112,7 +146,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season1Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season1Points?.mountains}
                             </div>
                             <div className='PointingSection'>
                                 0
@@ -132,7 +166,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season2Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season2Points?.mountains}
                             </div>
                             <div className='PointingSection'>
                                 0
@@ -152,7 +186,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season3Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season3Points?.mountains}
                             </div>
                             <div className='PointingSection'>
                                 0
@@ -162,7 +196,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                             {actualPlayer.season3Points?.points}
                         </div>
                     </div>}
-                <div className='MapAllPoints'>{((actualPlayer.season0Points?.points || 0) + (actualPlayer.season1Points?.points || 0) + (actualPlayer.season2Points?.points || 0) + (actualPlayer.season3Points?.points || 0))}</div>
+                <div className='MapAllPoints'>{allPoints}</div>
 
             </div>
             <div className='MapTable'>

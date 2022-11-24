@@ -72,42 +72,21 @@ const isFullField = (field) => {
 // 2 - hegy
 // 3 - lyuk
 
-// const matrix = [
-//     ["M", "M", 0, "V", "V", 0],
-//     [0, "M", "F", "V", 0, 0],
-//     ['M', "V", "V", "V", 0, 0],
-//     ["W", "V", "V", 0, 0, 0],
-//     [0, 0, 0, "F", "M", "M"],
-//     ["V", 0, 0, "V", "V", "V"],
-// ];
-
-// const matrix = [
-//     [["V", "W",  0,  0,  0,   0,  "V", "V", 0, 0, 0],
-//     ["V",  "W",  0,  0, "V", "V", "V",  0,  2, 0, 0],
-//     ["V",  "W",  1,  2,  0,   0,   0,   0,  0, 0, 0],
-//     ["V",   0,   0,  0,  0,   3,   0,   0,  0, 0, 0],
-//     ["A",   0,   0,  0,  3,   3,   1,   0,  0, 0, 0],
-//     ["A",   0,   0,  0,  3,   3,   3,   0,  0, 0, 0],
-//     ["A",  "A", "A", 0,  0,   3,   0,   0,  0, 0, 0],
-//     ["A",   0,   0,  0,  0,   2,   0,   0,  1, 0, 0],
-//     ["A",   0,   0,  0,  0,   0,   0,   0,  0, 2, 0],
-//     ["F",   0,   2, "M", 0,   0,   0,   0,  0, 0, 0],
-//     ["F",  "F",  0,  0,  0,   0,   0,   0,  0, 0, 0]]
-// ];
+// const matrix = [[0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,"F",0,0,0,0,0],[0,"A",0,0,0,"F",0,0,0,0,0],["A","A","W",0,0,"F",0,0,0,0,0],["M","A","W","V","V","F","F",0,0,0,0],["V","V","W","W","A","A","A","F","F",0,0],["V","V","W","W","A","F","F","F","F",0,0],["M","V","M","W","A","F","F","F","F",0,0]]
 
 // const originalMatrix = [
-//     [["V", "W", 0, 0, 0, 0, "V", "V", 0, 0, 0],
-//     ["V",  "W", 0, 0, "V", "V", "V", 0, 2, 0, 0],
-//     ["V",  "W", 1, 2, 0, 0, 0, 0, 0, 0, 0],
-//     ["V",   0, 0, 0, 0, 3, 0, 0, 0, 0, 0],
-//     ["A",   0, 0, 0, 3, 3, 1, 0, 0, 0, 0],
-//     ["A",   0, 0, 0, 3, 3, 3, 0, 0, 0, 0],
-//     ["A",  "A", "A", 0, 0, 3, 0, 0, 0, 0, 0],
-//     ["A",   0, 0, 0, 0, 2, 0, 0, 1, 0, 0],
-//     ["A",   0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
-//     ["F",   0, 2, "M", 0, 0, 0, 0, 0, 0, 0],
-//     ["F",  "F", 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-// ];
+//     ["M", "M", "M", "V", "V", "V", "V", "F", "F", "F", "W"],
+//     ["F", "M",  0,   2,   0,   1,   0,   0,  "F",  0,  "W"],
+//     ["F", "F", "F",  0,   0,   0,   0,   0,   2,   1,  "W"],
+//     ["F",  0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   2,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   1,   2,   0,   0,   0,   0,   0,   0,   1,   0 ],
+//     [ 0,   0,   0,   0,   0,   1,   0,   2,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ]
+// ]
 
 // CELL-NÉL VAGYUNK (0,0)
 // 
@@ -116,7 +95,7 @@ const isFullField = (field) => {
 
 export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
 
-    let point = 0;
+    let points = 0;
     let A = 0;
     let B = 0;
 
@@ -154,8 +133,8 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
         console.log("Nagyváros")
 
         let pointsForCard = 0;
+
         const villageRegions = findIsolated("V", map)
-        // console.log(villageRegions);
 
         const noMountainVillageRegions = villageRegions.filter(region =>
             !region.some(village =>
@@ -163,8 +142,11 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
             )
         )
 
-        pointsForCard = (Math.max(...noMountainVillageRegions.map(region => region.length)))
-
+        if(noMountainVillageRegions.length === 0){
+            pointsForCard = 0;
+        }else{
+            pointsForCard = (Math.max(...(noMountainVillageRegions.map(region => region.length))))
+        }
 
         // EZ A KÁRTYA "A" ÉVSZAK VOLT
         if (pointCard1.id === 1 && pointCard2.id !== 1) {
@@ -623,11 +605,29 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
         }
     }
 
-    point = A + B;
+    let mountains = pointMountains(map);
 
-    return { A, B, point };
+    points = A + B + mountains;
+
+    return { A, B, mountains, points, };
+}
+
+const pointMountains = (map) => {
+    let point = 0;
+
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map.length; j++) {
+            let cell = map[i][j]
+
+            if (cell === 2 && !neighborsOf({ x: i, y: j }, map).some(neighbor => neighbor.value === 0)) {
+                point++;
+            }
+        }
+    }
+
+    return point;
 }
 
 // console.log(
-//     pointRound({ id: 2 }, { id: 0 }, matrix, originalMatrix)
+//     pointRound({ id: 1 }, { id: 0 }, matrix, originalMatrix)
 // )
