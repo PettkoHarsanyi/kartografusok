@@ -278,19 +278,25 @@ export default function Game() {
         if (!gameEnd) {
             if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
                 
+                
+
                 if(seasonIndex + 1 === 4){
                     setSeasonIndex(0);
                     setActualSeasonCard(cards.seasonCards[0]);        // KÖVI ÉVSZAK
-                    setGameEnd(true);
+                    // setGameEnd(true);
                 }else{
                     setActualSeasonCard(cards.seasonCards[seasonIndex+1]);        // KÖVI ÉVSZAK
                     setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
                 }
 
-                if (cards.deck[0]?.duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
-                    setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
-                } else {
-                    setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+                if(seasonIndex+1 !== 4){
+                    if (cards.deck[0]?.duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
+                        setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
+                    } else {
+                        setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+                    }
+                }else{
+                    setDuration(duration + cards.deck[0].duration)
                 }
                 // dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints }))
 
@@ -348,9 +354,8 @@ export default function Game() {
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result }))
             }
 
-            if (seasonIndex === 0 && gameEnd === true) {
+            if (seasonIndex === 0 && actualSeasonCard.duration <= duration) {
                 // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
-    
                 console.log("4. évszak pontozása")
                 const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                 // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
@@ -393,6 +398,8 @@ export default function Game() {
                     )
     
                 }
+
+                setGameEnd(true);
             }
         }
     }, [seasonIndex])
@@ -475,18 +482,24 @@ export default function Game() {
             } else {
                 whose = index + direction;
             }
+
             setMapPlayer(unShiftedPlayers[whose])
 
+            const randomTime = Math.floor(Math.random() * 1001);
             // GYANÚS
-            dispatch(modifyLocalPlayer({
-                ...unShiftedPlayers[whose],
-                name: actualPlayer.name, id: actualPlayer.id, muted: actualPlayer.muted, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
-                isReady: actualPlayer.isReady, gamePoints: actualPlayer.gamePoints, division: actualPlayer.division,
-                // season0Points: unShiftedPlayers[whose].season0Points,
-                // season1Points: unShiftedPlayers[whose].season1Points,
-                // season2Points: unShiftedPlayers[whose].season2Points,
-                // season3Points: unShiftedPlayers[whose].season3Points,
-            }))
+            console.log("RandomTime: " + randomTime);
+            setTimeout(()=>{
+                dispatch(modifyLocalPlayer({
+                    ...unShiftedPlayers[whose],
+                    name: actualPlayer.name, id: actualPlayer.id, muted: actualPlayer.muted, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
+                    isReady: actualPlayer.isReady, gamePoints: actualPlayer.gamePoints, division: actualPlayer.division,
+                    // season0Points: unShiftedPlayers[whose].season0Points,
+                    // season1Points: unShiftedPlayers[whose].season1Points,
+                    // season2Points: unShiftedPlayers[whose].season2Points,
+                    // season3Points: unShiftedPlayers[whose].season3Points,
+                }))
+
+            },randomTime)
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
@@ -507,22 +520,28 @@ export default function Game() {
                 whose = index - direction;
             }
 
-            setMapPlayer(actualPlayer)
+            setMapPlayer(players[index])
             // console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
 
             // GYANÚS
-            dispatch(modifyPlayer({
-                ...actualPlayer,
-                name: unShiftedPlayers[whose].name, id: unShiftedPlayers[whose].id, muted: unShiftedPlayers[whose].muted, map: actualPlayer.map, fields: actualPlayer.fields,
-                isReady: unShiftedPlayers[whose].isReady, gamePoints: unShiftedPlayers[whose].gamePoints, division: unShiftedPlayers[whose].division,
 
-
-                // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-                // season0Points: actualPlayer.season0Points,
-                // season1Points: actualPlayer.season1Points,
-                // season2Points: actualPlayer.season2Points,
-                // season3Points: actualPlayer.season3Points,
-            }))
+            const randomTime = Math.floor(Math.random() * 1001);
+            console.log("RandomTime: " + randomTime);
+            setTimeout(()=>{
+                dispatch(modifyPlayer({
+                    ...actualPlayer,
+                    name: unShiftedPlayers[whose].name, id: unShiftedPlayers[whose].id, muted: unShiftedPlayers[whose].muted, map: actualPlayer.map, fields: actualPlayer.fields,
+                    isReady: unShiftedPlayers[whose].isReady, gamePoints: unShiftedPlayers[whose].gamePoints, division: unShiftedPlayers[whose].division,
+    
+    
+                    // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
+                    // season0Points: actualPlayer.season0Points,
+                    // season1Points: actualPlayer.season1Points,
+                    // season2Points: actualPlayer.season2Points,
+                    // season3Points: actualPlayer.season3Points,
+                }))
+            },randomTime)
+            
             // dispatch(modifyPlayer({ ...players[whose], map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
 

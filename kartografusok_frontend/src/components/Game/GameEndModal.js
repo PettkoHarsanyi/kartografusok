@@ -34,7 +34,7 @@ export default function GameEndModal({ }) {
     const [ordered, setOrdered] = useState([]);
 
     useEffect(() => {
-        const orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
+        const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
         setOrdered(orderedArray);
     }, [room.gameEnded])
 
