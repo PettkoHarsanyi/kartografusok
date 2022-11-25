@@ -56,7 +56,9 @@ export default function Home() {
                                     <div className='Pics'>
                                         <div className='PicsBg'></div>
                                         <img src={frame} draggable="false" className="ProfileFrame" alt="profilframe" style={decoration} />
-                                        <img src={`api/users/${user.id}/profileimage`} className="ProfilePics" alt="profilpics" />
+                                        <div className='PicsFrame'>
+                                            <img src={`api/users/${user.id}/profileimage`} className="ProfilePics" alt="profilpics" />
+                                        </div>
                                     </div>
 
                                     <div className='UserNameDiv'>

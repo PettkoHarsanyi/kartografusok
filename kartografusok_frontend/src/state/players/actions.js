@@ -45,3 +45,8 @@ export const setPlayersUnReady = () => ({
     type: UNREADY_PLAYERS,
     payload: {},
 })
+
+export const setPlayersLocalUnReady = () => ({
+    type: UNREADY_PLAYERS_LOCAL,
+    payload: {},
+})

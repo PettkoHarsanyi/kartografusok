@@ -116,22 +116,53 @@
 
 .CreateRoom .InviteDiv {
     display: flex;
-    border: 0.5vh solid black;
-    padding: 1vh;
-    border-radius: 2vh;
-    background-color: white;
-    display: flex;
     flex-direction: row;
     align-items: center;
-    position: relative;
 }
 
 .CreateRoom .CodeDiv {
     overflow-x: scroll;
     width: 70%;
-    border: none !important;
+    padding: 1vh;
+    border-radius: 1vh 0 0 1vh;
+    border: 0.5vh solid black;
     outline: none;
 }
+
+.CreateRoom .CopyButton {
+    background-color: gray;
+    z-index: 0;
+    border: 0.5vh solid black;
+    border-radius: 0 1vh 1vh 0;
+    border-left: none;
+    right: 0;
+    height: 100%;
+    cursor: pointer;
+    width: 30%;
+    transition: 0.5s;
+}
+
+.CreateRoom .CopyButton:hover {
+    background-color: peru;
+    border-radius: 0 3vh 3vh 0;
+}
+
+.CreateRoom .Copied {
+    cursor: pointer;
+    width: 30%;
+    transition-duration: 0.5s;
+    background-color: gray;
+    border: 0.5vh solid black;
+    border-radius: 0 1vh 1vh 0;
+    border-left: none;
+    height: 100%;
+}
+
+.CreateRoom .Copied:hover {
+    background-color: lime;
+    border-radius: 0 3vh 3vh 0;
+}
+
 
 .CreateRoom .ButtonDiv {
     width: 100%;
@@ -209,62 +240,28 @@
 .CreateRoom .ChatDivInput {
     height: 20%;
     padding: 1vh;
-    position: relative
+    display: flex;
 }
 
 .CreateRoom .ChatInput {
-    width: 100%;
+    width: 80%;
     height: 100%;
     border: 0.5vh solid black;
-    border-radius: 1vh;
+    border-right: none;
+    border-radius: 1vh 0 0 1vh;
     background-color: white;
     outline: none;
     padding: 0 9vw 0 2vh;
 }
 
 .CreateRoom .ChatButton {
-    position: absolute;
+    width: 20%;
+    height: 100%;
     right: 1vh;
     border: 0.5vh solid black;
-    border-radius: 1vh;
+    border-radius: 0 1vh 1vh 0;
     background-color: gray;
     cursor: pointer;
-}
-
-
-.CreateRoom .CopyButton {
-    position: absolute;
-    background-color: gray;
-    z-index: 0;
-    border-radius: 1.5vh;
-    right: 0;
-    height: 100%;
-    cursor: pointer;
-    width: 20vh;
-    transition: 0.5s;
-}
-
-.CreateRoom .CopyButton:hover {
-    background-color: peru;
-    border-radius: 3vh;
-}
-
-.CreateRoom .Copied {
-    outline: none;
-    cursor: pointer;
-    transition-duration: 0.5s;
-    position: absolute;
-    background-color: gray;
-    z-index: 0;
-    border-radius: 1.5vh;
-    right: 0;
-    height: 100%;
-    width: 20vh;
-    cursor: pointer;
-}
-
-.CreateRoom .Copied:hover {
-    background-color: lime;
 }
 
 .CreateRoom .PlayersDiv{

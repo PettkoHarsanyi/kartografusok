@@ -10,6 +10,7 @@
     align-items: center;
     justify-content: flex-start;
     display: flex;
+    position: relative;
 }
 
 .Profil * {
@@ -36,6 +37,28 @@
     top: 2vh;
 }
 
+.Profil #openEdit{
+    font-family: "Alfa Slab One", cursive;
+    text-decoration: none;
+    font-size: 6vh;
+    text-align: center;
+    cursor: pointer;
+    background-color: rgb(147, 255, 137);
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    padding: 2vh;
+    background-color: white;
+    color: black;
+    font-size: 3vh;
+    transition-duration: 0.4s;
+    position: fixed;
+    z-index: 10;
+    align-self: flex-start;
+    right: 2vh;
+    top: 2vh;
+    width: max-content;
+}
+
 .Profil .Button:hover {
     background-color: goldenrod;
     font-size: 4vh;
@@ -57,9 +80,9 @@
     cursor: pointer;
 }
 
-.Profil .ImgInput{
-    height: 30vh; 
-    width: 30vh ;
+.Profil .ImgInput {
+    height: 30vh;
+    width: 30vh;
     font-size: 14pt;
     position: absolute;
     z-index: 50;
@@ -68,7 +91,7 @@
     display: none;
 }
 
-.Profil .SelectPics{
+.Profil .SelectPics {
     width: 7vh;
     height: 7vh;
     min-width: 50px;
@@ -171,6 +194,76 @@
     color: rgba(0, 0, 0, 0.89);
     font-size: 8vh !important;
     padding: 0vh 2vh 0 2vh;
+}
+
+.Profil .EditBg {
+    z-index: 100;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.792);
+    visibility: hidden;
+}
+
+.Profil .EditBg * {
+    font-size: 3vh;
+}
+
+.Profil .EditBg input {
+    all: unset;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+    width: 70%;
+    padding: 1vh;
+}
+
+.Profil .EditBg button {
+    all: unset;
+    border: 0.5vh solid black;
+    border-radius: 1vh;
+    padding: 1vh 4vh;
+    background-color: rgb(183, 183, 183);
+    cursor: pointer;
+}
+
+.Profil .Edit {
+    position: relative;
+    width: 50%;
+    height: 90%;
+    gap: 2vh;
+    padding: 2vh;
+    z-index: 100;
+}
+
+.Profil .EditContext {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    gap: 2vh;
+    background-color: white;
+    border: 0.5vh solid black;
+    border-radius: 2vh;
+    padding: 2vh;
+}
+
+.Profil .EditContext label {
+    display: block;
+    margin-bottom: 2vh;
+}
+
+.Profil .EditContext div {
+    width: 100%;
+}
+
+.Profil .EditButtons {
+    display: flex;
+    gap: 2vh;
+    justify-content: center;
 }
 
 .Profil .Div4 {

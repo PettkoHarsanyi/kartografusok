@@ -6,9 +6,9 @@ import "../../css/InputRange.css";
 import "../../css/Modal.css";
 import "../../css/Chat.css";
 import { getRoom } from "../../state/room/selectors";
-import GameModal from "./DrawModal";
+import GameModal from "./GameModal";
 import { containerClasses } from "@mui/system";
-import { modifyLocalPlayer, modifyPlayer, removePlayer, setPlayersUnReady } from "../../state/players/actions";
+import { modifyLocalPlayer, modifyPlayer, removePlayer, setPlayersLocalUnReady, setPlayersUnReady } from "../../state/players/actions";
 import { getActualPlayer } from "../../state/actualPlayer/selectors";
 import DrawCanvas from "./DrawCanvas";
 import { getPlayers } from "../../state/players/selectors";
@@ -293,7 +293,7 @@ export default function Game() {
                     if (cards.deck[0]?.duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
                         setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
                     } else {
-                        setDuration(0);                                         // KÜLÖNBEN NULLÁRA
+                        setDuration(0);                                        // KÜLÖNBEN NULLÁRA
                     }
                 }else{
                     setDuration(duration + cards.deck[0].duration)
@@ -448,7 +448,6 @@ export default function Game() {
             //     } else {
             //         whose = (index - firstDirection + secondDirection);
             //     }
-
             // })
 
             let whose;
@@ -488,15 +487,16 @@ export default function Game() {
             const randomTime = Math.floor(Math.random() * 1001);
             // GYANÚS
             console.log("RandomTime: " + randomTime);
+
+            // ELŐSZÖR LEPONTOZZA UTÁNA CSERÉL...
+            // TEHÁT HA PONT CSERE VAN ÉS 
             setTimeout(()=>{
                 dispatch(modifyLocalPlayer({
-                    ...unShiftedPlayers[whose],
-                    name: actualPlayer.name, id: actualPlayer.id, muted: actualPlayer.muted, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
-                    isReady: actualPlayer.isReady, gamePoints: actualPlayer.gamePoints, division: actualPlayer.division,
-                    // season0Points: unShiftedPlayers[whose].season0Points,
-                    // season1Points: unShiftedPlayers[whose].season1Points,
-                    // season2Points: unShiftedPlayers[whose].season2Points,
-                    // season3Points: unShiftedPlayers[whose].season3Points,
+                    ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
+                    season0Points: unShiftedPlayers[whose].season0Points,
+                    season1Points: unShiftedPlayers[whose].season1Points,
+                    season2Points: unShiftedPlayers[whose].season2Points,
+                    season3Points: unShiftedPlayers[whose].season3Points,
                 }))
 
             },randomTime)
@@ -529,16 +529,12 @@ export default function Game() {
             console.log("RandomTime: " + randomTime);
             setTimeout(()=>{
                 dispatch(modifyPlayer({
-                    ...actualPlayer,
-                    name: unShiftedPlayers[whose].name, id: unShiftedPlayers[whose].id, muted: unShiftedPlayers[whose].muted, map: actualPlayer.map, fields: actualPlayer.fields,
-                    isReady: unShiftedPlayers[whose].isReady, gamePoints: unShiftedPlayers[whose].gamePoints, division: unShiftedPlayers[whose].division,
-    
-    
+                    ...unShiftedPlayers[whose], map: actualPlayer.map, fields: actualPlayer.fields,
                     // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-                    // season0Points: actualPlayer.season0Points,
-                    // season1Points: actualPlayer.season1Points,
-                    // season2Points: actualPlayer.season2Points,
-                    // season3Points: actualPlayer.season3Points,
+                    season0Points: actualPlayer.season0Points,
+                    season1Points: actualPlayer.season1Points,
+                    season2Points: actualPlayer.season2Points,
+                    season3Points: actualPlayer.season3Points,
                 }))
             },randomTime)
             

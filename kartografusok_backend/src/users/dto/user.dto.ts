@@ -21,6 +21,7 @@ export class UserDto{
     messages?: MessageDto[];
     results?: ResultDto[];
     reports?: number;
+    email?: string;
 
     constructor(user?: User){
         if(user){
@@ -34,6 +35,7 @@ export class UserDto{
             this.banned = user.banned;
             this.division = user.division;
             this.reports = user.reports;
+            this.email = user.email;
         }
     }
 }

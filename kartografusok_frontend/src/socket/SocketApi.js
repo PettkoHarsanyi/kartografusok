@@ -59,10 +59,6 @@ class SocketApi {
   joinRoom(id,user,ack) {
     this.socket.emit("join-room", id, user, ack);
   }
-  
-  startGame(roomId,broadcast,ack){
-    this.socket.emit("start-game",roomId,broadcast,ack)
-  }
 
   onPlayerLeft(callback){
     const listener = (message) => {

@@ -21,7 +21,7 @@ export default function Profil() {
     const userMatches = useLoaderData();
     const fileInput = createRef();
 
-    const [picUR,setPicUrl] = useState(`api/users/${user.id}/profileimage`);
+    const [picUR, setPicUrl] = useState(`api/users/${user.id}/profileimage`);
 
     useEffect(() => {
         if (user) {
@@ -62,23 +62,76 @@ export default function Profil() {
         }
     }
 
+    const [editUser, setEditUser] = useState({});
+
+    const submitForm = (e) => {
+        e.preventDefault();
+        console.log(editUser);
+    }
+
+    const handleInputChange = (event) => {
+        const target = event.target;
+        let value = target.value;
+        const name = target.name;
+
+
+        setEditUser({
+            ...editUser,
+            [name]: value,
+        })
+    }
+
     return (
         <div className='Profil'>
+            <div className='EditBg' id='editBg'>
+                <div className='Edit'>
+                    <form className='EditContext' onSubmit={(e) => submitForm(e)} autoComplete="off">
+                        <div>
+                            <label>Email cím</label>
+                            <input name='email' defaultValue={user.email} onChange={(e) => handleInputChange(e)}></input>
+                        </div>
+                        <div>
+                            <label>Játékos név</label>
+                            <input name="name" defaultValue={user.name} onChange={(e) => handleInputChange(e)}></input>
+                        </div>
+                        <div>
+                            <label>Felhasználónév</label>
+                            <input name="userName" defaultValue={user.userName} onChange={(e) => handleInputChange(e)}></input>
+                        </div>
+                        <div>
+                            <label>Új jelszó:</label>
+                            <input name='password' defaultValue="" type="password" onChange={(e) => handleInputChange(e)}></input>
+                        </div>
+                        <div className='EditButtons'>
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById("editBg").style.visibility = "hidden";
+                            }
+                            }>Mégsem</button>
+                            <button type='submit' defaultValue={user.email} onChange={(e) => handleInputChange(e)}>Változtat</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <Link className='Button' to="/">Vissza</Link>
+            <button id='openEdit' onClick={(e)=>{
+                e.preventDefault();
+                document.getElementById("editBg").style.visibility = "visible";
+            }}>Szerkesztés</button>
             <div className='Div1'>
                 <div className='Div2'>
-                    <div className='Pics' onClick={()=>document.getElementById("picInput").click()} onMouseOver={()=>{
+                    <div className='Pics' onClick={() => document.getElementById("picInput").click()} onMouseOver={() => {
                         document.getElementById("profilPic").style.opacity = 0.5
                         document.getElementById("selectPics").style.opacity = 1
-                    }} onMouseLeave={()=>{
+                    }} onMouseLeave={() => {
                         document.getElementById("selectPics").style.opacity = 0
                         document.getElementById("profilPic").style.opacity = 1
                     }}>
                         <div className='PicsBg'></div>
                         <img src={frame} className="ProfileFrame" draggable="false" alt="profilframe" style={decoration} />
                         <img src={`api/users/${user.id}/profileimage`} draggable="false" id="profilPic" className="ProfilePics" alt="profilpics" />
-                        <img src={selectPics} draggable="false" className="SelectPics" alt='select' id='selectPics'/>
-                        <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e)=>uploadPicture(e)} ref={fileInput} />
+                        <img src={selectPics} draggable="false" className="SelectPics" alt='select' id='selectPics' />
+                        <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e) => uploadPicture(e)} ref={fileInput} />
                     </div>
                     <div className='Name'>{user.name}</div>
                 </div>

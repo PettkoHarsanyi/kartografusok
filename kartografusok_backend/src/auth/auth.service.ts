@@ -42,7 +42,8 @@ export class AuthService {
                 banned: userDto.banned,
                 muted: userDto.muted,
                 points: userDto.points,
-                weekly: userDto.weekly
+                weekly: userDto.weekly,
+                email: userDto.email,
             },
         });
     }

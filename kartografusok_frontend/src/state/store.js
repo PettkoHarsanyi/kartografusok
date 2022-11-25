@@ -89,11 +89,6 @@ export const wsConnect = () => (dispatch) => {
     dispatch({type: action.type + "_LOCAL", payload: action.payload}); // DISPATCH LOCAL - csak olyan action ami nincs benne a sync.js-ben, 
                                                                       //így azt nem küldi fel rekurzívan
   })
-
-  socketApi.onGameStart((action)=>{
-    // console.log("GAME HAS STARTED");
-  })
-
 }
 
 export const store = configureStore({ reducer: rootReducer, middleware: [thunk, logger, sync] });

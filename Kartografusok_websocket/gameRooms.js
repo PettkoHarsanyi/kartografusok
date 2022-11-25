@@ -2,7 +2,7 @@ import { db } from "./sequelize.js";
 
 export const gameRoom = (io) => {
   io.on("connection", (socket) => {
-    console.log("Game room: connected", socket.id);
+    console.log("Socket connected: ", socket.id);
 
     socket.on("create-room", async (ack) => {
       try {
@@ -102,34 +102,6 @@ export const gameRoom = (io) => {
       }
     });
 
-    socket.on("start-game", async (uuid, broadcast, ack) => {
-      try{
-        const allRooms = io.sockets.adapter.rooms;
-        if (!Array.from(allRooms.keys()).includes(uuid)) {
-          throw new Error("Nincs ilyen szoba id a socket.io szerveren");
-        }
-
-        // Nincs a szobában a kliens
-        if (!socket.rooms.has(uuid)) {
-          throw new Error("A kliens nincs a szobában");
-        }
-
-        let sender;
-        if (broadcast) {
-          // sender = socket.broadcast.to(uuid);
-          socket.broadcast.emit("game-start", {});
-        } else {
-          io.emit("game-start", {});
-        }
-
-        ack({ status: "ok" });
-      }catch(e){
-        if(typeof ack === "function"){
-          ack({status:"errore", message: e.message})
-        }
-      }
-    });
-
     socket.on("sync-action", async (uuid, action, broadcast, ack) => {
       try {
         // nincs ilyen szoba
@@ -161,8 +133,6 @@ export const gameRoom = (io) => {
     });
 
     socket.on("leave-room", async (uuid, ack) => {
-      console.log("socket: " + socket)
-      console.log("sikeresen elhagyta a szobát: " + uuid);
       try {
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
@@ -191,7 +161,6 @@ export const gameRoom = (io) => {
 
     socket.on("close-room", async (uuid, ack) => {
       try {
-        console.log(uuid + " szoba be lett zárva");
         // nincs ilyen szoba
         const allRooms = io.sockets.adapter.rooms;
         if (!Array.from(allRooms.keys()).includes(uuid)) {
