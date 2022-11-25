@@ -64,16 +64,38 @@ export default function Profil() {
 
     const [editUser, setEditUser] = useState({});
 
-    const submitForm = (e) => {
+    const submitForm = async (e) => {
         e.preventDefault();
-        console.log(editUser);
+
+        if (editUser.password === "") {
+            delete editUser.password;
+        }
+
+        let error;
+        let response;
+        try{
+            response = await axios.patch(`api/users/${user.id}`, editUser, {
+                headers: authHeader()
+            });
+        }catch(error){
+            document.getElementById("submitEditButton").style.backgroundColor = "#b7b7b7";
+            document.getElementById("submitEditButton").innerHTML = "Változtat";
+            document.getElementById("editErrorDiv").style.color = "red";
+            document.getElementById("editErrorDiv").innerHTML = error.response.data.message.map(message=>`${message}<br />`);
+        }
+
+        if (response.status === 200) {
+            document.getElementById("submitEditButton").style.backgroundColor = "lime";
+            document.getElementById("submitEditButton").innerHTML = "Sikeres ✔";
+            document.getElementById("editErrorDiv").innerHTML = "";
+
+        }
     }
 
     const handleInputChange = (event) => {
         const target = event.target;
         let value = target.value;
         const name = target.name;
-
 
         setEditUser({
             ...editUser,
@@ -92,29 +114,34 @@ export default function Profil() {
                         </div>
                         <div>
                             <label>Játékos név</label>
-                            <input name="name" defaultValue={user.name} onChange={(e) => handleInputChange(e)}></input>
+                            <input name="userName" defaultValue={user.name} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
                             <label>Felhasználónév</label>
-                            <input name="userName" defaultValue={user.userName} onChange={(e) => handleInputChange(e)}></input>
+                            <input name="name" defaultValue={user.userName} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
                             <label>Új jelszó:</label>
                             <input name='password' defaultValue="" type="password" onChange={(e) => handleInputChange(e)}></input>
                         </div>
+                        <div id="editErrorDiv">
+                        </div>
                         <div className='EditButtons'>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 document.getElementById("editBg").style.visibility = "hidden";
+                                document.getElementById("submitEditButton").style.backgroundColor = "#b7b7b7";
+                                document.getElementById("submitEditButton").innerHTML = "Változtat";
+
                             }
-                            }>Mégsem</button>
-                            <button type='submit' defaultValue={user.email} onChange={(e) => handleInputChange(e)}>Változtat</button>
+                            }>Vissza</button>
+                            <button id="submitEditButton" type='submit' defaultValue={user.email} onChange={(e) => handleInputChange(e)}>Változtat</button>
                         </div>
                     </form>
                 </div>
             </div>
             <Link className='Button' to="/">Vissza</Link>
-            <button id='openEdit' onClick={(e)=>{
+            <button id='openEdit' onClick={(e) => {
                 e.preventDefault();
                 document.getElementById("editBg").style.visibility = "visible";
             }}>Szerkesztés</button>

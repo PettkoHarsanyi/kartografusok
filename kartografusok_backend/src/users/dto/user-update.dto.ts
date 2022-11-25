@@ -1,11 +1,37 @@
+import { IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
 import { DivisionDto } from "../../divisions/dto/division.dto";
 import { Division } from "../../divisions/entities/division";
 import { User, UserRole } from "../entity/user";
 
 export class UpdateUserDto{
     id?: number;
+
+    
+    @IsOptional()
+    @Length(4, 20,{
+        message: "A felhasználónév legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A felhasználónév nem lehet üres"
+    })
+    @IsString({
+        message: "A felhasználónév szöveges legyen"
+    })
     name?: string;
+
+    @IsOptional()
+    @Length(4, 20,{
+        message: "A játékosnév legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A játékosnév nem lehet üres"
+    })
+    @IsString({
+        message: "A játékosnév szöveges legyen"
+    })
     userName?: string;
+
+
     email?: string;
     points?: number;
     weekly?: number;
@@ -14,6 +40,18 @@ export class UpdateUserDto{
     banned?: boolean;
     muted?: boolean;
     role?: UserRole;
+
+    @IsOptional()
+    @Length(4, 20,{
+        message: "A jelszó legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A jelszó nem lehet üres"
+    })
+    @IsString({
+        message: "A jelszó szöveges legyen"
+    })
+    password?: string;
 
     constructor(user?: User){
         if(user){
@@ -29,6 +67,7 @@ export class UpdateUserDto{
             this.muted = user.muted;
             this.role = user.role;
             this.division = user.division;
+            this.password = user.password;
         }
     }
 }

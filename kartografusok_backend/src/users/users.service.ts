@@ -119,6 +119,9 @@ export class UsersService {
         user.role = updateUserDto.role || user.role;
         user.weekly = updateUserDto.weekly || user.weekly;
         user.picture = updateUserDto.picture || user.picture;
+        if(updateUserDto.password){
+            user.password = await this.authService.hashPassword(updateUserDto.password) || user.password;
+        }
         if(updateUserDto.division){
             user.division = this.divisionRepository.getReference(updateUserDto.division.id);
         }

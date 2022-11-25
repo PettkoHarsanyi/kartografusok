@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsAlpha, Length, IsString } from "class-validator";
+import { IsNotEmpty, IsAlpha, Length, IsString, IsOptional } from "class-validator";
 import { User } from "../entity/user";
 
 export class UserAuthDto{
