@@ -171,12 +171,21 @@ export default function Game() {
         return canFit
     }
 
-    const handleUserKeyPress = (event) => {
-        setBlocksAndTypes(blocksAndTypes.map((item) => {
-            const blocks = JSON.parse(item.block);
-            const rotatedBlocks = JSON.stringify(rotateMatrix(blocks));
-            return { ...item, block: rotatedBlocks }
-        }))
+    const handleUserKeyPress = (event,type) => {
+        if(type==="R"){
+            setBlocksAndTypes(blocksAndTypes.map((item) => {
+                const blocks = JSON.parse(item.block);
+                const rotatedBlocks = JSON.stringify(rotateMatrix(blocks));
+                return { ...item, block: rotatedBlocks }
+            }))
+        }
+        if(type === "M"){
+            setBlocksAndTypes(blocksAndTypes.map((item) => {
+                const blocks = JSON.parse(item.block);
+                const mirroredBlocks = JSON.stringify(blocks.map(row => row.reverse()));
+                return { ...item, block: mirroredBlocks }
+            }))
+        }
     };
 
     const openInspectModal = (card) => {
@@ -275,13 +284,14 @@ export default function Game() {
     const [season3Points, setSeason3Points] = useState({ A: 0, B: 0, points: 0 });
 
     const pickCard = () => {
+        console.log("Duration: " + duration);
+        console.log("Évszak hossz: " + actualSeasonCard.duration);
+        console.log("Évszak index: " + seasonIndex);
+        
         if (!gameEnd) {
             if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
-                
-                
-
                 if(seasonIndex + 1 === 4){
-                    setSeasonIndex(0);
+                    setSeasonIndex("END");
                     setActualSeasonCard(cards.seasonCards[0]);        // KÖVI ÉVSZAK
                     // setGameEnd(true);
                 }else{
@@ -354,7 +364,7 @@ export default function Game() {
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result }))
             }
 
-            if (seasonIndex === 0 && actualSeasonCard.duration <= duration) {
+            if (seasonIndex === "END" && actualSeasonCard.duration <= duration) {
                 // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
                 console.log("4. évszak pontozása")
                 const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
@@ -765,7 +775,8 @@ export default function Game() {
                         })}
                     </div>
                     <div className="ControlsDiv">
-                        <button className="RotateButton" onClick={(e) => handleUserKeyPress(e)}>Forgatás</button>
+                        <button className="RotateButton" style={{borderRight: "0.5vh solid black"}}  onClick={(e) => handleUserKeyPress(e,"M")}>Tükrözés</button>
+                        <button className="RotateButton" onClick={(e) => handleUserKeyPress(e,"R")}>Forgatás</button>
                     </div>
                 </div>
             </div>

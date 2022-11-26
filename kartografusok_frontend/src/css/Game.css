@@ -301,7 +301,6 @@
     width: 100%;
     border-top: 0.5vh solid black;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 0;
@@ -311,11 +310,19 @@
     all:unset;
     cursor: pointer;
     width: 50%;
-    border: 0.5vh solid black;
-    border-radius: 1vh;
-    height: 60%;
+    height: 100%;
     font-size: 2.5vh;
     background-color: gray;
+    transition: 0.5s;
+}
+
+.Game .RotateButton:hover{
+    box-shadow: inset 0 0 4vh 1vh rgb(0, 77, 122);
+}
+
+.Game .RotateButton:active{
+    transition: 0s;
+    box-shadow: inset 0 0 4vh 4vh rgb(0, 139, 219);
 }
 
 .Game .WaitingModal{

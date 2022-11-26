@@ -88,6 +88,20 @@ const isFullField = (field) => {
 //     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ]
 // ]
 
+// const matrix = [
+//     ["M",  0,   0,  "V", "V", "V", "V", "F", "F", "F", "W"],
+//     ["F",  0,   0,   2,   0,   1,   0,   0,  "F",  0,  "W"],
+//     ["F",  0, "F",   0,   0,   0,   0,   0,   2,   1,  "W"],
+//     ["F",  0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   2,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ],
+//     [ 0,   1,   2,   0,   0,   0,   0,   0,   0,   1,   0 ],
+//     [ 0,   0,   0,   0,   0,   1,   0,   2,   0,   0,   0 ],
+//     [ 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 ]
+// ]
+
 // CELL-NÉL VAGYUNK (0,0)
 // 
 // for i (cell.y+i || cell.x+i ||  cell.x+i cell.y+i ) VALAMELYIK 0-E
@@ -606,10 +620,11 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     let mountains = pointMountains(map);
+    let monsters = pointMonsters(map);
 
-    points = A + B + mountains;
+    points = A + B + mountains + monsters;
 
-    return { A, B, mountains, points, };
+    return { A, B, mountains, monsters, points };
 }
 
 const pointMountains = (map) => {
@@ -624,6 +639,30 @@ const pointMountains = (map) => {
             }
         }
     }
+
+    return point;
+}
+
+const pointMonsters = (map) => {
+    let point = 0;
+
+    let neighborsOfMonsterFields = [];
+
+    for(let i = 0; i < map.length; i++){
+        for(let j = 0; j < map.length; j++){
+            let cell = map[i][j]
+
+            if(cell === "M"){
+                neighborsOf({x:i,y:j},map).forEach(neighbor=>{
+                    if((neighbor.value === 0 || neighbor.value === 1) && !neighborsOfMonsterFields.some(field => field.x === neighbor.x && field.y === neighbor.y)){
+                        neighborsOfMonsterFields.push(neighbor);
+                    }
+                })
+            }
+        }
+    }
+
+    point = -neighborsOfMonsterFields.length
 
     return point;
 }

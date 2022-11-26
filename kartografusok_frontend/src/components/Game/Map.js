@@ -22,37 +22,37 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
     let divsToColorGreen = []
     let divsToColorRed = []
 
-    const [allPoints,setAllPoints] = useState(0);
+    const [allPoints, setAllPoints] = useState(0);
 
-    useEffect(()=>{
+    useEffect(() => {
         let _allPoints = 0;
-        
-        if(actualPlayer.season0Points && actualPlayer.season0Points.points > 0){
+
+        if (actualPlayer.season0Points) {
             _allPoints = _allPoints + actualPlayer.season0Points.points
-        }else{
+        } else {
             _allPoints = _allPoints
         }
 
-        if(actualPlayer.season1Points && actualPlayer.season1Points.points > 0){
+        if (actualPlayer.season1Points) {
             _allPoints = _allPoints + actualPlayer.season1Points.points
-        }else{
+        } else {
             _allPoints = _allPoints
         }
 
-        if(actualPlayer.season2Points && actualPlayer.season2Points.points > 0){
+        if (actualPlayer.season2Points) {
             _allPoints = _allPoints + actualPlayer.season2Points.points
-        }else{
+        } else {
             _allPoints = _allPoints
         }
 
-        if(actualPlayer.season3Points && actualPlayer.season3Points.points > 0){
+        if (actualPlayer.season3Points) {
             _allPoints = _allPoints + actualPlayer.season3Points.points
-        }else{
+        } else {
             _allPoints = _allPoints
         }
 
         setAllPoints(_allPoints);
-    },[actualPlayer.season0Points,actualPlayer.season1Points,actualPlayer.season2Points,actualPlayer.season3Points])
+    }, [actualPlayer.season0Points, actualPlayer.season1Points, actualPlayer.season2Points, actualPlayer.season3Points])
 
     const FieldTypes = {
         Empty: "",
@@ -129,7 +129,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season0Points?.mountains}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season0Points?.monsters}
                             </div>
                         </div>
                         <div className='MapPointDivRight'>
@@ -149,7 +149,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season1Points?.mountains}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season1Points?.monsters}
                             </div>
                         </div>
                         <div className='MapPointDivRight'>
@@ -169,7 +169,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season2Points?.mountains}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season2Points?.monsters}
                             </div>
                         </div>
                         <div className='MapPointDivRight'>
@@ -189,7 +189,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                 {actualPlayer.season3Points?.mountains}
                             </div>
                             <div className='PointingSection'>
-                                0
+                                {actualPlayer.season2Points?.monsters}
                             </div>
                         </div>
                         <div className='MapPointDivRight'>
