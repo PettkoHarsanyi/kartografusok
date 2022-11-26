@@ -8,11 +8,26 @@ import ezust from "../assets/ezust.png"
 import arany from "../assets/arany.png"
 import platina from "../assets/platina.png"
 import profilpics from "../assets/user_130x130px.png"
+import { useDispatch, useSelector } from 'react-redux';
+import { wsConnect } from '../state/store';
+import { socketApi } from '../socket/SocketApi';
+import { getActualPlayer } from '../state/actualPlayer/selectors';
+import { initActualPlayer } from '../state/actualPlayer/actions';
 
 export default function Home() {
     const [frame, setFrame] = useState();
     const [decoration, setDecoration] = useState({});
     const [user] = useState(authService.getCurrentUser());
+    const actualPlayer = useSelector(getActualPlayer);
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if(!socketApi.isConnected()){
+            dispatch(wsConnect());
+        }
+        dispatch(initActualPlayer(user));
+    },[])
 
     useEffect(() => {
         if (user) {
@@ -62,17 +77,17 @@ export default function Home() {
                                     </div>
 
                                     <div className='UserNameDiv'>
-                                        {user && user.name}
+                                        {actualPlayer && actualPlayer.name}
                                     </div>
                                 </div>
                             </div>
-                            {!user.banned &&
+                            {actualPlayer && !actualPlayer.banned &&
                                 <div className='Div6'>
                                     <Link to="/letrehozas">Létrehozás</Link>
                                     <Link to="/csatlakozas">Csatlakozás</Link>
                                 </div>
                             }
-                            {user.banned &&
+                            {actualPlayer && actualPlayer.banned &&
                                 <div className='BanMessage'>Sajnáljuk, a magatartásod miatt a játékban való részvételtől megvontuk profilodat!</div>
                             }
                             <div className='DivPlaceholder'></div>

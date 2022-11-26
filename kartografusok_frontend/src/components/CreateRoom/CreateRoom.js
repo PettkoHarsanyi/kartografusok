@@ -49,6 +49,9 @@ export default function CreateRoom() {
     const map = useSelector(getMap);
 
     useEffect(() => {
+        if(!socketApi.isConnected()){
+            dispatch(wsConnect());
+        }
         if (!user.id) {
             dispatch({
                 type: "CLEAR_STATE"
@@ -176,7 +179,6 @@ export default function CreateRoom() {
         if (players.length === 1) {
             if (!room.roomCode) {
                 // console.log("ITT LEFUTOTTAM, MEGCSINÁLTAM A SZOBÁT");
-                dispatch(wsConnect())
                 socketApi.createRoom(user, createRoomAck);
             }
         }
@@ -371,8 +373,8 @@ export default function CreateRoom() {
                             }
                         </div>
                         <div className='ChatDivInput'>
-                            <input disabled={user.muted} style={{ cursor: user.muted ? "not-allowed" : "text" }} className='ChatInput' id="input" placeholder={user.muted ? 'Némítva vagy🤐' : 'Levelezés 😂📯📩✍'} />
-                            <button disabled={user.muted} style={{ cursor: user.muted ? "not-allowed" : "pointer" }} className='ChatButton' type='submit'>{user.muted ? '🚫' : "Küldés"}</button>
+                            <input disabled={actualPlayer.muted} style={{ cursor: user.muted ? "not-allowed" : "text" }} className='ChatInput' id="input" placeholder={actualPlayer.muted ? 'Némítva vagy🤐' : 'Levelezés 😂📯📩✍'} />
+                            <button disabled={actualPlayer.muted} style={{ cursor: user.muted ? "not-allowed" : "pointer" }} className='ChatButton' type='submit'>{actualPlayer.muted ? '🚫' : "Küldés"}</button>
                         </div>
                     </form>
                     <div className='ServerInfoDiv'>

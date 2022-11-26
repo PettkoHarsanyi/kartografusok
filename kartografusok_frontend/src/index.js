@@ -17,7 +17,7 @@ import authService from './auth/auth.service';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { LoggedRoute } from './components/Auth/LoggedRoute';
 import { Provider, useDispatch } from 'react-redux';
-import { store } from './state/store';
+import { store, wsConnect } from './state/store';
 import { BannedRoute } from './components/Auth/BannedRoute';
 import Map from './components/Admin/Map';
 import Game from './components/Game/Game';
@@ -124,6 +124,7 @@ const router = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <Provider store={store}>
     <RouterProvider router={router} />

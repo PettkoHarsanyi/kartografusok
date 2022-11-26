@@ -202,6 +202,14 @@ export const gameRoom = (io) => {
       }
     });
 
+    socket.on("edit-user", async (user) => {
+      try{
+        io.local.emit("user-edited",user)
+      }catch(e){
+        ack({status: "error", message: e.message})
+      }
+    })
+
     socket.on("get-state", async (uuid, ack) => {
       try {
         // nincs ilyen szoba

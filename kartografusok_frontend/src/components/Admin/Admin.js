@@ -36,6 +36,8 @@ import megegyezo from "../../assets/megegyezo.png"
 import ellentetes from "../../assets/ellentetes.png"
 import Map from './Map';
 import Card from './Card';
+import { wsConnect } from '../../state/store';
+import { socketApi } from '../../socket/SocketApi';
 
 export default function Admin() {
     const loadedData = useLoaderData();
@@ -82,6 +84,12 @@ export default function Admin() {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ])
+
+    useEffect(()=>{
+        if(!socketApi.isConnected()){
+            dispatch(wsConnect());
+        }
+    },[])
 
     const handleSetMapTable = (map) => {
         setMapTable(map);
@@ -231,6 +239,10 @@ export default function Admin() {
             headers: authHeader()
         });
 
+        if(response.status===200){
+            socketApi.editUserInfo({...response.data, muted: !user.muted});
+        }
+
         authService.refreshAuthenticatedUser(user);
 
         return response
@@ -249,6 +261,10 @@ export default function Admin() {
             headers: authHeader()
         });
 
+        if(response.status===200){
+            socketApi.editUserInfo({...response.data,banned: !user.banned});
+        }
+
         authService.refreshAuthenticatedUser(user);
 
         return response;
@@ -262,9 +278,13 @@ export default function Admin() {
             mappedUser.id === selectedUser.id ? (selectedUser) : (mappedUser)
         ))
 
-        await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
+        const response = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
             headers: authHeader()
         });
+
+        if(response.status===200){
+            socketApi.editUserInfo(response.data);
+        }
 
         if (selectedFile) {
             await axios.post(`api/users/${selectedUser.id}/upload`, {

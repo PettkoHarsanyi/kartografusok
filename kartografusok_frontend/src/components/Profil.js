@@ -11,17 +11,31 @@ import axios from 'axios';
 import authHeader from '../auth/auth-header';
 import selectPics from "../assets/selectpics.png"
 import { Buffer } from 'buffer';
+import { socketApi } from '../socket/SocketApi';
+import { wsConnect } from '../state/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { getActualPlayer } from '../state/actualPlayer/selectors';
+import { initActualPlayer } from '../state/actualPlayer/actions';
 
 
 export default function Profil() {
     const [frame, setFrame] = useState();
     const [decoration, setDecoration] = useState({});
     const [user] = useState(authService.getCurrentUser());
+    
+    const actualPlayer = useSelector(getActualPlayer);
 
     const userMatches = useLoaderData();
     const fileInput = createRef();
 
-    const [picUR, setPicUrl] = useState(`api/users/${user.id}/profileimage`);
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if(!socketApi.isConnected()){
+            dispatch(wsConnect());
+        }
+        dispatch(initActualPlayer(user));
+    },[])
 
     useEffect(() => {
         if (user) {
@@ -62,21 +76,24 @@ export default function Profil() {
         }
     }
 
-    const [editUser, setEditUser] = useState({});
+    const [editUser, setEditUser] = useState({id:user.id});
 
     const submitForm = async (e) => {
         e.preventDefault();
+
 
         if (editUser.password === "") {
             delete editUser.password;
         }
 
-        let error;
+
         let response;
+
         try{
             response = await axios.patch(`api/users/${user.id}`, editUser, {
                 headers: authHeader()
             });
+
         }catch(error){
             document.getElementById("submitEditButton").style.backgroundColor = "#b7b7b7";
             document.getElementById("submitEditButton").innerHTML = "Változtat";
@@ -88,8 +105,9 @@ export default function Profil() {
             document.getElementById("submitEditButton").style.backgroundColor = "lime";
             document.getElementById("submitEditButton").innerHTML = "Sikeres ✔";
             document.getElementById("editErrorDiv").innerHTML = "";
-
+            socketApi.editUserInfo(response.data);
         }
+
     }
 
     const handleInputChange = (event) => {
@@ -99,6 +117,7 @@ export default function Profil() {
 
         setEditUser({
             ...editUser,
+            id: user.id,
             [name]: value,
         })
     }
@@ -110,15 +129,15 @@ export default function Profil() {
                     <form className='EditContext' onSubmit={(e) => submitForm(e)} autoComplete="off">
                         <div>
                             <label>Email cím</label>
-                            <input name='email' defaultValue={user.email} onChange={(e) => handleInputChange(e)}></input>
+                            <input name='email' defaultValue={actualPlayer.email} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
                             <label>Játékos név</label>
-                            <input name="userName" defaultValue={user.name} onChange={(e) => handleInputChange(e)}></input>
+                            <input name="userName" defaultValue={actualPlayer.userName} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
                             <label>Felhasználónév</label>
-                            <input name="name" defaultValue={user.userName} onChange={(e) => handleInputChange(e)}></input>
+                            <input name="name" defaultValue={actualPlayer.name} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
                             <label>Új jelszó:</label>
@@ -135,7 +154,7 @@ export default function Profil() {
 
                             }
                             }>Vissza</button>
-                            <button id="submitEditButton" type='submit' defaultValue={user.email} onChange={(e) => handleInputChange(e)}>Változtat</button>
+                            <button id="submitEditButton" type='submit' defaultValue={actualPlayer.email} onChange={(e) => handleInputChange(e)}>Változtat</button>
                         </div>
                     </form>
                 </div>
@@ -160,20 +179,20 @@ export default function Profil() {
                         <img src={selectPics} draggable="false" className="SelectPics" alt='select' id='selectPics' />
                         <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e) => uploadPicture(e)} ref={fileInput} />
                     </div>
-                    <div className='Name'>{user.name}</div>
+                    <div className='Name'>{actualPlayer.name}</div>
                 </div>
                 <div className='Points'>
                     <div className='Info'>
                         <h1>Összes pont</h1>
-                        <div>{user.points}</div>
+                        <div>{actualPlayer.points}</div>
                     </div>
                     <div className='Info'>
                         <h1>Heti pont</h1>
-                        <div>{user.weekly}</div>
+                        <div>{actualPlayer.weekly}</div>
                     </div>
                     <div className='Info'>
                         <h1>Divízió</h1>
-                        <div>{user.division.name.charAt(0).toUpperCase() + user.division.name.slice(1)}</div>
+                        <div>{`${actualPlayer.division?.name.charAt(0).toUpperCase()}${actualPlayer.division?.name?.slice(1)}`}</div>
                     </div>
                 </div>
                 <div className='Div4'>

@@ -13,6 +13,8 @@ import { addMessage } from './messages/actions';
 import { RootState } from './store';
 import { sync } from './sync';
 import { addPlayer } from './players/actions';
+import authService from '../auth/auth.service';
+import { modifyActualPlayer } from './actualPlayer/actions';
 
 const appReducer = combineReducers({
   cards: cardsReducer,
@@ -56,6 +58,16 @@ export const wsConnect = () => (dispatch) => {
   socketApi.onMessageReceived((message) => {
     if (message.emitter !== socketApi.id) {
       dispatch(addMessage(message));
+    }
+  })
+
+  socketApi.onUserEdited((user)=>{
+    const div = authService.getCurrentUser().division
+
+    if(user.id === authService.getCurrentUser().id){
+      console.log("Megváltoztatom a te dolgaidat :)");
+      authService.refreshAuthenticatedUser(user);
+      dispatch(modifyActualPlayer({...user, division: div}));
     }
   })
 

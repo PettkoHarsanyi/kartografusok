@@ -12,6 +12,10 @@ class SocketApi {
     this.socket = io("http://localhost:3030");
   }
 
+  isConnected(){
+    return this.socket !== null;
+  }
+
   sendMessage(message) {
     this.socket.emit("create", "messages", message);
   }
@@ -60,12 +64,24 @@ class SocketApi {
     this.socket.emit("join-room", id, user, ack);
   }
 
+  editUserInfo(user){
+    this.socket.emit("edit-user", user);
+  }
+
   onPlayerLeft(callback){
     const listener = (message) => {
       callback(message);
     }
     this.socket.on("player-left",listener);
     return () => this.socket.off("player-left",listener);
+  }
+
+  onUserEdited(callback){
+    const listener = (message) => {
+      callback(message);
+    }
+    this.socket.on("user-edited",listener);
+    return () => this.socket.off("user-edited",listener);
   }
 
   onMessageReceived(callback) {
