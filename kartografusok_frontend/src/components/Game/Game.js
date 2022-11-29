@@ -469,7 +469,7 @@ export default function Game() {
                 whose = (index - firstDirection + secondDirection);
             }
 
-            dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
+            // dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
 
         if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
@@ -492,7 +492,7 @@ export default function Game() {
                 whose = index + direction;
             }
 
-            setMapPlayer(unShiftedPlayers[whose])
+            // setMapPlayer(unShiftedPlayers[whose])
 
             const randomTime = Math.floor(Math.random() * 1001);
             // GYANÚS
@@ -500,16 +500,16 @@ export default function Game() {
 
             // ELŐSZÖR LEPONTOZZA UTÁNA CSERÉL...
             // TEHÁT HA PONT CSERE VAN ÉS 
-            setTimeout(()=>{
-                dispatch(modifyLocalPlayer({
-                    ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
-                    season0Points: unShiftedPlayers[whose].season0Points,
-                    season1Points: unShiftedPlayers[whose].season1Points,
-                    season2Points: unShiftedPlayers[whose].season2Points,
-                    season3Points: unShiftedPlayers[whose].season3Points,
-                }))
+            // setTimeout(()=>{
+            //     dispatch(modifyLocalPlayer({
+            //         ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
+            //         season0Points: unShiftedPlayers[whose].season0Points,
+            //         season1Points: unShiftedPlayers[whose].season1Points,
+            //         season2Points: unShiftedPlayers[whose].season2Points,
+            //         season3Points: unShiftedPlayers[whose].season3Points,
+            //     }))
 
-            },randomTime)
+            // },randomTime)
         }
         if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
             // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
@@ -530,23 +530,23 @@ export default function Game() {
                 whose = index - direction;
             }
 
-            setMapPlayer(players[index])
+            // setMapPlayer(players[index])
             // console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
 
             // GYANÚS
 
-            const randomTime = Math.floor(Math.random() * 1001);
-            console.log("RandomTime: " + randomTime);
-            setTimeout(()=>{
-                dispatch(modifyPlayer({
-                    ...unShiftedPlayers[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-                    // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-                    season0Points: actualPlayer.season0Points,
-                    season1Points: actualPlayer.season1Points,
-                    season2Points: actualPlayer.season2Points,
-                    season3Points: actualPlayer.season3Points,
-                }))
-            },randomTime)
+            // const randomTime = Math.floor(Math.random() * 1001);
+            // console.log("RandomTime: " + randomTime);
+            // setTimeout(()=>{
+            //     dispatch(modifyPlayer({
+            //         ...unShiftedPlayers[whose], map: actualPlayer.map, fields: actualPlayer.fields,
+            //         // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
+            //         season0Points: actualPlayer.season0Points,
+            //         season1Points: actualPlayer.season1Points,
+            //         season2Points: actualPlayer.season2Points,
+            //         season3Points: actualPlayer.season3Points,
+            //     }))
+            // },randomTime)
             
             // dispatch(modifyPlayer({ ...players[whose], map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
         }
@@ -784,7 +784,7 @@ export default function Game() {
                 <div className="DeckDiv">
                     <div className="CardsDiv">
                         <div className="TopCardsDiv">
-                            <div className="CardDiv"><img src={require(`../../assets/cards/${actualSeasonCard.picture}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard.name} /></div>
+                            {!gameEnd && <div className="CardDiv"><img src={require(`../../assets/cards/${actualSeasonCard.picture}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard.name} /></div>}
                             {cards.decreeCards &&
                                 cards.decreeCards.map((card) => {
                                     return (<div className="CardDiv" key={card.id}><img src={require(`../../assets/cards//${card.picture}`)} onClick={() => { openInspectModal(card) }} className="CardDivImg" alt={card.name} /></div>)
