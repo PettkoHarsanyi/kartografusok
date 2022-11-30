@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../auth/auth.service';
@@ -6,8 +6,10 @@ import "../css/Registration.css";
 import { getActualPlayer } from '../state/actualPlayer/selectors';
 import axios from 'axios';
 import authHeader from '../auth/auth-header';
+import { getPlayers } from '../state/players/selectors';
+import { getMessages } from '../state/messages/selectors';
 
-export default function Registration() {
+export default function Registration({ duration }) {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState([]);
     const [singleError, setSingleError] = useState("");
@@ -16,20 +18,74 @@ export default function Registration() {
 
     const navigate = useNavigate();
     const actualPlayer = useSelector(getActualPlayer);
-    const [name, setName] = useState(actualPlayer.name ?? "");
+    const [name, setName] = useState(actualPlayer?.name ?? "");
+    const players = useSelector(getPlayers);
+    const messages = useSelector(getMessages);
+
+    const postGame = async (duration, results, users, messages) => {
+        const gameResponse = await axios.post(`api/games`, { duration: duration, results, users, messages }, {
+            headers: authHeader()
+        });
+        return gameResponse;
+    }
+
+    const postResult = async (user, points, place) => {
+        const resultResponse = await axios.post(`api/users/${user.id}/result`, { user: user.id, points, place }, {
+            headers: authHeader()
+        });
+        return resultResponse;
+    }
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        dispatch({
-            type: "CLEAR_STATE"
-        });
         try {
             if (actualPlayer?.gamePoints) {
                 await AuthService.signUp(name, userName, password, actualPlayer.gamePoints).then(
                     async (answ) => {
-    
+                        console.log(answ);
+
+
+
+                        const place = (players.sort((a, b) => b.gamePoints - a.gamePoints)).findIndex(player => {
+                            return player.id === actualPlayer.id
+                        }) + 1;
+
+
+                        // Akkor kap gameresultot ha nem ő volt a szoba vezető
+                        if (actualPlayer.gameResult) {
+                            console.log(actualPlayer.gameResult);
+
+                            const resultResponse = await axios.post(`api/users/${answ.id}/resultaftergame`, { user: answ.id, points: actualPlayer.gamePoints, place: place, game: actualPlayer.gameResult }, {
+                                headers: authHeader()
+                            });
+
+                            const connectResponse = await axios.patch(`api/users/${answ.id}/connectgame`, actualPlayer.gameResult, {
+                                headers: authHeader()
+                            })
+
+                        } else {  // ha ő volt akkor a results az a 
+                            const users = [answ];
+
+                            let results = [];
+                            results.push(postResult(answ, actualPlayer.gamePoints, place))
+
+                            Promise.all(results).then(
+                                async (responses) => {
+                                    const newResults = responses.map(response => response.data)
+                                    console.log(newResults);
+                                    const gameResponse = postGame(actualPlayer.duration, newResults, users, messages);
+                                }
+                            )
+
+
+                        }
+
                         navigate("/");
                         // window.location.reload();
+
+                        dispatch({
+                            type: "CLEAR_STATE"
+                        });
                     },
                     (error) => {
                         if (Array.isArray(error.response.data.message)) {
@@ -41,12 +97,16 @@ export default function Registration() {
                         }
                     }
                 );
-            }else{
+            } else {
                 await AuthService.signUp(name, userName, password).then(
                     async (answ) => {
-    
+
                         navigate("/");
                         // window.location.reload();
+
+                        dispatch({
+                            type: "CLEAR_STATE"
+                        });
                     },
                     (error) => {
                         if (Array.isArray(error.response.data.message)) {

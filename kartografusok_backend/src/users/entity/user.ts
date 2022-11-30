@@ -1,4 +1,4 @@
-import { Collection, Entity, Enum, ManyToMany, ManyToOne, OneToMany, PrimaryKey, Property, ReadOnlyException } from "@mikro-orm/core";
+import { Cascade, Collection, Entity, Enum, ManyToMany, ManyToOne, OneToMany, PrimaryKey, Property, ReadOnlyException } from "@mikro-orm/core";
 import { IsNotEmpty, IsString, Length } from "class-validator";
 import { Division } from "../../divisions/entities/division";
 import { Game } from "../../games/entities/game";

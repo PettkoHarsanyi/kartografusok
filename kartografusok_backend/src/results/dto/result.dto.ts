@@ -9,6 +9,7 @@ export class ResultDto {
     user?: UserDto;
     points?: number;
     place?: number;
+    game?: GameDto;
 
     constructor(result?: Result) {
         if (result) {

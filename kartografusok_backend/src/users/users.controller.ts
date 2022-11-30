@@ -23,6 +23,7 @@ import { diskStorage } from  'multer';
 import { Observable, of } from "rxjs";
 import { extname, join } from "path";
 import * as fs from 'fs';
+import { UpdateResultDto } from "../results/dto/updateResult.dto";
 
 @Controller('users')
 export class UsersController {
@@ -88,6 +89,13 @@ export class UsersController {
         return new GameDto(newGame);
     }
 
+    @AllowAnonymous()
+    @Patch(":id/connectgame")
+    async connectToGame(@Param('id', ParseIntPipe) id: number, @Body() gameDto: GameDto){
+        const user = await this.usersService.connectToGame(id,gameDto);
+        return new UserDto(user);
+    }
+
     @Post(':id/message')
     async addMessage(@Body() messageDto: MessageDto, @Param('id', ParseIntPipe) id: number){
         const newMessage = await this.messageService.create(messageDto,id);
@@ -97,6 +105,13 @@ export class UsersController {
     @AllowAnonymous()
     @Post(':id/result')
     async addResult(@Body() resultDto: ResultDto, @Param('id', ParseIntPipe) id: number){
+        const newResult = await this.resultService.create(resultDto,id);
+        return new ResultDto(newResult);
+    }
+
+    @AllowAnonymous()
+    @Post(':id/resultaftergame')
+    async addResultAfterGame(@Body() resultDto: UpdateResultDto, @Param('id', ParseIntPipe) id: number){
         const newResult = await this.resultService.create(resultDto,id);
         return new ResultDto(newResult);
     }

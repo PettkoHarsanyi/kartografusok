@@ -62,7 +62,9 @@ export default function Game() {
     const states = [INIT_DRAWING, CARD_DRAW, CARD_PLACE]
     const [currentState, setCurrentState] = useState(0);
     const [gameStartDate] = useState(new Date());
-    const [mapPlayer, setMapPlayer] = useState(actualPlayer);
+    const [unShiftedPlayers, setUnshiftedPlayers] = useState(players);
+
+    const [netPlayer, setNetPlayer] = useState(actualPlayer);
 
     const [inspectedCard, setInspectedCard] = useState(null);
     const [seasonIndex, setSeasonIndex] = useState(0);
@@ -171,15 +173,15 @@ export default function Game() {
         return canFit
     }
 
-    const handleUserKeyPress = (event,type) => {
-        if(type==="R"){
+    const handleUserKeyPress = (event, type) => {
+        if (type === "R") {
             setBlocksAndTypes(blocksAndTypes.map((item) => {
                 const blocks = JSON.parse(item.block);
                 const rotatedBlocks = JSON.stringify(rotateMatrix(blocks));
                 return { ...item, block: rotatedBlocks }
             }))
         }
-        if(type === "M"){
+        if (type === "M") {
             setBlocksAndTypes(blocksAndTypes.map((item) => {
                 const blocks = JSON.parse(item.block);
                 const mirroredBlocks = JSON.stringify(blocks.map(row => row.reverse()));
@@ -284,28 +286,30 @@ export default function Game() {
     const [season3Points, setSeason3Points] = useState({ A: 0, B: 0, points: 0 });
 
     const pickCard = () => {
-        console.log("Duration: " + duration);
-        console.log("Évszak hossz: " + actualSeasonCard.duration);
-        console.log("Évszak index: " + seasonIndex);
-        
+        // console.log("Duration: " + duration);
+        // console.log("Évszak hossz: " + actualSeasonCard.duration);
+        // console.log("Évszak index: " + seasonIndex);
+
         if (!gameEnd) {
+            setUnshiftedPlayers(players.map((player) => {
+                return { ...player, isReady: false }
+            }));
             if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
-                if(seasonIndex + 1 === 4){
+                if (seasonIndex + 1 === 4) {
                     setSeasonIndex("END");
                     setActualSeasonCard(cards.seasonCards[0]);        // KÖVI ÉVSZAK
-                    // setGameEnd(true);
-                }else{
-                    setActualSeasonCard(cards.seasonCards[seasonIndex+1]);        // KÖVI ÉVSZAK
+                } else {
+                    setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);        // KÖVI ÉVSZAK
                     setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
                 }
 
-                if(seasonIndex+1 !== 4){
+                if (seasonIndex + 1 !== 4) {
                     if (cards.deck[0]?.duration) {                               // HA KÖVI KÁRTYÁNAK VAN IDEJE
                         setDuration(cards.deck[0].duration)                     // BEÁLLÍTJUK A JELENLEGI IDŐ SUMOT ARRA
                     } else {
                         setDuration(0);                                        // KÜLÖNBEN NULLÁRA
                     }
-                }else{
+                } else {
                     setDuration(duration + cards.deck[0].duration)
                 }
                 // dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints }))
@@ -329,8 +333,16 @@ export default function Game() {
     useEffect(() => {
         if (cards.drawnCards.length > 0) {
 
+            let playerPoints;
+            let isMonsterRound = cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER"
 
-            let playerPoints = actualPlayer.gamePoints;
+
+            if (isMonsterRound) {
+
+            } else {
+
+            }
+            playerPoints = actualPlayer.gamePoints;
 
             if (seasonIndex === 1) {
                 console.log("1. évszak pontozása")
@@ -339,8 +351,8 @@ export default function Game() {
                 // setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
                 playerPoints = playerPoints + result.points
 
-                console.log("A: " + result.A + ", B: " + result.B)
-
+                // console.log("A: " + result.A + ", B: " + result.B)
+                console.log("Pontozás: Ez most futott le")
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result }))
             }
             if (seasonIndex === 2) {
@@ -349,7 +361,7 @@ export default function Game() {
 
                 // setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
                 playerPoints = playerPoints + result.points
-                console.log("A: " + result.A + ", B: " + result.B)
+                // console.log("A: " + result.A + ", B: " + result.B)
 
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: result }))
 
@@ -359,7 +371,7 @@ export default function Game() {
                 const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                 // setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
                 playerPoints = playerPoints + result.points
-                console.log("A: " + result.A + ", B: " + result.B)
+                // console.log("A: " + result.A + ", B: " + result.B)
 
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result }))
             }
@@ -369,44 +381,44 @@ export default function Game() {
                 console.log("4. évszak pontozása")
                 const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                 // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
-                console.log("A: " + result.A + ", B: " + result.B);
-    
+                // console.log("A: " + result.A + ", B: " + result.B);
+
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: actualPlayer.gamePoints + result.points, season3Points: result }))
-    
+
                 // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
                 const newPlayers = players.map(player => {
                     const seasonResult = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks))
                     return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult }
                 })
-    
+
                 if (room.leader.id === actualPlayer.id) {
                     const gameEndDate = new Date();
                     const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
-    
+
                     const validMessages = messages.filter(message => message.id > 0);
-    
+
                     const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
-    
+
                     const validPlayers = players.filter(player => player.id > 0);
-    
+
                     let results = [];
                     newPlayers.forEach(player => {
                         if (player.id > 0) {
                             const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
                             results.push(postResult(player, player.gamePoints, place))
-    
+
                             modifyUserPoints(player);
                         }
                     });
-    
+
                     Promise.all(results).then(
                         (responses) => {
                             const newResults = responses.map(response => response.data)
                             postGame(gameDuration, newResults, validPlayers, validMessages);
-    
+
                         }
                     )
-    
+
                 }
 
                 setGameEnd(true);
@@ -438,119 +450,6 @@ export default function Game() {
     const [canBuildAnywhere, setCanBuildAnywhere] = useState(true);
 
     useEffect(() => {
-        // HA AZ ELŐZŐ ÉS A MOSTANI KÖR IS MONSTER, ELŐSZÖR VISSZA KELL ÁLLÍTANI EREDETI JÁTÉKOSHOZ (ELŐZŐ SZÖRNY DIRECTIONJA, AZTÁN AZ ÚJ DIRECTIONJÁBA)
-        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER") {
-            const firstDirection = cards.drawnCards[cards.drawnCards.length - 2].direction
-            const secondDirection = cards.drawnCards[cards.drawnCards.length - 1].direction
-
-            const unShiftedPlayers = players;
-
-            const index = unShiftedPlayers.findIndex(player => {
-                return player.id === actualPlayer.id;
-            })
-
-            // players.forEach((player, index) => {
-            //     let whose;
-            //     if ((index - firstDirection + secondDirection) > players.length - 1) {
-            //         whose = 0;
-            //     } else if ((index - firstDirection + secondDirection) < 0) {
-            //         whose = players.length - 1
-            //     } else {
-            //         whose = (index - firstDirection + secondDirection);
-            //     }
-            // })
-
-            let whose;
-            if ((index - firstDirection + secondDirection) > players.length - 1) {
-                whose = 0;
-            } else if ((index - firstDirection + secondDirection) < 0) {
-                whose = players.length - 1
-            } else {
-                whose = (index - firstDirection + secondDirection);
-            }
-
-            // dispatch(modifyLocalPlayer({ ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
-        }
-
-        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER") {  // HA A SZÖRNY KÖR VAN
-            // ELSHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
-            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
-            // console.log("IRÁNY:" + direction);
-
-            const unShiftedPlayers = players;
-
-            const index = unShiftedPlayers.findIndex(player => {
-                return player.id === actualPlayer.id;
-            })
-
-            let whose;
-            if (index + direction > players.length - 1) {
-                whose = 0;
-            } else if (index + direction < 0) {
-                whose = players.length - 1
-            } else {
-                whose = index + direction;
-            }
-
-            // setMapPlayer(unShiftedPlayers[whose])
-
-            const randomTime = Math.floor(Math.random() * 1001);
-            // GYANÚS
-            console.log("RandomTime: " + randomTime);
-
-            // ELŐSZÖR LEPONTOZZA UTÁNA CSERÉL...
-            // TEHÁT HA PONT CSERE VAN ÉS 
-            // setTimeout(()=>{
-            //     dispatch(modifyLocalPlayer({
-            //         ...actualPlayer, map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields,
-            //         season0Points: unShiftedPlayers[whose].season0Points,
-            //         season1Points: unShiftedPlayers[whose].season1Points,
-            //         season2Points: unShiftedPlayers[whose].season2Points,
-            //         season3Points: unShiftedPlayers[whose].season3Points,
-            //     }))
-
-            // },randomTime)
-        }
-        if (cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 !== "MONSTER") {  // HA VÉGET ÉRT A SZÖRNY KÖR
-            // VISSZASHIFTELJÜK A JÁTÉKOSOK MAP-JÁT ÉS FIELDS-JEIT
-
-            const direction = cards.drawnCards[cards.drawnCards.length - 2].direction
-            const unShiftedPlayers = players;
-
-            const index = unShiftedPlayers.findIndex(player => {
-                return player.id === actualPlayer.id;
-            })
-
-            let whose;
-            if (index - direction > players.length - 1) {
-                whose = 0;
-            } else if (index - direction < 0) {
-                whose = players.length - 1
-            } else {
-                whose = index - direction;
-            }
-
-            // setMapPlayer(players[index])
-            // console.log("Beállítom " + players[whose].name + " dolgait arra amit most változtattam")
-
-            // GYANÚS
-
-            // const randomTime = Math.floor(Math.random() * 1001);
-            // console.log("RandomTime: " + randomTime);
-            // setTimeout(()=>{
-            //     dispatch(modifyPlayer({
-            //         ...unShiftedPlayers[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-            //         // ...players[whose], map: actualPlayer.map, fields: actualPlayer.fields,
-            //         season0Points: actualPlayer.season0Points,
-            //         season1Points: actualPlayer.season1Points,
-            //         season2Points: actualPlayer.season2Points,
-            //         season3Points: actualPlayer.season3Points,
-            //     }))
-            // },randomTime)
-            
-            // dispatch(modifyPlayer({ ...players[whose], map: unShiftedPlayers[whose].map, fields: unShiftedPlayers[whose].fields }))
-        }
-
         if (cards.drawnCards[cards.drawnCards.length - 1]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN") {  // HA AZ AKTUÁLIS KÁRTYA ROM -> ÚJ HÚZÁS
             document.getElementById("ruinModal").style.display = "flex";
             const element = document.getElementById("time")
@@ -682,7 +581,7 @@ export default function Game() {
             setBlocksAndTypes([]);
             setGameEnd(true);
 
-            if (room.leader.id === actualPlayer.id) {
+            if (room.leader.id === actualPlayer.id && !actualPlayer.isGuest) {
                 const gameEndDate = new Date();
                 const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
 
@@ -705,7 +604,18 @@ export default function Game() {
                 Promise.all(results).then(
                     (responses) => {
                         const newResults = responses.map(response => response.data)
-                        postGame(gameDuration, newResults, validPlayers, validMessages);
+                        const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
+
+                        Promise.resolve(gameResult).then(
+                            (resp) => {
+                                console.log(resp);
+                                players.forEach(player => {
+                                    if (player.isGuest) {
+                                        dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
+                                    }
+                                });
+                            }
+                        )
 
                     }
                 )
@@ -745,7 +655,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} mapPlayer={mapPlayer} />
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} setNetPlayer={setNetPlayer} />
                 </div>
             }
             <div className="DrawnCardDiv">
@@ -775,8 +685,8 @@ export default function Game() {
                         })}
                     </div>
                     <div className="ControlsDiv">
-                        <button className="RotateButton" style={{borderRight: "0.5vh solid black"}}  onClick={(e) => handleUserKeyPress(e,"M")}>Tükrözés</button>
-                        <button className="RotateButton" onClick={(e) => handleUserKeyPress(e,"R")}>Forgatás</button>
+                        <button className="RotateButton" style={{ borderRight: "0.5vh solid black" }} onClick={(e) => handleUserKeyPress(e, "M")}>Tükrözés</button>
+                        <button className="RotateButton" onClick={(e) => handleUserKeyPress(e, "R")}>Forgatás</button>
                     </div>
                 </div>
             </div>
@@ -874,7 +784,7 @@ export default function Game() {
 
             <RuinModal />
 
-            {gameEnd && <GameEndModal />}
+            {gameEnd && <GameEndModal duration={Math.round(Math.abs((new Date()) - gameStartDate) / (60 * 1000))} messages={messages} />}
         </div>
     )
 }

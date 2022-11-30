@@ -6,11 +6,13 @@ import { User } from 'src/users/entity/user';
 import { Message } from '../messages/entities/message';
 import { ResultDto } from '../results/dto/result.dto';
 import { Result } from '../results/entity/result';
+import { UserDto } from '../users/dto/user.dto';
 import { GameDto } from './dto/game.dto';
 import { Game } from './entities/game';
 
 @Injectable()
 export class GamesService {
+
 
     constructor(
         @InjectRepository(Game)
@@ -39,6 +41,17 @@ export class GamesService {
             }
         }
         )
+    }
+
+    
+    async connectToPlayer(game: Game, userDto: UserDto) {
+
+        const user = this.userRepository.getReference(userDto.id);
+
+        game.users.set([...game.users, user])
+        
+        await this.gameRepository.persistAndFlush(game);
+        return game;
     }
 
     async findOne(id: number): Promise<Game>{

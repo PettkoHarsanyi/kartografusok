@@ -10,49 +10,79 @@ import { getCards } from '../../state/cards/selector';
 import { getRoom } from '../../state/room/selectors';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { getPlayers } from '../../state/players/selectors';
+import { modifyLocalPlayer } from '../../state/players/actions';
 
-export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
+export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
 
     const actualPlayer = useSelector(getActualPlayer);
+    const players = useSelector(getPlayers);
     const cards = useSelector(getCards);
     const room = useSelector(getRoom);
     const dispatch = useDispatch();
+    const [isMonsterRound, setIsMonsterRound] = useState(false);
+    const [whose, setWhose] = useState(0);
+    const [mapPlayer, setMapPlayer] = useState(actualPlayer);
+
+
+    useEffect(() => {
+        if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER") {  // HA A SZÖRNY KÖR VAN
+            setIsMonsterRound(true);
+
+            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+
+            const index = players.findIndex(player => {
+                return player.id === actualPlayer.id;
+            })
+
+            if (index + direction > players.length - 1) {
+                setWhose(0);
+            } else if (index + direction < 0) {
+                setWhose(players.length - 1);
+            } else {
+                setWhose(index + direction)
+            }
+        } else {
+            setIsMonsterRound(false);
+        }
+    }, [cards.drawnCards])
+
 
     let divsToColorGray = []
     let divsToColorGreen = []
     let divsToColorRed = []
 
-    const [allPoints, setAllPoints] = useState(0);
+    // const [allPoints, setAllPoints] = useState(0);
 
-    useEffect(() => {
-        let _allPoints = 0;
+    // useEffect(() => {
+    //     let _allPoints = 0;
 
-        if (actualPlayer.season0Points) {
-            _allPoints = _allPoints + actualPlayer.season0Points.points
-        } else {
-            _allPoints = _allPoints
-        }
+    //     if (actualPlayer.season0Points) {
+    //         _allPoints = _allPoints + actualPlayer.season0Points.points
+    //     } else {
+    //         _allPoints = _allPoints
+    //     }
 
-        if (actualPlayer.season1Points) {
-            _allPoints = _allPoints + actualPlayer.season1Points.points
-        } else {
-            _allPoints = _allPoints
-        }
+    //     if (actualPlayer.season1Points) {
+    //         _allPoints = _allPoints + actualPlayer.season1Points.points
+    //     } else {
+    //         _allPoints = _allPoints
+    //     }
 
-        if (actualPlayer.season2Points) {
-            _allPoints = _allPoints + actualPlayer.season2Points.points
-        } else {
-            _allPoints = _allPoints
-        }
+    //     if (actualPlayer.season2Points) {
+    //         _allPoints = _allPoints + actualPlayer.season2Points.points
+    //     } else {
+    //         _allPoints = _allPoints
+    //     }
 
-        if (actualPlayer.season3Points) {
-            _allPoints = _allPoints + actualPlayer.season3Points.points
-        } else {
-            _allPoints = _allPoints
-        }
+    //     if (actualPlayer.season3Points) {
+    //         _allPoints = _allPoints + actualPlayer.season3Points.points
+    //     } else {
+    //         _allPoints = _allPoints
+    //     }
 
-        setAllPoints(_allPoints);
-    }, [actualPlayer.season0Points, actualPlayer.season1Points, actualPlayer.season2Points, actualPlayer.season3Points])
+    //     setAllPoints(_allPoints);
+    // }, [actualPlayer.season0Points, actualPlayer.season1Points, actualPlayer.season2Points, actualPlayer.season3Points])
 
     const FieldTypes = {
         Empty: "",
@@ -90,15 +120,15 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
     const parseToImage = (_type) => {
         switch (_type) {
             case "V":
-                return actualPlayer.fields[0]
+                return !isMonsterRound ? actualPlayer.fields[0] : players[whose].fields[0]
             case "F":
-                return actualPlayer.fields[1]
+                return !isMonsterRound ? actualPlayer.fields[1] : players[whose].fields[1]
             case "W":
-                return actualPlayer.fields[2]
+                return !isMonsterRound ? actualPlayer.fields[2] : players[whose].fields[2]
             case "A":
-                return actualPlayer.fields[3]
+                return !isMonsterRound ? actualPlayer.fields[3] : players[whose].fields[3]
             case "M":
-                return actualPlayer.fields[4]
+                return !isMonsterRound ? actualPlayer.fields[4] : players[whose].fields[4]
             default:
                 return ""
         }
@@ -114,9 +144,9 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
         <>
             <img src={scheme} className="MapPic" alt='Map' />
             <div className='PlayerInfos'>
-                <div className='MapName'>{mapPlayer.name}</div>
-                <div className='MapRank'>{mapPlayer.division.name}</div>
-                {actualPlayer.season0Points &&
+                <div className='MapName'>{!isMonsterRound ? actualPlayer.name : players[whose].name}</div>
+                <div className='MapRank'>{!isMonsterRound ? actualPlayer.division.name : players[whose].division.name}</div>
+                {!isMonsterRound && actualPlayer.season0Points &&
                     <div className='MapPointDiv'>
                         <div className='MapPointDivLeft'>
                             <div className='PointingSection'>
@@ -136,7 +166,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                             {actualPlayer.season0Points?.points}
                         </div>
                     </div>}
-                {actualPlayer.season1Points &&
+                {!isMonsterRound && actualPlayer.season1Points &&
                     <div className='MapPointDiv' id="firstSeason">
                         <div className='MapPointDivLeft'>
                             <div className='PointingSection'>
@@ -156,7 +186,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                             {actualPlayer.season1Points?.points}
                         </div>
                     </div>}
-                {actualPlayer.season2Points &&
+                {!isMonsterRound && actualPlayer.season2Points &&
                     <div className='MapPointDiv' id="secondSeason">
                         <div className='MapPointDivLeft'>
                             <div className='PointingSection'>
@@ -176,7 +206,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                             {actualPlayer.season2Points?.points}
                         </div>
                     </div>}
-                {actualPlayer.season3Points &&
+                {!isMonsterRound && actualPlayer.season3Points &&
                     <div className='MapPointDiv' id="thirdSeason">
                         <div className='MapPointDivLeft'>
                             <div className='PointingSection'>
@@ -196,12 +226,98 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                             {actualPlayer.season3Points?.points}
                         </div>
                     </div>}
-                <div className='MapAllPoints'>{allPoints}</div>
+
+                {isMonsterRound && players[whose].season0Points &&
+                    <div className='MapPointDiv'>
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {players[whose].season0Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season0Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season0Points?.mountains}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season0Points?.monsters}
+                            </div>
+                        </div>
+                        <div className='MapPointDivRight'>
+                            {players[whose].season0Points?.points}
+                        </div>
+                    </div>}
+                {isMonsterRound && players[whose].season1Points &&
+                    <div className='MapPointDiv' id="firstSeason">
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {players[whose].season1Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season1Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season1Points?.mountains}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season1Points?.monsters}
+                            </div>
+                        </div>
+                        <div className='MapPointDivRight'>
+                            {players[whose].season1Points?.points}
+                        </div>
+                    </div>}
+                {isMonsterRound && players[whose].season2Points &&
+                    <div className='MapPointDiv' id="secondSeason">
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {players[whose].season2Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season2Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season2Points?.mountains}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season2Points?.monsters}
+                            </div>
+                        </div>
+                        <div className='MapPointDivRight'>
+                            {players[whose].season2Points?.points}
+                        </div>
+                    </div>}
+                {isMonsterRound && players[whose].season3Points &&
+                    <div className='MapPointDiv' id="thirdSeason">
+                        <div className='MapPointDivLeft'>
+                            <div className='PointingSection'>
+                                {players[whose].season3Points?.A}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season3Points?.B}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season3Points?.mountains}
+                            </div>
+                            <div className='PointingSection'>
+                                {players[whose].season2Points?.monsters}
+                            </div>
+                        </div>
+                        <div className='MapPointDivRight'>
+                            {players[whose].season3Points?.points}
+                        </div>
+                    </div>}
+                <div className='MapAllPoints'>{
+                    !isMonsterRound ?
+                        (actualPlayer.season0Points ? actualPlayer.season0Points.points : 0 + actualPlayer.season1Points ? actualPlayer.season1Points.points : 0 + actualPlayer.season2Points ? actualPlayer.season2Points.points : 0 + actualPlayer.season3Points ? actualPlayer.season3Points.points : 0)
+                        :
+                        (players[whose].season0Points ? players[whose].season0Points.points : 0 + players[whose].season1Points ? players[whose].season1Points.points : 0 + players[whose].season2Points ? players[whose].season2Points.points : 0 + players[whose].season3Points ? players[whose].season3Points.points : 0)
+                }</div>
 
             </div>
             <div className='MapTable'>
                 <div className='MapTableBody'>
-                    {JSON.parse(actualPlayer.map).map((row, rowindex) =>
+                    {JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map).map((row, rowindex) =>
                         <div key={rowindex} className='MapTableRow'>
                             {row.map((cell, cellindex) => {
                                 return (
@@ -209,7 +325,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                         onClick={(e) => {
                                             if (!actualPlayer.isReady && !room.gameEnded) {
                                                 let succesful = true;
-                                                let newMap = JSON.parse(actualPlayer.map);
+                                                let newMap = JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map);
 
                                                 let ruinIsUnderBlock = true;  // HA RUIN KÖR VAN, AKKOR A ruinIsUnderBlock-ot FALSERA INICIALIZÁLJUK
                                                 if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && !canBuildAnywhere) {
@@ -226,12 +342,12 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                                             if (blockCell === 1) {
                                                                 newMap[rowindex + blockRowIndex][cellindex + blockCellIndex] = parseToLetter();
 
-                                                                if (JSON.parse(actualPlayer.map)[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 && blockCell === 1) {
+                                                                if (JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 && blockCell === 1) {
                                                                     ruinIsUnderBlock = true;
                                                                 }
                                                             }
                                                         } else {
-                                                            newMap = JSON.parse(actualPlayer.map);
+                                                            newMap = JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map);
                                                             succesful = false;
                                                         }
                                                     });
@@ -242,7 +358,21 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                                 }
 
                                                 if (succesful) {
-                                                    dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                    // setNetPlayer({ ...actualPlayer, map: JSON.stringify(newMap) })
+
+                                                    if (!isMonsterRound) {
+                                                        dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                    } else {
+                                                        console.log(players[whose])
+                                                        if (players.length === 1) {
+                                                            dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                        }else{
+                                                            dispatch(modifyPlayer({ ...players[whose], map: JSON.stringify(newMap) }))
+                                                            dispatch(modifyPlayer({ ...actualPlayer, isReady: true }))
+
+                                                        }
+                                                    }
+
                                                     unHover();
                                                 }
                                             }
@@ -250,17 +380,17 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                         // `url('${Object.values(FieldTypes)[JSON.parse(actualPlayer.map)[rowindex][cellindex]]}')`
                                         style={{
                                             backgroundPosition: "center", backgroundSize: "cover",
-                                            borderRadius: (typeof JSON.parse(actualPlayer.map)[rowindex][cellindex] == "number") ? "" : "0.5vh",
-                                            opacity: (typeof JSON.parse(actualPlayer.map)[rowindex][cellindex] == "number") ? "1" : "0.8",
-                                            backgroundImage: (typeof JSON.parse(actualPlayer.map)[rowindex][cellindex] == "number")
-                                                ? `url('${Object.values(FieldTypes)[JSON.parse(actualPlayer.map)[rowindex][cellindex]]}')`
+                                            borderRadius: (typeof JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex][cellindex] == "number") ? "" : "0.5vh",
+                                            opacity: (typeof JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex][cellindex] == "number") ? "1" : "0.8",
+                                            backgroundImage: (typeof JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex][cellindex] == "number")
+                                                ? `url('${Object.values(FieldTypes)[JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex][cellindex]]}')`
                                                 :
-                                                `url('${parseToImage(JSON.parse(actualPlayer.map)[rowindex][cellindex])}')`
+                                                `url('${parseToImage(JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex][cellindex])}')`
                                         }}>
                                         <div className='MapLayer' id={`${rowindex},${cellindex}`}
                                             onMouseEnter={(e) => {
                                                 if (!actualPlayer.isReady && selectedBlock.blocks !== '' && !room.gameEnded) {
-                                                    const map = JSON.parse(actualPlayer.map);
+                                                    const map = JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map);
                                                     let succesful = true;
 
                                                     let foundRuinInRuinRound = true;  // HA RUIN KÖR VAN, AKKOR A foundRuinInRuinRound-ot FALSERA INICIALIZÁLJUK
@@ -277,7 +407,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, mapPlayer }) {
                                                                 if (blockCell === 1) {
                                                                     divsToColorGreen.push(document.getElementById(`${rowindex + blockRowIndex},${cellindex + blockCellIndex}`));
 
-                                                                    if (JSON.parse(actualPlayer.map)[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 && blockCell === 1) {
+                                                                    if (JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map)[rowindex + blockRowIndex][cellindex + blockCellIndex] === 1 && blockCell === 1) {
                                                                         foundRuinInRuinRound = true;
                                                                     }
                                                                 } else {

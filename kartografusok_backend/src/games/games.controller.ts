@@ -1,9 +1,11 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query, Patch } from '@nestjs/common';
 import { Roles } from 'src/auth/roles';
 import { UserRole } from 'src/users/entity/user';
 import { AllowAnonymous } from '../auth/allow-anonymous';
 import { MessageDto } from '../messages/dto/message.dto';
 import { MessagesService } from '../messages/messages.service';
+import { UserDto } from '../users/dto/user.dto';
+import { UsersService } from '../users/users.service';
 import { GameDto } from './dto/game.dto';
 import { Game } from './entities/game';
 import { GamesService } from './games.service';
@@ -13,7 +15,7 @@ export class GamesController {
     constructor
     (
         private _gamesService: GamesService,
-        private messageService: MessagesService
+        private messageService: MessagesService,
     ){}
         
         // FINDALL - csak admin joggal
@@ -39,6 +41,12 @@ export class GamesController {
         }
 
         return new GameDto(game);
+    }
+
+    @Patch(':id/connectToPlayer')
+    async connectToPlayer(@Param('id',ParseIntPipe) id: number, @Body() userDto: UserDto){
+        const game = await this._gamesService.findOne(id);
+        return await this._gamesService.connectToPlayer(game,userDto)
     }
 
     @Get(':id/messages')

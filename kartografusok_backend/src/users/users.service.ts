@@ -10,6 +10,8 @@ import { UserDto } from './dto/user.dto';
 import { User, UserRole } from './entity/user';
 import { filter } from 'rxjs';
 import { DivisionDto } from '../divisions/dto/division.dto';
+import { GameDto } from '../games/dto/game.dto';
+import { Game } from '../games/entities/game';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +22,9 @@ export class UsersService {
 
         @InjectRepository(Division)
         private divisionRepository: EntityRepository<Division>,
+
+        @InjectRepository(Game)
+        private gameRepository: EntityRepository<Game>,
 
         private authService: AuthService
     ){}
@@ -106,6 +111,15 @@ export class UsersService {
         return this.userRepository.findAll({
             populate: ['division','games','games.messages','messages'],
         });
+    }
+
+    async connectToGame(id: number, gameDto: GameDto){
+        const user = await this.userRepository.findOne({id});
+        user.games.add(this.gameRepository.getReference(gameDto.id))
+
+        await this.userRepository.persistAndFlush(user);
+
+        return user;
     }
     
     async update(id: number, updateUserDto: UpdateUserDto) {

@@ -7,10 +7,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { updateRoom } from "../../state/room/actions";
 import { getRoom } from "../../state/room/selectors";
-import { removePlayer } from "../../state/players/actions";
+import { modifyLocalPlayer, removePlayer } from "../../state/players/actions";
 import { socketApi } from "../../socket/SocketApi";
 
-export default function GameEndModal({ }) {
+export default function GameEndModal({duration,messages}) {
     const players = useSelector(getPlayers);
     const actualPlayer = useSelector(getActualPlayer);
     const room = useSelector(getRoom);
@@ -18,6 +18,14 @@ export default function GameEndModal({ }) {
     const dispatch = useDispatch();
 
     const [playersResult,setPlayersResult] = useState(players);
+
+    useEffect(()=>{
+        console.log(duration);
+        
+        if(actualPlayer.isGuest){
+            dispatch(modifyLocalPlayer({...actualPlayer, duration: duration}))
+        }
+    },[])
 
     useEffect(()=>{
         setPlayersResult(playersResult.map(player=> players.find(_player => player.id === _player.id)??player))
@@ -56,7 +64,7 @@ export default function GameEndModal({ }) {
                     <button onClick={(e) => {
                         document.getElementById("gameEndModal").style.display = "none";
                     }}>Vissza</button>
-                    {(actualPlayer.isGuest ? <Link to="/regisztracio">Regisztráció</Link> : "")}
+                    {(actualPlayer.isGuest ? <Link to="/regisztracio" duration={duration} messages={messages}>Regisztráció</Link> : "")}
                     <Link onClick={(e) => {
                         if (players.length > 1 && actualPlayer.id === room.leader.id) {
                             dispatch(updateRoom(players[1]));
