@@ -55,6 +55,8 @@ export default function Admin() {
     const [maps, setMaps] = useState(loadedData[4]); // DB-ből jön, mert dinamikus, a többi stateből
     const cards = useSelector(getCards);
 
+    const [errors, setErrors] = useState([])
+
     const dispatch = useDispatch();
 
     const emptyMap = [
@@ -85,11 +87,11 @@ export default function Admin() {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ])
 
-    useEffect(()=>{
-        if(!socketApi.isConnected()){
+    useEffect(() => {
+        if (!socketApi.isConnected()) {
             dispatch(wsConnect());
         }
-    },[])
+    }, [])
 
     const handleSetMapTable = (map) => {
         setMapTable(map);
@@ -239,8 +241,8 @@ export default function Admin() {
             headers: authHeader()
         });
 
-        if(response.status===200){
-            socketApi.editUserInfo({...response.data, muted: !user.muted});
+        if (response.status === 200) {
+            socketApi.editUserInfo({ ...response.data, muted: !user.muted });
         }
 
         authService.refreshAuthenticatedUser(user);
@@ -261,8 +263,8 @@ export default function Admin() {
             headers: authHeader()
         });
 
-        if(response.status===200){
-            socketApi.editUserInfo({...response.data,banned: !user.banned});
+        if (response.status === 200) {
+            socketApi.editUserInfo({ ...response.data, banned: !user.banned });
         }
 
         authService.refreshAuthenticatedUser(user);
@@ -282,7 +284,7 @@ export default function Admin() {
             headers: authHeader()
         });
 
-        if(response.status===200){
+        if (response.status === 200) {
             socketApi.editUserInfo(response.data);
         }
 
@@ -303,9 +305,13 @@ export default function Admin() {
     }
 
     const cardItemsCorrect = (card) => {
-        if (card.name === "") return false;
+        if (card.name === "") {
+            setErrors([...errors, "Mindenképp kell név"])
+            return false
+        };
         if (card.cardType === "EXPLORE" || card.cardType === "RAID") {
             if (card.blocks1 === "") {
+                setErrors([...errors, "Mindenképp kell első forma"])
                 return false;
             } else {
                 try {
@@ -313,6 +319,7 @@ export default function Admin() {
 
                     if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
                     } else {
+                        setErrors([...errors, "Az első forma nem JSON helyes"])
                         return false;
                     }
                 }
@@ -324,12 +331,20 @@ export default function Admin() {
 
                     if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
                     } else {
+                        setErrors([...errors, "A második forma nem JSON helyes"])
                         return false
                     }
                 }
                 catch (e) { return false }
             }
+            if (card.cardType === "EXPLORE") {
+                if (card.duration < 0) {
+                    setErrors([...errors, "Az időtartam nem lehet kisebb, mint 0."])
+                    return false;
+                }
+            }
         }
+        setErrors([]);
         return true;
     }
 
@@ -656,6 +671,11 @@ export default function Admin() {
                                                 <textarea defaultValue={exploreCardObject.blocks2} style={{ outlineColor: isBlocks2ValidJSON ? "green" : "red", border: isBlocks2ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks2" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje, vagy üres' onChange={(e) => { handleCardAdderInputChange(e) }}>
                                                 </textarea>
                                             </div>
+                                        }
+                                        {errors && errors.length > 0 && 
+                                        <div style={{textAlign:"center"}}>
+                                            {errors.map(error=><div style={{marginBottom: "2vh", color: "red"}}>{error}</div>)}
+                                        </div>
                                         }
                                     </>
                                 }
