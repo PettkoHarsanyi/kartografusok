@@ -334,14 +334,7 @@ export default function Game() {
         if (cards.drawnCards.length > 0) {
 
             let playerPoints;
-            let isMonsterRound = cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER" && cards.drawnCards[cards.drawnCards.length - 2]?.fieldType1 !== "MONSTER"
 
-
-            if (isMonsterRound) {
-
-            } else {
-
-            }
             playerPoints = actualPlayer.gamePoints;
 
             if (seasonIndex === 1) {
@@ -507,6 +500,7 @@ export default function Game() {
     const [modifyBlockOnce, setModifyBlockOnce] = useState(0);
     // KELL EGY USEEFFECT ARRA, HOGY HA MÁR VAN BLOCKSANDTYPES, AKKOR ELLENŐRIZZÜK LE AZ ÉPÍTHETŐSÉGET, ÉS AKKOR MANIPULÁLJA A CANBUILDANYWHERET
     useEffect(() => {
+
         if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN" /* || cards.drawnCards.length === 0*/) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
             if (modifyBlockOnce === 0) {
                 let atLeastOneCanFit = false;   // PESSZIMISTA KERESÉS

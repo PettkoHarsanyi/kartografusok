@@ -31,6 +31,23 @@ export default function GameEndModal({duration,messages}) {
         setPlayersResult(playersResult.map(player=> players.find(_player => player.id === _player.id)??player))
     },[players])
 
+    // AZT KELL, HOGY AMIKOR VÁLTOZIK A PLAYER, AKKOR A VÁLTOZTATOTT JÁTÉKOS ADATOK KERÜLJENEK A MODALBA
+    // A KILÉPÉS IS PLAYER VÁLTOZÁS, DE ILYENKOR NE TÖRLŐDJÖN
+    // TEHÁT AZ KELL, HOGY VAN EGY PLAYERSRESULT TÖMBÜNK
+    // HA A JÁTÉKOS NINCS BENNE: BELERAKJUK
+    // HA BENNE VAN, MÓDOSÍTJUK
+    // HA KILÉP ÉS BENNE VAN, ÚGYHAGYJA
+
+    useEffect(()=>{
+        players.forEach(player => {
+            if(playersResult.some((_player,index) => _player.id === player.id)){
+                setPlayersResult(playersResult.map(mappedPlayer => mappedPlayer.id === player.id ? player : mappedPlayer))
+            }else{
+                setPlayersResult([...playersResult,player])
+            }
+        });
+    },[players])
+
     const clearState = (e, to) => {
         e.preventDefault();
         dispatch({
@@ -42,9 +59,9 @@ export default function GameEndModal({duration,messages}) {
     const [ordered, setOrdered] = useState([]);
 
     useEffect(() => {
-        const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
+        const orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
         setOrdered(orderedArray);
-    }, [room.gameEnded])
+    }, [playersResult])
 
     return (
         <div className="GameEndModal" id="gameEndModal">

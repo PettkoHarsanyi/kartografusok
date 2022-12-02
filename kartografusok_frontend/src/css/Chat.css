@@ -31,7 +31,7 @@
 }
 
 .Game .ChatInput {
-    width: 80%;
+    flex-grow: 1;
     height: 100%;
     background-color: white;
     outline: none;
@@ -43,7 +43,7 @@
 }
 
 .Game .ChatButton {
-    width: 20%;
+    width: fit-content;
     right: 1vh;
     border: 0.5vh solid black;
     border-left: 0;
@@ -51,9 +51,8 @@
     border-radius: 0 0 2vh 0;
     background-color: gray;
     cursor: pointer;
+    padding: 0 3vh;
 }
-
-
 
 .Game .Message {
     border: 0.5vh solid black;
