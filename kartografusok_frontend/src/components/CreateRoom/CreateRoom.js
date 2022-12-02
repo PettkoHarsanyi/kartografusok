@@ -161,11 +161,16 @@ export default function CreateRoom() {
 
         // const seasonEndThenRuinTestDeck = [{id: 6,name: 'Mocsár',duration: 2,picture: 'mocsar.png',official: true,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: 'WATER',direction: null,blocks1: '[[1,0,0],[1,1,1],[1,0,0]]',blocks2: null,createdAt: '2022-10-18T21:35:26.564Z',modifiedAt: '2022-10-18T21:35:26.564Z'},{id: 1,name: 'Halászfalu',duration: 2,picture: 'halaszfalu.png',official: true,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: 'WATER',direction: null,blocks1: '[[1,1,1,1]]',blocks2: null,createdAt: '2022-10-18T21:28:50.574Z',modifiedAt: '2022-10-18T21:28:50.574Z'},{id: 34,name: 'Mordor',duration: 2,picture: 'customexplore.png',official: false,cardType: 'EXPLORE',fieldType1: 'ANY',fieldType2: '',direction: null,blocks1: '[[1,1]]',blocks2: '',createdAt: '2022-10-27T19:40:11.919Z',modifiedAt: '2022-10-27T19:40:11.919Z'}, {id: 9,name: 'Gyümölcsöskert',duration: 2,picture: 'gyumolcsoskert.png',official: true,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: 'FARM',direction: null,blocks1: '[[1,1,1],[0,0,1]]',blocks2: null,createdAt: '2022-10-18T21:39:41.101Z',modifiedAt: '2022-10-18T21:39:41.101Z'},{id: 38,name: 'Ózd',duration: null,picture: 'customexplore.png',official: false,cardType: 'RUIN',fieldType1: null,fieldType2: null,direction: null,blocks1: null,blocks2: null,createdAt: '2022-10-27T20:00:52.857Z',modifiedAt: '2022-10-27T20:00:52.857Z'},{id: 35,name: 'Uganda',duration: 1,picture: 'customexplore.png',official: false,cardType: 'EXPLORE',fieldType1: 'FOREST',fieldType2: 'VILLAGE',direction: null,blocks1: '[[1,1]]',blocks2: '[[1,1,1,1]]',createdAt: '2022-10-27T19:45:57.784Z',modifiedAt: '2022-10-27T19:45:57.784Z'},{id: 3,name: 'Átjáró',duration: 0,picture: 'atjaro.png',official: true,cardType: 'EXPLORE',fieldType1: 'ANY',fieldType2: null,direction: null,blocks1: '[[1]]',blocks2: null,createdAt: '2022-10-18T21:32:25.228Z',modifiedAt: '2022-10-18T21:32:25.228Z'},]
         // dispatch(initDeck(seasonEndThenRuinTestDeck));
+
+        // const vademberRohamFirstMonsterCardTestDeck = [{id: 15,name: 'Vadember roham',duration: null,picture: 'vademberroham.png',official: true,cardType: 'RAID',fieldType1: 'MONSTER',fieldType2: null,direction: 1,blocks1: '[[1,0,1],[1,0,1]]',blocks2: null,createdAt: '2022-10-18T21:46:44.556Z',modifiedAt: '2022-10-18T21:46:44.556Z'},{id: 43,name: 'Picinyke',duration: 1,picture: 'customexplore.png',official: false,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: '',direction: null,blocks1: '[[1]]',blocks2: '[[1,1],[1,1]]',createdAt: '2022-10-27T21:09:51.506Z',modifiedAt: '2022-10-27T21:09:51.506Z'},{id: 11,name: 'Község',duration: 1,picture: 'kozseg.png',official: true,cardType: 'EXPLORE',fieldType1: 'VILLAGE',fieldType2: null,direction: null,blocks1: '[[1,0],[1,1]]',blocks2: '[[1,1,1],[1,1,0]]',createdAt: '2022-10-18T21:41:10.312Z',modifiedAt: '2022-10-18T21:41:10.312Z'},]
+        // dispatch(initDeck(vademberRohamFirstMonsterCardTestDeck));
+
     }
 
     useEffect(() => {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
-            const randomMap = getRandomMap();
+            // const randomMap = getRandomMap();
+            const randomMap = maps[3];
             dispatch(initMap(randomMap));
             dispatch(initActualPlayer({ ...user, isReady: false, gamePoints: 0 }));
             dispatch(addMapToActualPlayer(randomMap.blocks));

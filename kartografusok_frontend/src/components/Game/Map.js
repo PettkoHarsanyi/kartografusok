@@ -311,7 +311,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                     !isMonsterRound ?
                         ((actualPlayer.season0Points ? actualPlayer.season0Points.points : 0) + (actualPlayer.season1Points ? actualPlayer.season1Points.points : 0) + (actualPlayer.season2Points ? actualPlayer.season2Points.points : 0) + (actualPlayer.season3Points ? actualPlayer.season3Points.points : 0))
                         :
-                        (players[whose].season0Points ? players[whose].season0Points.points : 0 + players[whose].season1Points ? players[whose].season1Points.points : 0 + players[whose].season2Points ? players[whose].season2Points.points : 0 + players[whose].season3Points ? players[whose].season3Points.points : 0)
+                        ((players[whose].season0Points ? players[whose].season0Points.points : 0) + (players[whose].season1Points ? players[whose].season1Points.points : 0) + (players[whose].season2Points ? players[whose].season2Points.points : 0) + (players[whose].season3Points ? players[whose].season3Points.points : 0))
                 }</div>
 
             </div>

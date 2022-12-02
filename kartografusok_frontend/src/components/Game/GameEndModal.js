@@ -10,26 +10,22 @@ import { getRoom } from "../../state/room/selectors";
 import { modifyLocalPlayer, removePlayer } from "../../state/players/actions";
 import { socketApi } from "../../socket/SocketApi";
 
-export default function GameEndModal({duration,messages}) {
-    const players = useSelector(getPlayers);
+export default function GameEndModal({ duration, messages, players }) {
+    // const players = useSelector(getPlayers);
     const actualPlayer = useSelector(getActualPlayer);
     const room = useSelector(getRoom);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [playersResult,setPlayersResult] = useState(players);
+    const [playersResult, setPlayersResult] = useState(players);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(duration);
-        
-        if(actualPlayer.isGuest){
-            dispatch(modifyLocalPlayer({...actualPlayer, duration: duration}))
-        }
-    },[])
 
-    useEffect(()=>{
-        setPlayersResult(playersResult.map(player=> players.find(_player => player.id === _player.id)??player))
-    },[players])
+        if (actualPlayer.isGuest) {
+            dispatch(modifyLocalPlayer({ ...actualPlayer, duration: duration }))
+        }
+    }, [])
 
     // AZT KELL, HOGY AMIKOR VÁLTOZIK A PLAYER, AKKOR A VÁLTOZTATOTT JÁTÉKOS ADATOK KERÜLJENEK A MODALBA
     // A KILÉPÉS IS PLAYER VÁLTOZÁS, DE ILYENKOR NE TÖRLŐDJÖN
@@ -37,16 +33,40 @@ export default function GameEndModal({duration,messages}) {
     // HA A JÁTÉKOS NINCS BENNE: BELERAKJUK
     // HA BENNE VAN, MÓDOSÍTJUK
     // HA KILÉP ÉS BENNE VAN, ÚGYHAGYJA
+    const [ordered, setOrdered] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
+        console.log(players);
+        let newPlayers = playersResult;
         players.forEach(player => {
-            if(playersResult.some((_player,index) => _player.id === player.id)){
-                setPlayersResult(playersResult.map(mappedPlayer => mappedPlayer.id === player.id ? player : mappedPlayer))
-            }else{
-                setPlayersResult([...playersResult,player])
+            playersResult.forEach((_player) => {
+                if (_player.id === player.id) {
+                    console.log("Módosítom "+player.name+" game pontjait " + player.gamePoints + "-ra")
+                    newPlayers = playersResult.map(mappedPlayer => mappedPlayer.id === player.id ? player : mappedPlayer)
+                    let orderedArray = newPlayers.sort((a, b) => b.gamePoints - a.gamePoints)
+                    setOrdered(orderedArray);
+                }
+
+            })
+            if (!playersResult.some(_player => _player.id === player.id)) {
+                console.log("Hozzáadom " + player.name + "-t")
+                newPlayers = [...playersResult, player]
+                let orderedArray = newPlayers.sort((a, b) => b.gamePoints - a.gamePoints)
+                setOrdered(orderedArray);
             }
         });
-    },[players])
+        setPlayersResult(newPlayers);
+    }, [players])
+
+    useEffect(()=>{
+        let orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
+        setOrdered(orderedArray)
+    },[playersResult])
+
+    useEffect(()=>{
+        console.log("AZ ORDERED:")
+        console.log(ordered);
+    },[ordered])
 
     const clearState = (e, to) => {
         e.preventDefault();
@@ -56,12 +76,11 @@ export default function GameEndModal({duration,messages}) {
         navigate(to);
     }
 
-    const [ordered, setOrdered] = useState([]);
 
-    useEffect(() => {
-        const orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
-        setOrdered(orderedArray);
-    }, [playersResult])
+    // useEffect(() => {
+    //     const orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
+    //     setOrdered(orderedArray);
+    // }, [players])
 
     return (
         <div className="GameEndModal" id="gameEndModal">
@@ -72,7 +91,7 @@ export default function GameEndModal({duration,messages}) {
                     <div className="ResultsDiv">
                         {ordered && ordered.map((player, index) => {
                             return (
-                                <div key={index} className="Player">{index + 1}. {player.name} - {player.gamePoints} pont</div>
+                                <div key={index} className="Player">{index + 1}. {player.name} - {(player.season0Points ? player.season0Points.points : 0) + (player.season1Points ? player.season1Points.points : 0) + (player.season2Points ? player.season2Points.points : 0) + (player.season3Points ? player.season3Points.points : 0)} pont</div>
                             )
                         })}
                     </div>

@@ -38,6 +38,7 @@ import unmuted from "../../assets/playerunmute.png"
 import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
 import report from "../../assets/report.png"
+import cardBack from "../../assets/cards/seasoncards/seasonback.png"
 
 export default function Game() {
     const INIT_DRAWING = "INIT_DRAWING";
@@ -112,20 +113,24 @@ export default function Game() {
         ))
     }
 
-    const fitCheck = (_block, _ruin) => {
+    const fitCheck = (_block, _pos) => {
         let block = _block;
-        let ruin = _ruin;
+        let pos = _pos;
         let playerMap = JSON.parse(actualPlayer.map);
         let canFit = false;
 
         block.forEach((row, rowIndex) => {
             row.forEach((cell, cellIndex) => {
                 let allFieldsFit = true;
-                if (cell === 1 && inBounds(ruin.rowIndex - rowIndex, ruin.cellIndex - cellIndex)) {
+                if (cell === 1 && inBounds(pos.rowIndex - rowIndex, pos.cellIndex - cellIndex)) {
                     block.forEach((otherBlockRow, otherBlockRowIndex) => {
                         otherBlockRow.forEach((otherBlockCell, otherBlockCellIndex) => {
-                            if (otherBlockCell === 1 && inBounds(ruin.rowIndex + (otherBlockRowIndex - rowIndex), ruin.cellIndex + (otherBlockCellIndex - cellIndex))) {
-                                allFieldsFit = allFieldsFit && (playerMap[ruin.rowIndex + (otherBlockRowIndex - rowIndex)][ruin.cellIndex + (otherBlockCellIndex - cellIndex)] === 0 || playerMap[ruin.rowIndex + (otherBlockRowIndex - rowIndex)][ruin.cellIndex + (otherBlockCellIndex - cellIndex)] === 1);
+                            if (otherBlockCell === 1) {
+                                if (inBounds(pos.rowIndex + (otherBlockRowIndex - rowIndex), pos.cellIndex + (otherBlockCellIndex - cellIndex))) {
+                                    allFieldsFit = allFieldsFit && (playerMap[pos.rowIndex + (otherBlockRowIndex - rowIndex)][pos.cellIndex + (otherBlockCellIndex - cellIndex)] === 0 || playerMap[pos.rowIndex + (otherBlockRowIndex - rowIndex)][pos.cellIndex + (otherBlockCellIndex - cellIndex)] === 1);
+                                } else {
+                                    allFieldsFit = false;
+                                }
                             }
                         })
                     })
@@ -139,10 +144,96 @@ export default function Game() {
         return canFit;
     }
 
+    const canFitSomewhere = (_block) => {
+        let canFit = false;
+        let block = _block;
+
+        let isMonsterRound = cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER";
+
+        let whose;
+        let playerMap
+        if (isMonsterRound) {
+            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+
+            const index = players.findIndex(player => {
+                return player.id === actualPlayer.id;
+            })
+
+            if (index + direction > players.length - 1) {
+                whose = 0
+            } else if (index + direction < 0) {
+                whose = players.length - 1;
+            } else {
+                whose = (index + direction)
+            }
+
+            playerMap = JSON.parse(players[whose].map);
+        } else {
+            playerMap = JSON.parse(actualPlayer.map);
+        }
+
+        for (let i = 0; i < playerMap.length; i++) {
+            for (let j = 0; j < playerMap.length; j++) {
+                if (playerMap[i][j] === 0) {
+
+                    // HA OLYAN MEZŐBEN VAGYUNK, AHOL A BLOKK HOSSZA BÁRMERRE KILÓG, AKKOR FALSE
+
+                    canFit = canFit || fitCheck(block, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let block90 = rotateMatrix(block);
+                    canFit = canFit || fitCheck(block90, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let block180 = rotateMatrix(block90)
+                    canFit = canFit || fitCheck(block180, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let block270 = rotateMatrix(block180)
+                    canFit = canFit || fitCheck(block270, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let mirroredBlock = block.map(row => row.reverse());
+                    canFit = canFit || fitCheck(mirroredBlock, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let mirroredBlock90 = rotateMatrix(mirroredBlock);
+                    canFit = canFit || fitCheck(mirroredBlock90, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let mirroredBlock180 = rotateMatrix(mirroredBlock90)
+                    canFit = canFit || fitCheck(mirroredBlock180, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                    let mirroredBlock270 = rotateMatrix(mirroredBlock180)
+                    canFit = canFit || fitCheck(mirroredBlock270, { rowIndex: i, cellIndex: j })
+                    if (canFit) { break }
+                }
+            }
+        }
+
+        return canFit
+    }
+
     const canFitOnRuin = (_block) => {
         let canFit = false;
         let block = _block
-        let playerMap = JSON.parse(actualPlayer.map);
+        let isMonsterRound = cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER";
+        let whose;
+        let playerMap;
+
+        if (isMonsterRound) {
+            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+
+            const index = players.findIndex(player => {
+                return player.id === actualPlayer.id;
+            })
+
+            if (index + direction > players.length - 1) {
+                whose = 0
+            } else if (index + direction < 0) {
+                whose = players.length - 1;
+            } else {
+                whose = (index + direction)
+            }
+
+            playerMap = JSON.parse(players[whose].map);
+        } else {
+            playerMap = JSON.parse(actualPlayer.map);
+        }
 
         // FELADAT: VÉGIGMENNI A TÉRKÉP ÖSSZES RUINJÁN, ELKÉRNI AZ INDEXÉT, ABBÓL AZ INDEXBŐL KIINDULVA MEGNÉZNI
         // A BLOCK MINDEN CELLJÉBŐL KIINDULVA, HOGY A TÖBBI CELL BELEÜTKÖZIK E VALAMI MÁSBA,
@@ -337,6 +428,8 @@ export default function Game() {
 
             playerPoints = actualPlayer.gamePoints;
 
+            console.log(seasonIndex);
+
             if (seasonIndex === 1) {
                 console.log("1. évszak pontozása")
                 const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
@@ -498,8 +591,11 @@ export default function Game() {
     }, [cards.drawnCards])
 
     const [modifyBlockOnce, setModifyBlockOnce] = useState(0);
+    const [modifyOtherBlockOnce, setModifyOtherBlockOnce] = useState(0);
     // KELL EGY USEEFFECT ARRA, HOGY HA MÁR VAN BLOCKSANDTYPES, AKKOR ELLENŐRIZZÜK LE AZ ÉPÍTHETŐSÉGET, ÉS AKKOR MANIPULÁLJA A CANBUILDANYWHERET
     useEffect(() => {
+
+
 
         if (cards.drawnCards[cards.drawnCards.length - 2]?.cardType === "RUIN" && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN" /* || cards.drawnCards.length === 0*/) {  // HA A ROM AZ ELŐZŐ ÉS ARRA KELL ÉPÍTENI
             if (modifyBlockOnce === 0) {
@@ -526,6 +622,7 @@ export default function Game() {
                         _blocksAndTypes = [{ type: "MONSTER", block: "[[1]]" }]
                     } else {
                         _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
+                            console.log("ÉN ÁLLÍTOM BE SZARRA")
                             return { type: fieldType, block: "[[1]]" }
                         })
                     }
@@ -539,6 +636,44 @@ export default function Game() {
                 setModifyBlockOnce(0);
             }
         }
+
+        // HA A BLOKKOK RUIN UTÁN FURCSÁN VISELKEZDNEK, EZZEL LESZ A BAJ
+        if (cards.drawnCards && cards.drawnCards.length > 0 && modifyOtherBlockOnce === 0 &&
+            cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN" &&
+            cards.drawnCards[cards.drawnCards.length - 2]?.cardType !== "RUIN"
+        ) {
+            let atLeastOneCanFit = false;   // PESSZIMISTA KERESÉS
+            let fittingBlocksAndTypes = blocksAndTypes.filter((blockAndType) => {     // csak azok kerülnek a fittingblocksandtypesba amiket le lehet helyezni
+                if (canFitSomewhere(JSON.parse(blockAndType.block))) {
+                    atLeastOneCanFit = true;
+                    return true;
+                } else {
+                    return false;
+                }
+            })
+
+            if (atLeastOneCanFit) {
+                setBlocksAndTypes(fittingBlocksAndTypes);
+                setModifyOtherBlockOnce(1);
+            } else {
+                let _blocksAndTypes = []
+
+                if (cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER") {
+                    _blocksAndTypes = [{ type: "MONSTER", block: "[[1]]" }]
+                } else {
+                    _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
+                        return { type: fieldType, block: "[[1]]" }
+                    })
+                }
+
+                setBlocksAndTypes(_blocksAndTypes)
+                setCanBuildAnywhere(true);
+                setModifyOtherBlockOnce(1);
+            }
+        } else {
+            setModifyOtherBlockOnce(0);
+        }
+
     }, [blocksAndTypes])
 
     const postGame = async (duration, results, users, messages) => {
@@ -688,7 +823,7 @@ export default function Game() {
                 <div className="DeckDiv">
                     <div className="CardsDiv">
                         <div className="TopCardsDiv">
-                            {!gameEnd && <div className="CardDiv"><img src={require(`../../assets/cards/${actualSeasonCard.picture}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard.name} /></div>}
+                            {!gameEnd && <div className="CardDiv"><img src={require(`../../assets/cards/${actualSeasonCard?.picture ? actualSeasonCard.picture : "seasoncards/seasonback.png"}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard?.name? actualSeasonCard?.name : "Évszakkártya"} /></div>}
                             {cards.decreeCards &&
                                 cards.decreeCards.map((card) => {
                                     return (<div className="CardDiv" key={card.id}><img src={require(`../../assets/cards//${card.picture}`)} onClick={() => { openInspectModal(card) }} className="CardDivImg" alt={card.name} /></div>)
@@ -778,7 +913,7 @@ export default function Game() {
 
             <RuinModal />
 
-            {gameEnd && <GameEndModal duration={Math.round(Math.abs((new Date()) - gameStartDate) / (60 * 1000))} messages={messages} />}
+            {gameEnd && <GameEndModal duration={Math.round(Math.abs((new Date()) - gameStartDate) / (60 * 1000))} messages={messages} players={players}/>}
         </div>
     )
 }
