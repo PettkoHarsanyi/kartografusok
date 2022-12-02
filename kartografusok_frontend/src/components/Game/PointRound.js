@@ -619,12 +619,12 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
         }
     }
 
-    let mountains = pointMountains(map);
+    let stars = Math.min(pointMountains(map),14);
     let monsters = pointMonsters(map);
 
-    points = A + B + mountains + monsters;
+    points = A + B + monsters;
 
-    return { A, B, mountains, monsters, points };
+    return { A, B, monsters, points };
 }
 
 const pointMountains = (map) => {

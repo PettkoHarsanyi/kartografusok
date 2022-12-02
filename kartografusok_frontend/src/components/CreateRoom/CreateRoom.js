@@ -170,11 +170,11 @@ export default function CreateRoom() {
     useEffect(() => {
         if (players.length === 0) {               // CSAK ANNÁL FUT LE, AKI CSINÁLJA A SZOBÁT
             // const randomMap = getRandomMap();
-            const randomMap = maps[3];
+            const randomMap = maps[1];
             dispatch(initMap(randomMap));
-            dispatch(initActualPlayer({ ...user, isReady: false, gamePoints: 0 }));
+            dispatch(initActualPlayer({ ...user, isReady: false, gamePoints: 0, allStarsGot: 0 }));
             dispatch(addMapToActualPlayer(randomMap.blocks));
-            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false, gamePoints: 0 }))
+            dispatch(addPlayer({ ...user, map: randomMap.blocks, isReady: false, gamePoints: 0, allStarsGot: 0 }))
             // console.log("Ive been called");
             dispatch(fillExploreCards(exploreCards));
             dispatch(fillRaidCards(raidCards));

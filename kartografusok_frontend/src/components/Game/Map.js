@@ -12,8 +12,9 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { getPlayers } from '../../state/players/selectors';
 import { modifyLocalPlayer } from '../../state/players/actions';
+import cross from "../../assets/cross.png"
 
-export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
+export default function Map({ selectedBlock, canBuildAnywhere }) {
 
     const actualPlayer = useSelector(getActualPlayer);
     const players = useSelector(getPlayers);
@@ -47,6 +48,15 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
         }
     }, [cards.drawnCards])
 
+    useEffect(() => {
+        let card = cards.drawnCards[cards.drawnCards.length - 1]
+        if (card && card.official && card.blocks1 !== null && card.blocks2 !== null) {
+
+            if (card.blocks1 === selectedBlock.blocks) {
+
+            }
+        }
+    }, [cards.drawnCards])
 
     let divsToColorGray = []
     let divsToColorGreen = []
@@ -100,6 +110,23 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
         divsToColorRed = [];
     }
 
+    const neighborsOf = (item, map) => {
+        const neighbors = [];
+        if (item.x - 1 >= 0) {
+            neighbors.push({ x: item.x - 1, y: item.y, value: map[item.x - 1][item.y] });
+        }
+        if (item.y - 1 >= 0) {
+            neighbors.push({ x: item.x, y: item.y - 1, value: map[item.x][item.y - 1] });
+        }
+        if (item.x + 1 < map.length) {
+            neighbors.push({ x: item.x + 1, y: item.y, value: map[item.x + 1][item.y] });
+        }
+        if (item.y + 1 < map.length) {
+            neighbors.push({ x: item.x, y: item.y + 1, value: map[item.x][item.y + 1] });
+        }
+        return neighbors;
+    }
+
     const parseToLetter = (_type) => {
         switch (selectedBlock.type) {
             case "VILLAGE":
@@ -140,12 +167,32 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
             cellindex + blockCellIndex < JSON.parse(actualPlayer.map).length)
     }
 
+    const rotateMatrix = (matrix) => {
+        return flipMajorDiagonal(matrix.reverse());
+    }
+
+    const flipMajorDiagonal = (matrix) => {
+        return matrix[0].map((column, index) => (
+            matrix.map(row => row[index])
+        ))
+    }
+
     return (
         <>
             <img src={scheme} className="MapPic" alt='Map' />
             <div className='PlayerInfos'>
                 <div className='MapName'>{!isMonsterRound ? actualPlayer.name : players[whose].name}</div>
                 <div className='MapRank'>{!isMonsterRound ? actualPlayer.division.name : players[whose].division.name}</div>
+                <div className='CoinsDiv'>
+                    {!isMonsterRound && actualPlayer.allStarsGot > 0 && Array.from({ length: actualPlayer.allStarsGot }, (_, index) => {
+                        return <div key={index} className='Coin'><img alt='coin' src={cross} /></div>;
+                    })
+                    }
+                    {isMonsterRound && players[whose].allStarsGot > 0 && Array.from({ length: players[whose].allStarsGot }, (_, index) => {
+                        return <div key={index} className='Coin'><img alt='coin' src={cross} /></div>;
+                    })
+                    }
+                </div>
                 {!isMonsterRound && actualPlayer.season0Points &&
                     <div className='MapPointDiv'>
                         <div className='MapPointDivLeft'>
@@ -156,7 +203,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {actualPlayer.season0Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {actualPlayer.season0Points?.mountains}
+                                {actualPlayer.season0Points?.stars}
                             </div>
                             <div className='PointingSection'>
                                 {actualPlayer.season0Points?.monsters}
@@ -176,7 +223,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {actualPlayer.season1Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {actualPlayer.season1Points?.mountains}
+                                {actualPlayer.season1Points?.stars}
                             </div>
                             <div className='PointingSection'>
                                 {actualPlayer.season1Points?.monsters}
@@ -196,7 +243,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {actualPlayer.season2Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {actualPlayer.season2Points?.mountains}
+                                {actualPlayer.season2Points?.stars}
                             </div>
                             <div className='PointingSection'>
                                 {actualPlayer.season2Points?.monsters}
@@ -216,10 +263,10 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {actualPlayer.season3Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {actualPlayer.season3Points?.mountains}
+                                {actualPlayer.season3Points?.stars}
                             </div>
                             <div className='PointingSection'>
-                                {actualPlayer.season2Points?.monsters}
+                                {actualPlayer.season3Points?.monsters}
                             </div>
                         </div>
                         <div className='MapPointDivRight'>
@@ -237,7 +284,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {players[whose].season0Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {players[whose].season0Points?.mountains}
+                                {players[whose].season0Points?.stars}
                             </div>
                             <div className='PointingSection'>
                                 {players[whose].season0Points?.monsters}
@@ -257,7 +304,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {players[whose].season1Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {players[whose].season1Points?.mountains}
+                                {players[whose].season1Points?.stars}
                             </div>
                             <div className='PointingSection'>
                                 {players[whose].season1Points?.monsters}
@@ -277,7 +324,7 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {players[whose].season2Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {players[whose].season2Points?.mountains}
+                                {players[whose].season2Points?.stars}
                             </div>
                             <div className='PointingSection'>
                                 {players[whose].season2Points?.monsters}
@@ -297,10 +344,10 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                 {players[whose].season3Points?.B}
                             </div>
                             <div className='PointingSection'>
-                                {players[whose].season3Points?.mountains}
+                                {players[whose].season3Points?.stars}
                             </div>
                             <div className='PointingSection'>
-                                {players[whose].season2Points?.monsters}
+                                {players[whose].season3Points?.monsters}
                             </div>
                         </div>
                         <div className='MapPointDivRight'>
@@ -358,19 +405,94 @@ export default function Map({ selectedBlock, canBuildAnywhere, setNetPlayer }) {
                                                 }
 
                                                 if (succesful) {
-                                                    // setNetPlayer({ ...actualPlayer, map: JSON.stringify(newMap) })
+
+                                                    // Végigmegyünk a selectedblock mezőin
+                                                    // Ha valamelyik mezője egy hegymező mellett van
+                                                    // AKKOR megnézzük, hogy a hegymező mostmár mindenhol határolt e
+                                                    // HA MINDENHOL HATÁROLT, A JÁTÉKOS KAP EGY PONTOT
+                                                    // HA NEM HATÁROLT MINDENHOL: SKIP
+
+                                                    // IF MONSTER ROUND!!!!!!!!!!!!!!!
+                                                    let player = {}
 
                                                     if (!isMonsterRound) {
-                                                        dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                        player = { ...actualPlayer }
+                                                        console.log("NEM MONSTERROUND LERAKÁS TÖRTÉNT")
+                                                        console.log(player);
+                                                        console.log(newMap)
                                                     } else {
-                                                        console.log(players[whose])
-                                                        if (players.length === 1) {
-                                                            dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
-                                                        }else{
-                                                            dispatch(modifyPlayer({ ...players[whose], map: JSON.stringify(newMap) }))
-                                                            dispatch(modifyPlayer({ ...actualPlayer, isReady: true }))
+                                                        player = { ...players[whose] }
+                                                        console.log("MONSTERROUND LERAKÁS TÖRTÉNT")
+                                                        console.log(player);
+                                                        console.log(newMap)
+                                                    }
 
+                                                    let mountainNeighbors = [];
+                                                    JSON.parse(selectedBlock.blocks).forEach((blockRow, blockRowIndex) => {
+                                                        blockRow.forEach((blockCell, blockCellIndex) => {
+                                                            neighborsOf({ x: rowindex + blockRowIndex, y: cellindex + blockCellIndex }, newMap).forEach((mountainNeighbor => {
+                                                                if (mountainNeighbor.value === 2) {
+                                                                    if (!neighborsOf({ x: mountainNeighbor.x, y: mountainNeighbor.y }, newMap).some(neighbor => neighbor.value === 0 || neighbor.value === 1)) {
+                                                                        // HA BENNE VAN AZ MOUNTAINNEIGHBORSBAN AKKOR NE ADD HOZZÁ
+                                                                        // KÜLÖNBEN IGEN
+                                                                        if(!mountainNeighbors.some(mountainInArray => mountainInArray.x === mountainNeighbor.x && mountainInArray.y === mountainNeighbor.y)){
+                                                                            mountainNeighbors.push(mountainNeighbor);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }))
+                                                        });
+                                                    });
+
+
+                                                    player = { ...player, allStarsGot: Math.min(player.allStarsGot + mountainNeighbors.length,14) }
+
+
+
+                                                    let rotated90 = JSON.stringify(rotateMatrix(JSON.parse(selectedBlock.blocks)))
+                                                    let rotated180 = JSON.stringify(rotateMatrix(JSON.parse(rotated90)))
+                                                    let rotated270 = JSON.stringify(rotateMatrix(JSON.parse(rotated180)))
+                                                    let card = cards.drawnCards[cards.drawnCards.length - 1]
+
+                                                    if (!isMonsterRound) {
+                                                        if (card && card.official && card.blocks1 !== null && card.blocks2 !== null) {
+                                                            if (card.blocks1 === selectedBlock.blocks || card.blocks1 === rotated90 || card.blocks1 === rotated180 || card.blocks1 === rotated270) {
+                                                                console.log("MOST EZ HOZZÁAD EGYET")
+                                                                // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true, allStarsGot: actualPlayer.allStarsGot + 1 }))
+                                                                player = { ...player, map: JSON.stringify(newMap), isReady: true, allStarsGot: Math.min(player.allStarsGot + 1,14) }
+                                                            } else {
+                                                                // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                                player = { ...player, map: JSON.stringify(newMap), isReady: true }
+                                                            }
+                                                        } else {
+                                                            // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                            player = { ...player, map: JSON.stringify(newMap), isReady: true }
                                                         }
+                                                    } else {
+                                                        if (players.length === 1) {
+
+                                                            if (card && card.official && card.blocks1 !== null && card.blocks2 !== null) {
+                                                                if (card.blocks1 === selectedBlock.blocks || card.blocks1 === rotated90 || card.blocks1 === rotated180 || card.blocks1 === rotated270) {
+                                                                    // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true, allStarsGot: actualPlayer.allStarsGot + 1 }))
+                                                                    player = { ...player, map: JSON.stringify(newMap), isReady: true, allStarsGot: Math.min(player.allStarsGot + 1,14) }
+                                                                } else {
+                                                                    // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                                    player = { ...player, map: JSON.stringify(newMap), isReady: true }
+                                                                }
+                                                            } else {
+                                                                // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true }))
+                                                                player = { ...player, map: JSON.stringify(newMap), isReady: true }
+                                                            }
+                                                        } else {
+                                                            // dispatch(modifyPlayer({ ...players[whose], map: JSON.stringify(newMap) }))
+                                                            player = { ...player, map: JSON.stringify(newMap) }
+                                                        }
+                                                    }
+
+                                                    dispatch(modifyPlayer({ ...player }))
+
+                                                    if(isMonsterRound && player.length!==1){
+                                                        dispatch(modifyPlayer({ ...actualPlayer, isReady: true }))
                                                     }
 
                                                     unHover();

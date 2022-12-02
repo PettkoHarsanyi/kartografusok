@@ -20,7 +20,7 @@ export default function ConnectRoom() {
     const navigate = useNavigate();
     const [id, setId] = useState()
     const [name, setName] = useState("");
-    const [guest,setGuest] = useState({ name: name, userName: "Vendég", id: -Math.floor(((Math.random() * 201) + 100)), isGuest: true, gamePoints: 0, isReady: false, muted: false, banned: false, division: { id: 0, name: "Vendég" }, picture: "profileimage.png" })
+    const [guest,setGuest] = useState({ name: name, userName: "Vendég", id: -Math.floor(((Math.random() * 201) + 100)), isGuest: true, gamePoints: 0, isReady: false, muted: false, banned: false, division: { id: 0, name: "Vendég" }, picture: "profileimage.png", allStarsGot: 0 })
 
     const dispatch = useDispatch();
 
@@ -47,8 +47,8 @@ export default function ConnectRoom() {
             // dispatch(addMapToActualPlayer(JSON.parse(obj.state).map.blocks))
             let playerToBeAdded = { ...actualPlayer };
             if (user) {   // NEM VENDÉGNÉL MÉG BE KELL ÁLLÍTANI
-                dispatch(modifyActualPlayer({ ...actualPlayer, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0 }))
-                playerToBeAdded = { ...playerToBeAdded, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0 }
+                dispatch(modifyActualPlayer({ ...actualPlayer, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0, allStarsGot: 0 }))
+                playerToBeAdded = { ...playerToBeAdded, map: JSON.parse(obj.state).map.blocks, isReady: false, gamePoints: 0,  allStarsGot: 0 }
             } else {      // VENDÉGNÉL MÁR BE VAN
                 dispatch(modifyActualPlayer({ ...guest, map: JSON.parse(obj.state).map.blocks }))
                 playerToBeAdded = { ...guest, map: JSON.parse(obj.state).map.blocks }
@@ -114,7 +114,7 @@ export default function ConnectRoom() {
                     document.getElementById("errorDiv").innerText = "Kérlek, adj meg játékosnevet!";
                 }
                 if (!user && !actualPlayer && name !== "") {
-                    dispatch(initActualPlayer({ ...actualPlayer, id: Math.floor(((Math.random() * 201) + 100)), name: name, isReady: false, gamePoints: 0, userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Vendég" }, picture: "profileimage.png", isGuest: true }))
+                    dispatch(initActualPlayer({ ...actualPlayer, id: Math.floor(((Math.random() * 201) + 100)), name: name, isReady: false, gamePoints: 0, allStarsGot: 0, userName: "Vendég", muted: false, banned: false, division: { id: 0, name: "Vendég" }, picture: "profileimage.png", isGuest: true }))
                 }
                 if (name || user) {
                     navigate("/letrehozas");

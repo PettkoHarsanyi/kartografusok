@@ -461,6 +461,33 @@
     color: rgba(0, 0, 0, 0.471);
 }
 
+.Game .CoinsDiv{
+    position: absolute;
+    bottom: 14%;
+    right: 8%;
+    width: 76%;
+    height: 3.5%;
+    display: flex;
+    padding-left: 0.3vh;
+}
+
+.Game .Coin{
+    height: 100%;
+    width: 5%;
+    margin-left: 0.98vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Game .Coin img{
+    object-fit: cover;
+    margin: 0;
+    max-height: 100%;
+}
+
 .Game .MapName {
     position: absolute;
     left: 9%;

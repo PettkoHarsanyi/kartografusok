@@ -385,7 +385,7 @@ export default function Game() {
             setUnshiftedPlayers(players.map((player) => {
                 return { ...player, isReady: false }
             }));
-            if (actualSeasonCard.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
+            if (actualSeasonCard?.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
                 if (seasonIndex + 1 === 4) {
                     setSeasonIndex("END");
                     setActualSeasonCard(cards.seasonCards[0]);        // KÖVI ÉVSZAK
@@ -428,53 +428,62 @@ export default function Game() {
 
             playerPoints = actualPlayer.gamePoints;
 
-            console.log(seasonIndex);
+            // console.log("SeasonIndex")
+            // console.log(seasonIndex);
 
             if (seasonIndex === 1) {
                 console.log("1. évszak pontozása")
+                
                 const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-
-                // setSeason0Points({ A: result.A, B: result.B, points: season0Points.points + result.point })
+                let stars = Math.min(actualPlayer.allStarsGot,14)
+                result.points = result.A + result.B + stars + result.monsters;
+                result.stars = stars;
                 playerPoints = playerPoints + result.points
 
-                // console.log("A: " + result.A + ", B: " + result.B)
                 console.log("Pontozás: Ez most futott le")
-                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result }))
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result, allStarsGot: stars}))
             }
             if (seasonIndex === 2) {
                 console.log("2. évszak pontozása")
+
                 const result = pointRound(cards.pointCards[1], cards.pointCards[2], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-
-                // setSeason1Points({ A: result.A, B: result.B, points: season1Points.points + result.point });
+                let stars = Math.min(actualPlayer.allStarsGot,14)??0
+                result.points = result.A + result.B + stars + result.monsters;
+                result.stars = stars;
                 playerPoints = playerPoints + result.points
-                // console.log("A: " + result.A + ", B: " + result.B)
 
-                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: result }))
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season1Points: result, allStarsGot: stars }))
 
             }
             if (seasonIndex === 3) {
                 console.log("3. évszak pontozása")
-                const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                // setSeason2Points({ A: result.A, B: result.B, points: season2Points.points + result.point })
-                playerPoints = playerPoints + result.points
-                // console.log("A: " + result.A + ", B: " + result.B)
 
-                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result }))
+                const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+                let stars = Math.min(actualPlayer.allStarsGot,14)??0
+                result.points = result.A + result.B + stars + result.monsters;
+                result.stars = stars;
+                playerPoints = playerPoints + result.points
+                
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result, allStarsGot: stars }))
             }
 
-            if (seasonIndex === "END" && actualSeasonCard.duration <= duration) {
+            if (seasonIndex === "END" && 6 <= duration) {
                 // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
                 console.log("4. évszak pontozása")
-                const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                // setSeason3Points({ A: result.A, B: result.B, points: season3Points.points + result.point })
-                // console.log("A: " + result.A + ", B: " + result.B);
 
-                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: actualPlayer.gamePoints + result.points, season3Points: result }))
+                // NEM AD HOZZÁ UTOLSÓKÉNT EGYET A STARSHOZ
+
+                const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
+                let stars = Math.min(actualPlayer.allStarsGot,14)??0
+                result.points = result.A + result.B + stars + result.monsters;
+                result.stars = stars;
+
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: actualPlayer.gamePoints + result.points, season3Points: result, allStarsGot: stars }))
 
                 // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
                 const newPlayers = players.map(player => {
                     const seasonResult = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks))
-                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult }
+                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult}
                 })
 
                 if (room.leader.id === actualPlayer.id) {
@@ -622,7 +631,6 @@ export default function Game() {
                         _blocksAndTypes = [{ type: "MONSTER", block: "[[1]]" }]
                     } else {
                         _blocksAndTypes = FIELD_TYPES.map((fieldType) => {
-                            console.log("ÉN ÁLLÍTOM BE SZARRA")
                             return { type: fieldType, block: "[[1]]" }
                         })
                     }
@@ -784,7 +792,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} setNetPlayer={setNetPlayer} />
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere}/>
                 </div>
             }
             <div className="DrawnCardDiv">
