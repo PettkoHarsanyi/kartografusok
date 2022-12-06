@@ -433,21 +433,21 @@ export default function Game() {
 
             if (seasonIndex === 1) {
                 console.log("1. évszak pontozása")
-                
+
                 const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                let stars = Math.min(actualPlayer.allStarsGot,14)
+                let stars = Math.min(actualPlayer.allStarsGot, 14)
                 result.points = result.A + result.B + stars + result.monsters;
                 result.stars = stars;
                 playerPoints = playerPoints + result.points
 
                 console.log("Pontozás: Ez most futott le")
-                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result, allStarsGot: stars}))
+                dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result, allStarsGot: stars }))
             }
             if (seasonIndex === 2) {
                 console.log("2. évszak pontozása")
 
                 const result = pointRound(cards.pointCards[1], cards.pointCards[2], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                let stars = Math.min(actualPlayer.allStarsGot,14)??0
+                let stars = Math.min(actualPlayer.allStarsGot, 14) ?? 0
                 result.points = result.A + result.B + stars + result.monsters;
                 result.stars = stars;
                 playerPoints = playerPoints + result.points
@@ -459,11 +459,11 @@ export default function Game() {
                 console.log("3. évszak pontozása")
 
                 const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                let stars = Math.min(actualPlayer.allStarsGot,14)??0
+                let stars = Math.min(actualPlayer.allStarsGot, 14) ?? 0
                 result.points = result.A + result.B + stars + result.monsters;
                 result.stars = stars;
                 playerPoints = playerPoints + result.points
-                
+
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result, allStarsGot: stars }))
             }
 
@@ -474,7 +474,7 @@ export default function Game() {
                 // NEM AD HOZZÁ UTOLSÓKÉNT EGYET A STARSHOZ
 
                 const result = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
-                let stars = Math.min(actualPlayer.allStarsGot,14)??0
+                let stars = Math.min(actualPlayer.allStarsGot, 14) ?? 0
                 result.points = result.A + result.B + stars + result.monsters;
                 result.stars = stars;
 
@@ -483,7 +483,7 @@ export default function Game() {
                 // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
                 const newPlayers = players.map(player => {
                     const seasonResult = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks))
-                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult}
+                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult }
                 })
 
                 if (room.leader.id === actualPlayer.id) {
@@ -792,7 +792,7 @@ export default function Game() {
 
             {map?.blocks &&
                 <div className='MapDiv'>
-                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere}/>
+                    <Map selectedBlock={selectedBlock} canBuildAnywhere={canBuildAnywhere} />
                 </div>
             }
             <div className="DrawnCardDiv">
@@ -831,7 +831,9 @@ export default function Game() {
                 <div className="DeckDiv">
                     <div className="CardsDiv">
                         <div className="TopCardsDiv">
-                            {!gameEnd && <div className="CardDiv"><img src={require(`../../assets/cards/${actualSeasonCard?.picture ? actualSeasonCard.picture : "seasoncards/seasonback.png"}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard?.name? actualSeasonCard?.name : "Évszakkártya"} /></div>}
+                            <div className="CardDiv">
+                                {!gameEnd && <img src={require(`../../assets/cards/${actualSeasonCard?.picture ? actualSeasonCard.picture : "seasoncards/seasonback.png"}`)} className="CardDivImg" onClick={() => { openInspectModal(actualSeasonCard) }} alt={actualSeasonCard?.name ? actualSeasonCard?.name : "Évszakkártya"} />}
+                            </div>
                             {cards.decreeCards &&
                                 cards.decreeCards.map((card) => {
                                     return (<div className="CardDiv" key={card.id}><img src={require(`../../assets/cards//${card.picture}`)} onClick={() => { openInspectModal(card) }} className="CardDivImg" alt={card.name} /></div>)
@@ -921,7 +923,7 @@ export default function Game() {
 
             <RuinModal />
 
-            {gameEnd && <GameEndModal duration={Math.round(Math.abs((new Date()) - gameStartDate) / (60 * 1000))} messages={messages} players={players}/>}
+            {gameEnd && <GameEndModal duration={Math.round(Math.abs((new Date()) - gameStartDate) / (60 * 1000))} messages={messages} players={players} />}
         </div>
     )
 }

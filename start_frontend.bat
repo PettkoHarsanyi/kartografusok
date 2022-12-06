@@ -1,3 +1,3 @@
 cd "kartografusok_frontend"
-npm start
+code .
 exit

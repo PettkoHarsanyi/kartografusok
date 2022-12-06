@@ -17,7 +17,7 @@ export default function GameEndModal({ duration, messages, players }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [playersResult, setPlayersResult] = useState(players);
+    const [playersResult, setPlayersResult] = useState([]);
 
     useEffect(() => {
         console.log(duration);
@@ -36,32 +36,36 @@ export default function GameEndModal({ duration, messages, players }) {
     const [ordered, setOrdered] = useState([]);
 
     useEffect(() => {
+        console.log("PLAYERS")
         console.log(players);
+        console.log("PLAYERSRESULT")
+        console.log(playersResult)
+
         let newPlayers = playersResult;
+        let orderedArray;
+
         players.forEach(player => {
             playersResult.forEach((_player) => {
                 if (_player.id === player.id) {
                     console.log("Módosítom "+player.name+" game pontjait " + player.gamePoints + "-ra")
-                    newPlayers = playersResult.map(mappedPlayer => mappedPlayer.id === player.id ? player : mappedPlayer)
-                    let orderedArray = newPlayers.sort((a, b) => b.gamePoints - a.gamePoints)
-                    setOrdered(orderedArray);
+                    newPlayers = newPlayers.map(mappedPlayer => mappedPlayer.id === player.id ? player : mappedPlayer)
                 }
 
             })
-            if (!playersResult.some(_player => _player.id === player.id)) {
+
+            
+            if (newPlayers.length === 0 || !newPlayers.some(_player => _player.id === player.id)) {
                 console.log("Hozzáadom " + player.name + "-t")
-                newPlayers = [...playersResult, player]
-                let orderedArray = newPlayers.sort((a, b) => b.gamePoints - a.gamePoints)
-                setOrdered(orderedArray);
+                newPlayers = [...newPlayers, player]
             }
         });
+
+        orderedArray = newPlayers.sort((a, b) => b.gamePoints - a.gamePoints)
+        
+        setOrdered(orderedArray);
+
         setPlayersResult(newPlayers);
     }, [players])
-
-    useEffect(()=>{
-        let orderedArray = playersResult.sort((a, b) => b.gamePoints - a.gamePoints)
-        setOrdered(orderedArray)
-    },[playersResult])
 
     useEffect(()=>{
         console.log("AZ ORDERED:")
