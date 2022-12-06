@@ -1,4 +1,3 @@
 cd "kartografusok_frontend"
-code .
-timeout 3
+npm start
 exit

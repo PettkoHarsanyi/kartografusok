@@ -489,9 +489,11 @@ export default function Map({ selectedBlock, canBuildAnywhere }) {
                                                         }
                                                     }
 
+                                                    console.log(player);
+
                                                     dispatch(modifyPlayer({ ...player }))
 
-                                                    if(isMonsterRound && player.length!==1){
+                                                    if(isMonsterRound && players.length!==1){
                                                         dispatch(modifyPlayer({ ...actualPlayer, isReady: true }))
                                                     }
 
