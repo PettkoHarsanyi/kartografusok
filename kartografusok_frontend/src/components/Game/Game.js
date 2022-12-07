@@ -116,7 +116,33 @@ export default function Game() {
     const fitCheck = (_block, _pos) => {
         let block = _block;
         let pos = _pos;
-        let playerMap = JSON.parse(actualPlayer.map);
+        
+        let isMonsterRound = cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER";
+        let playerMap;
+        let whose;
+
+        // LERAKHATÓSÁG ELLENŐRZÉSE
+        // HA BUG VAN AKKOR EZ A BAJ
+        if (isMonsterRound) {
+            const direction = cards.drawnCards[cards.drawnCards.length - 1].direction
+
+            const index = players.findIndex(player => {
+                return player.id === actualPlayer.id;
+            })
+
+            if (index + direction > players.length - 1) {
+                whose = 0
+            } else if (index + direction < 0) {
+                whose = players.length - 1;
+            } else {
+                whose = (index + direction)
+            }
+
+            playerMap = JSON.parse(players[whose].map);
+        } else {
+            playerMap = JSON.parse(actualPlayer.map);
+        }
+
         let canFit = false;
 
         block.forEach((row, rowIndex) => {
