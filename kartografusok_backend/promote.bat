@@ -1,0 +1,1 @@
+curl -X PATCH "localhost:3000/users/promote" -H "Content-Type: application/json" -d {"""password""":"""password"""}

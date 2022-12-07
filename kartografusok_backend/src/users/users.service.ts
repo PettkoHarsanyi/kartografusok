@@ -34,9 +34,22 @@ export class UsersService {
         throw new Error("Method not implemented.");
     }
 
-    
+    async nullWeekly() {
+        const users = await this.userRepository.findAll();
+
+        users.map(user=>{
+            wrap(user).assign({
+                weekly: 0,
+            })
+        })
+
+        await this.userRepository.persistAndFlush(users);
+
+        return users;
+    }
     
     async promotePlayers(ids: number[],up?: boolean) {
+
         const users = await this.userRepository.find({
             id: ids,
         });
