@@ -381,14 +381,18 @@ export default function Game() {
         // console.log("Évszak hossz: " + actualSeasonCard.duration);
         // console.log("Évszak index: " + seasonIndex);
 
+        let over = false;
+
         if (!gameEnd) {
             setUnshiftedPlayers(players.map((player) => {
                 return { ...player, isReady: false }
             }));
             if (actualSeasonCard?.duration <= duration) {                    // HA AZ ÉVSZAKKÁRTYA <= MINT A JELENLEGI IDŐ SUM
                 if (seasonIndex + 1 === 4) {
+                    over = true;
                     setSeasonIndex("END");
                     setActualSeasonCard(cards.seasonCards[0]);        // KÖVI ÉVSZAK
+                    dispatch(endGame());
                 } else {
                     setActualSeasonCard(cards.seasonCards[seasonIndex + 1]);        // KÖVI ÉVSZAK
                     setSeasonIndex(seasonIndex + 1);                            // KÖVI ÉVSZAK INDEX
@@ -416,7 +420,10 @@ export default function Game() {
             // várakozás a többi játékos lépésére modal elrejtése.
             document.getElementById("waitingModal").style.visibility = "hidden";
 
-            dispatch(drawCard(cards.deck[0]))
+            if(!over){
+                dispatch(drawCard(cards.deck[0]))
+            }
+
             dispatch(setPlayersUnReady());
         }
     }
@@ -532,7 +539,7 @@ export default function Game() {
             }
         });
 
-        if (room.roomCode && allReady) {
+        if (room.roomCode && allReady && !gameEnd) {
             pickCard()
         }
 
