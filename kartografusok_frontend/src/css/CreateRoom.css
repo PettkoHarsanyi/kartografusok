@@ -74,17 +74,6 @@
     z-index: 5;
 }
 
-.CreateRoom .ChatDiv {
-    width: 50%;
-    height: 100%;
-    border-radius: 2vh;
-    border: 0.5vh solid black;
-    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
-        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
 
 .CreateRoom .ServerInfoDiv {
     width: 50%;
@@ -200,6 +189,17 @@
         inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
 }
 
+
+.CreateRoom .ChatDiv {
+    width: 50%;
+    height: 100%;
+    box-shadow: 0 0 4vh 0.5vh rgba(0, 0, 0, 0.3),
+        inset 0 0 4vh 0.5vh rgba(228, 129, 0, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
 .CreateRoom .ChatDivContent {
     height: 80%;
     border-bottom: 0.5vh solid black;
@@ -210,6 +210,8 @@
     justify-content: flex-start;
     gap: 3vh;
     overflow-y: scroll;
+    border-radius: 2vh 2vh 0 0;
+    border: 0.5vh solid black;
 }
 
 .CreateRoom .Message {
@@ -237,31 +239,36 @@
     word-break: break-all;
 }
 
+
 .CreateRoom .ChatDivInput {
     height: 20%;
-    padding: 1vh;
+    position: relative;
     display: flex;
+    gap: 0;
 }
 
 .CreateRoom .ChatInput {
-    width: 80%;
-    height: 100%;
-    border: 0.5vh solid black;
-    border-right: none;
-    border-radius: 1vh 0 0 1vh;
     background-color: white;
+    flex-grow: 1;
     outline: none;
-    padding: 0 9vw 0 2vh;
+    text-align: left;
+    border: 0.5vh solid black;
+    border-top: 0;
+    border-radius: 0 0 0 2vh;
+    overflow: hidden;
+    padding-left: 2vh;
 }
 
 .CreateRoom .ChatButton {
-    width: 20%;
-    height: 100%;
+    width: fit-content;
     right: 1vh;
     border: 0.5vh solid black;
-    border-radius: 0 1vh 1vh 0;
+    border-left: 0;
+    border-top: 0;
+    border-radius: 0 0 2vh 0;
     background-color: gray;
     cursor: pointer;
+    padding: 0 3vh;
 }
 
 .CreateRoom .PlayersDiv{
