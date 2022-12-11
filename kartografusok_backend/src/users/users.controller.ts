@@ -161,13 +161,25 @@ export class UsersController {
     }
 
     @Patch(':id')
-    async muteUpdate(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
+    async update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto, @UserParam() actUser: UserDto) {
+        console.log(actUser);
         let newUser;
         try {
-            newUser = await this.usersService.update(id, updateUserDto);
+            if (actUser.role === "ADMIN") {
+                newUser = await this.usersService.update(id, updateUserDto);
+            } else {
+                if (actUser.id === id) {
+                    newUser = await this.usersService.update(id, updateUserDto);
+                } else {
+                    throw new HttpException({
+                        message: "Nincs jogod a módosításhoz."
+                    }, HttpStatus.BAD_REQUEST);
+                }
+            }
         } catch (err) {
+            console.log(err);
             throw new HttpException({
-                message: ["Már van ilyen nevű felhasználó."]
+                message: [err.response.message]
             }, HttpStatus.BAD_REQUEST);
         }
         return new UserDto(newUser);
@@ -189,6 +201,15 @@ export class UsersController {
 
     @Post(':id/upload')
     @UseInterceptors(FileInterceptor('file', {
+        fileFilter: (req: any, file: any, cb: any) => {
+            if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+                // Allow storage of file
+                cb(null, true);
+            } else {
+                // Reject file
+                cb(new HttpException(`Nem támogatott fájltípus ${extname(file.originalname)}`, HttpStatus.BAD_REQUEST), false);
+            }
+        },
         storage: diskStorage({
             destination: './assets/profileimages',
             filename: (req, file, cb) => {
