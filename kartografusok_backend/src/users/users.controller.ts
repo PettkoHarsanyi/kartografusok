@@ -77,12 +77,12 @@ export class UsersController {
             });
 
             this.usersService.nullWeekly();
-            return this.usersService.promotePlayers(ids,true);
+            return this.usersService.promotePlayers(ids, true);
 
         } else {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
         }
-        
+
     }
 
     @Roles(UserRole.Admin)
@@ -162,7 +162,14 @@ export class UsersController {
 
     @Patch(':id')
     async muteUpdate(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
-        const newUser = await this.usersService.update(id, updateUserDto);
+        let newUser;
+        try {
+            newUser = await this.usersService.update(id, updateUserDto);
+        } catch (err) {
+            throw new HttpException({
+                message: ["Már van ilyen nevű felhasználó."]
+            }, HttpStatus.BAD_REQUEST);
+        }
         return new UserDto(newUser);
     }
 

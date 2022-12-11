@@ -64,6 +64,7 @@
     font-size: 4vh;
     left: 1.5vh;
     top: 1.5vh;
+    transition: 0.5s;
 }
 
 .Profil .Pics {

@@ -22,7 +22,7 @@ export default function Profil() {
     const [frame, setFrame] = useState();
     const [decoration, setDecoration] = useState({});
     const [user] = useState(authService.getCurrentUser());
-    
+
     const actualPlayer = useSelector(getActualPlayer);
 
     const userMatches = useLoaderData();
@@ -30,12 +30,12 @@ export default function Profil() {
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{
-        if(!socketApi.isConnected()){
+    useEffect(() => {
+        if (!socketApi.isConnected()) {
             dispatch(wsConnect());
         }
         dispatch(initActualPlayer(user));
-    },[])
+    }, [])
 
     useEffect(() => {
         if (user) {
@@ -76,7 +76,7 @@ export default function Profil() {
         }
     }
 
-    const [editUser, setEditUser] = useState({id:user.id});
+    const [editUser, setEditUser] = useState({ id: user.id });
 
     const submitForm = async (e) => {
         e.preventDefault();
@@ -89,25 +89,26 @@ export default function Profil() {
 
         let response;
 
-        try{
-            response = await axios.patch(`api/users/${user.id}`, editUser, {
-                headers: authHeader()
-            });
 
-        }catch(error){
-            document.getElementById("submitEditButton").style.backgroundColor = "#b7b7b7";
-            document.getElementById("submitEditButton").innerHTML = "Változtat";
+        response = await axios.patch(`api/users/${user.id}`, editUser, {
+            headers: authHeader()
+        }).then(response=>{
+            if(response.status === 200){
+                document.getElementById("submitEditButton").style.backgroundColor = "lime";
+                document.getElementById("submitEditButton").innerHTML = "Sikeres ✔";
+                document.getElementById("editErrorDiv").innerHTML = "";
+                socketApi.editUserInfo(response.data);
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            const errorMessages = error.response.data.message.join("<br>");
+            console.log(errorMessages)
+            document.getElementById("submitEditButton").style.backgroundColor = "red";
+            document.getElementById("submitEditButton").innerHTML = "Hiba";
             document.getElementById("editErrorDiv").style.color = "red";
-            document.getElementById("editErrorDiv").innerHTML = error.response.data.message.map(message=>`${message}<br />`);
-        }
-
-        if (response.status === 200) {
-            document.getElementById("submitEditButton").style.backgroundColor = "lime";
-            document.getElementById("submitEditButton").innerHTML = "Sikeres ✔";
-            document.getElementById("editErrorDiv").innerHTML = "";
-            socketApi.editUserInfo(response.data);
-        }
-
+            document.getElementById("editErrorDiv").innerHTML = errorMessages;
+        })
     }
 
     const handleInputChange = (event) => {
@@ -132,11 +133,11 @@ export default function Profil() {
                             <input name='email' defaultValue={actualPlayer.email} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
-                            <label>Játékos név</label>
+                            <label>Felhasználónév</label>
                             <input name="userName" defaultValue={actualPlayer.userName} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
-                            <label>Felhasználónév</label>
+                            <label>Játékos név</label>
                             <input name="name" defaultValue={actualPlayer.name} onChange={(e) => handleInputChange(e)}></input>
                         </div>
                         <div>
@@ -151,10 +152,12 @@ export default function Profil() {
                                 document.getElementById("editBg").style.visibility = "hidden";
                                 document.getElementById("submitEditButton").style.backgroundColor = "#b7b7b7";
                                 document.getElementById("submitEditButton").innerHTML = "Változtat";
-
                             }
                             }>Vissza</button>
-                            <button id="submitEditButton" type='submit' defaultValue={actualPlayer.email} onChange={(e) => handleInputChange(e)}>Változtat</button>
+                            <button id="submitEditButton" type='submit' defaultValue={actualPlayer.email} onChange={(e) => handleInputChange(e)} onMouseLeave={(e) => {
+                                document.getElementById("submitEditButton").style.backgroundColor = "#b7b7b7";
+                                document.getElementById("submitEditButton").innerHTML = "Változtat";
+                            }}>Változtat</button>
                         </div>
                     </form>
                 </div>
@@ -180,6 +183,7 @@ export default function Profil() {
                         <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e) => uploadPicture(e)} ref={fileInput} />
                     </div>
                     <div className='Name'>{actualPlayer.name}</div>
+                    <div className='Name' style={{fontSize: "3vh"}}>{"("+actualPlayer.userName+")"}</div>
                 </div>
                 <div className='Points'>
                     <div className='Info'>

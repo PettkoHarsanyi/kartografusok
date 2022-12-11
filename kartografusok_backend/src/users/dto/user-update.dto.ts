@@ -9,18 +9,6 @@ export class UpdateUserDto{
     
     @IsOptional()
     @Length(4, 20,{
-        message: "A felhasználónév legalább 4 hosszú legyen"
-    })
-    @IsNotEmpty({
-        message: "A felhasználónév nem lehet üres"
-    })
-    @IsString({
-        message: "A felhasználónév szöveges legyen"
-    })
-    name?: string;
-
-    @IsOptional()
-    @Length(4, 20,{
         message: "A játékosnév legalább 4 hosszú legyen"
     })
     @IsNotEmpty({
@@ -28,6 +16,20 @@ export class UpdateUserDto{
     })
     @IsString({
         message: "A játékosnév szöveges legyen"
+    })
+    name?: string;
+
+    
+
+    @IsOptional()
+    @Length(4, 20,{
+        message: "A felhasználónév legalább 4 hosszú legyen"
+    })
+    @IsNotEmpty({
+        message: "A felhasználónév nem lehet üres"
+    })
+    @IsString({
+        message: "A felhasználónév szöveges legyen"
     })
     userName?: string;
 
