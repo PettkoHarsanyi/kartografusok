@@ -157,7 +157,11 @@ export class UsersController {
             return {
                 access_token: await this.authService.generateJwt(user),
             };
-        } else throw new HttpException("Csak a saját tokent lehet frissíteni", HttpStatus.BAD_REQUEST);
+        } else{
+            if(user.role!== "ADMIN"){
+                throw new HttpException("Csak a saját tokent lehet frissíteni", HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
     @Patch(':id')
@@ -220,6 +224,7 @@ export class UsersController {
     }))
     async uploadFile(@UploadedFile() file, @Param('id', ParseIntPipe) userId: number): Promise<Observable<Object>> {
         const user = await this.usersService.find(userId);
+
         if (user.picture !== "profileimage.png" && file) {
             fs.unlink("./assets/profileimages/" + user.picture, (err => { if (err) console.log(err) }))
         }

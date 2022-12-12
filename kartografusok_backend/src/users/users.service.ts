@@ -145,7 +145,6 @@ export class UsersService {
         user.points = updateUserDto.points || user.points;
         user.role = updateUserDto.role || user.role;
         user.weekly = updateUserDto.weekly || user.weekly;
-        user.picture = updateUserDto.picture || user.picture;
         if (updateUserDto.password) {
             user.password = await this.authService.hashPassword(updateUserDto.password) || user.password;
         }

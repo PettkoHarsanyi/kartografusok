@@ -64,14 +64,18 @@ export default function Profil() {
         // console.log(e.target.files[0]);
         // console.log(fileInput.current.files[0]);
         if (fileInput.current.files.length > 0) {
-            const response = await axios.post(`api/users/${user.id}/upload`, {
-                "file": e.target.files[0]
-            }, {
-                headers: {
-                    ...authHeader(),
-                    "Content-Type": "multipart/form-data",
-                }
-            });
+            try {
+                const response = await axios.post(`api/users/${user.id}/upload`, {
+                    "file": e.target.files[0]
+                }, {
+                    headers: {
+                        ...authHeader(),
+                        "Content-Type": "multipart/form-data",
+                    }
+                });
+            }catch(error){
+                alert(error.response.data.message);
+            }
             window.location.reload(false);
         }
     }
@@ -92,23 +96,23 @@ export default function Profil() {
 
         response = await axios.patch(`api/users/${user.id}`, editUser, {
             headers: authHeader()
-        }).then(response=>{
-            if(response.status === 200){
+        }).then(response => {
+            if (response.status === 200) {
                 document.getElementById("submitEditButton").style.backgroundColor = "lime";
                 document.getElementById("submitEditButton").innerHTML = "Sikeres ✔";
                 document.getElementById("editErrorDiv").innerHTML = "";
                 socketApi.editUserInfo(response.data);
             }
         })
-        .catch(function (error) {
-            console.log(error);
-            const errorMessages = error.response.data.message.join("<br>");
-            console.log(errorMessages)
-            document.getElementById("submitEditButton").style.backgroundColor = "red";
-            document.getElementById("submitEditButton").innerHTML = "Hiba";
-            document.getElementById("editErrorDiv").style.color = "red";
-            document.getElementById("editErrorDiv").innerHTML = errorMessages;
-        })
+            .catch(function (error) {
+                console.log(error);
+                const errorMessages = error.response.data.message.join("<br>");
+                console.log(errorMessages)
+                document.getElementById("submitEditButton").style.backgroundColor = "red";
+                document.getElementById("submitEditButton").innerHTML = "Hiba";
+                document.getElementById("editErrorDiv").style.color = "red";
+                document.getElementById("editErrorDiv").innerHTML = errorMessages;
+            })
     }
 
     const handleInputChange = (event) => {
@@ -183,7 +187,7 @@ export default function Profil() {
                         <input type="file" id="picInput" name='picture' className='ImgInput' onChange={(e) => uploadPicture(e)} ref={fileInput} />
                     </div>
                     <div className='Name'>{actualPlayer.name}</div>
-                    <div className='Name' style={{fontSize: "3vh"}}>{"("+actualPlayer.userName+")"}</div>
+                    <div className='Name' style={{ fontSize: "3vh" }}>{"(" + actualPlayer.userName + ")"}</div>
                 </div>
                 <div className='Points'>
                     <div className='Info'>

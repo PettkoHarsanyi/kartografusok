@@ -39,6 +39,7 @@ import muted from "../../assets/playermute.png"
 import kick from "../../assets/delete.png"
 import report from "../../assets/report.png"
 import cardBack from "../../assets/cards/seasoncards/seasonback.png"
+import ScrollContainer from 'react-indiana-drag-scroll'
 
 export default function Game() {
     const INIT_DRAWING = "INIT_DRAWING";
@@ -831,11 +832,11 @@ export default function Game() {
             <div className="DrawnCardDiv">
 
                 <div className="ActualCardDiv">
-                    <div className="CardScrollDiv">
+                    <ScrollContainer className="CardScrollDiv" vertical horizontal={false}>
                         {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards.map((card, index) => {
                             return (<DrawnCard key={card.id} card={card} index={index} />)
                         })}
-                    </div>
+                    </ScrollContainer>
                 </div>
                 <div className="ChooseDiv">
                     <div className="SelectBlockDiv">

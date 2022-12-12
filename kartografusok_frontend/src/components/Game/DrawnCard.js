@@ -17,7 +17,7 @@ export default function DrawnCard({ card, index }) {
 
             <img src={
                 (card.duplicate) ? `api/cards/${card.pictureId}/cardimage` :`api/cards/${card.id}/cardimage`
-            } className="DrawnGameCardDivImg" />
+            } className="DrawnGameCardDivImg" alt="kártya"/>
 
             {
                 !card.official &&

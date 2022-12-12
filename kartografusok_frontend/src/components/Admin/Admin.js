@@ -280,15 +280,8 @@ export default function Admin() {
             mappedUser.id === selectedUser.id ? (selectedUser) : (mappedUser)
         ))
 
-        const response = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
-            headers: authHeader()
-        });
-
-        if (response.status === 200) {
-            socketApi.editUserInfo(response.data);
-        }
-
         if (selectedFile) {
+
             await axios.post(`api/users/${selectedUser.id}/upload`, {
                 "file": selectedFile
             }, {
@@ -299,19 +292,30 @@ export default function Admin() {
             });
         }
 
+        const response = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
+            headers: authHeader()
+        });
+
+        if (response.status === 200) {
+            socketApi.editUserInfo(response.data);
+        }
+
         if (user.id === selectedUser.id) {
             authService.refreshAuthenticatedUser(selectedUser);
         }
     }
 
     const cardItemsCorrect = (card) => {
+        let newErrors = [];
         if (card.name === "") {
-            setErrors([...errors, "Mindenképp kell név"])
+            setErrors([...newErrors, "Mindenképp kell név"])
+            newErrors.push("Mindenképp kell név")
             return false
         };
         if (card.cardType === "EXPLORE" || card.cardType === "RAID") {
             if (card.blocks1 === "") {
-                setErrors([...errors, "Mindenképp kell első forma"])
+                setErrors([...newErrors, "Mindenképp kell első forma"])
+                newErrors.push("Mindenképp kell első forma")
                 return false;
             } else {
                 try {
@@ -319,7 +323,8 @@ export default function Admin() {
 
                     if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
                     } else {
-                        setErrors([...errors, "Az első forma nem JSON helyes"])
+                        setErrors([...newErrors, "Az első forma nem JSON helyes"])
+                        newErrors.push("Az első forma nem JSON helyes")
                         return false;
                     }
                 }
@@ -331,7 +336,8 @@ export default function Admin() {
 
                     if (l && typeof l === "object" && l.some(item => Array.isArray(item))) {
                     } else {
-                        setErrors([...errors, "A második forma nem JSON helyes"])
+                        setErrors([...newErrors, "A második forma nem JSON helyes"])
+                        newErrors.push("A második forma nem JSON helyes")
                         return false
                     }
                 }
@@ -339,8 +345,9 @@ export default function Admin() {
             }
             if (card.cardType === "EXPLORE") {
                 if (card.duration < 0) {
-                    setErrors([...errors, "Az időtartam nem lehet kisebb, mint 0."])
-                    return false;
+                    setErrors([...newErrors, "Az időtartam nem lehet kisebb, mint 0"])
+                        newErrors.push("Az időtartam nem lehet kisebb, mint 0")
+                        return false;
                 }
             }
         }
@@ -672,10 +679,10 @@ export default function Admin() {
                                                 </textarea>
                                             </div>
                                         }
-                                        {errors && errors.length > 0 && 
-                                        <div style={{textAlign:"center"}}>
-                                            {errors.map(error=><div style={{marginBottom: "2vh", color: "red"}}>{error}</div>)}
-                                        </div>
+                                        {errors && errors.length > 0 &&
+                                            <div style={{ textAlign: "center" }}>
+                                                {errors.map((error,index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
+                                            </div>
                                         }
                                     </>
                                 }
@@ -699,6 +706,11 @@ export default function Admin() {
                                             <textarea defaultValue={raidCardObject.blocks2} style={{ outlineColor: isBlocks1ValidJSON ? "green" : "red", border: isBlocks1ValidJSON ? "0.3vh solid black" : "0.3vh solid red" }} name="blocks1" rows="4" cols="20" placeholder='Csak JSON helyes tömbök tömbje. Pl: [[0,0],[1,0]] vagy [[0,0,1]]' onChange={(e) => { handleCardAdderInputChange(e) }}>
                                             </textarea>
                                         </div>
+                                        {errors && errors.length > 0 &&
+                                            <div style={{ textAlign: "center" }}>
+                                                {errors.map((error,index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
+                                            </div>
+                                        }
                                     </>
                                 }
 
@@ -708,6 +720,11 @@ export default function Admin() {
                                             <div>Kártya név</div>
                                             <input name='name' id="cardName" style={{ width: "20vw" }} type="text" onChange={(e) => handleCardAdderInputChange(e)} defaultValue={ruinCardObject.name} />
                                         </div>
+                                        {errors && errors.length > 0 &&
+                                            <div style={{ textAlign: "center" }}>
+                                                {errors.map((error,index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
+                                            </div>
+                                        }
                                     </>
                                 }
 
