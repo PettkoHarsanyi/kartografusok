@@ -23,7 +23,7 @@
     border: 0.4vh solid black;
     border-radius: 1vh;
     background-color: #474544;
-    cursor:pointer;
+    cursor:grab;
 }
 
 /* .Game .DrawnGameCardDivImg{

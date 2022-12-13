@@ -370,7 +370,7 @@ export default function Map({ selectedBlock, canBuildAnywhere }) {
                                 return (
                                     <div key={cellindex} className='MapTableCell'
                                         onClick={(e) => {
-                                            if (!actualPlayer.isReady && !room.gameEnded) {
+                                            if (!actualPlayer.isReady && !room.gameEnded && cards.drawnCards[cards.drawnCards.length - 1]?.cardType !== "RUIN") {
                                                 let succesful = true;
                                                 let newMap = JSON.parse(!isMonsterRound ? actualPlayer.map : players[whose].map);
 
