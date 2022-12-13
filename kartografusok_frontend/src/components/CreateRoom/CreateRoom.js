@@ -396,7 +396,7 @@ export default function CreateRoom() {
                     <div className='ServerInfoDiv'>
                         <div className='TextDiv'>
                             <div>Szoba: {room.leader?.name} szobája</div>
-                            {/* <div>Pálya nehézsége: könnyű nehéz</div> */}
+                            {room.leader?.isGuest && <div style={{color:"red"}}>Figyelem! Egy vendég által indított játék nem hivatalos, a pontok nem számítanak a ranglistába.</div>}
                             <div>Csatlakozott játékosok: {players.length}</div>
                             <div>Szobakód:</div>
                             <div className='InviteDiv'>

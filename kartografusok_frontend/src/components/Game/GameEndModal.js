@@ -20,7 +20,7 @@ export default function GameEndModal({ duration, messages, players }) {
     const [playersResult, setPlayersResult] = useState([]);
 
     useEffect(() => {
-        console.log(duration);
+        // console.log(duration);
 
         if (actualPlayer.isGuest) {
             dispatch(modifyLocalPlayer({ ...actualPlayer, duration: duration }))

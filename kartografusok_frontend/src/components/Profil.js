@@ -105,9 +105,9 @@ export default function Profil() {
             }
         })
             .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 const errorMessages = error.response.data.message.join("<br>");
-                console.log(errorMessages)
+                // console.log(errorMessages)
                 document.getElementById("submitEditButton").style.backgroundColor = "red";
                 document.getElementById("submitEditButton").innerHTML = "Hiba";
                 document.getElementById("editErrorDiv").style.color = "red";

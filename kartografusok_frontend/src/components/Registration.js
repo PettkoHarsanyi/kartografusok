@@ -42,7 +42,7 @@ export default function Registration({ duration }) {
             if (actualPlayer?.gamePoints) {
                 await AuthService.signUp(name, userName, password, actualPlayer.gamePoints).then(
                     async (answ) => {
-                        console.log(answ);
+                        // console.log(answ);
 
 
 
@@ -53,7 +53,7 @@ export default function Registration({ duration }) {
 
                         // Akkor kap gameresultot ha nem ő volt a szoba vezető
                         if (actualPlayer.gameResult) {
-                            console.log(actualPlayer.gameResult);
+                            // console.log(actualPlayer.gameResult);
 
                             const resultResponse = await axios.post(`api/users/${answ.id}/resultaftergame`, { user: answ.id, points: actualPlayer.gamePoints, place: place, game: actualPlayer.gameResult }, {
                                 headers: authHeader()
@@ -72,7 +72,7 @@ export default function Registration({ duration }) {
                             Promise.all(results).then(
                                 async (responses) => {
                                     const newResults = responses.map(response => response.data)
-                                    console.log(newResults);
+                                    // console.log(newResults);
                                     const gameResponse = postGame(actualPlayer.duration, newResults, users, messages);
                                 }
                             )
@@ -120,7 +120,7 @@ export default function Registration({ duration }) {
                 );
             }
         } catch (err) {
-            console.log(err);
+            // console.log(err);
         }
 
     }

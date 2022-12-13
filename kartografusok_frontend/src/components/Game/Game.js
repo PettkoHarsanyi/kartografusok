@@ -468,7 +468,7 @@ export default function Game() {
             // console.log(seasonIndex);
 
             if (seasonIndex === 1) {
-                console.log("1. évszak pontozása")
+                // console.log("1. évszak pontozása")
 
                 const result = pointRound(cards.pointCards[0], cards.pointCards[1], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                 let stars = Math.min(actualPlayer.allStarsGot, 14)
@@ -479,7 +479,7 @@ export default function Game() {
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result, allStarsGot: stars }))
             }
             if (seasonIndex === 2) {
-                console.log("2. évszak pontozása")
+                // console.log("2. évszak pontozása")
 
                 const result = pointRound(cards.pointCards[1], cards.pointCards[2], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                 let stars = Math.min(actualPlayer.allStarsGot, 14) ?? 0
@@ -491,7 +491,7 @@ export default function Game() {
 
             }
             if (seasonIndex === 3) {
-                console.log("3. évszak pontozása")
+                // console.log("3. évszak pontozása")
 
                 const result = pointRound(cards.pointCards[2], cards.pointCards[3], JSON.parse(actualPlayer.map), JSON.parse(map.blocks))
                 let stars = Math.min(actualPlayer.allStarsGot, 14) ?? 0
@@ -505,7 +505,7 @@ export default function Game() {
             if (seasonIndex === "END" && 6 <= duration && onlyOnce === 0) {
                 setOnlyOnce(1);
                 // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
-                console.log("4. évszak pontozása")
+                // console.log("4. évszak pontozása")
 
                 // NEM AD HOZZÁ UTOLSÓKÉNT EGYET A STARSHOZ
 
@@ -523,23 +523,10 @@ export default function Game() {
                     seasonResult.stars = stars;
                     seasonResult.points = seasonResult.A + seasonResult.B + stars + seasonResult.monsters;
 
-                    console.log("EZ MEGY AZ ADATBÁZISBA")
-                    console.log("SEASON0:")
-                    console.log(player.season0Points);
-
-                    console.log("SEASON1:")
-                    console.log(player.season1Points);
-
-                    console.log("SEASON2:")
-                    console.log(player.season2Points);
-
-                    console.log("SEASON3:")
-                    console.log(seasonResult);
-
                     return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult, allStarsGot: stars }
                 })
 
-                if (room.leader.id === actualPlayer.id) {
+                if (room.leader.id === actualPlayer.id && !actualPlayer.isGuest) {
                     const gameEndDate = new Date();
                     const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
 
@@ -562,19 +549,19 @@ export default function Game() {
                     let newResults = []
                     Promise.all(results).then(
                         (responses) => {
-                            console.log(responses);
+                            // console.log(responses);
                             responses.forEach(resp => {
                                 newResults.push(resp.data)
                             })
 
 
-                            console.log(newResults);
+                            // console.log(newResults);
 
                             const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
 
                             Promise.resolve(gameResult).then(
                                 (resp) => {
-                                    console.log(resp);
+                                    // console.log(resp);
                                     players.forEach(player => {
                                         if (player.isGuest) {
                                             dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
@@ -821,12 +808,12 @@ export default function Game() {
                         newResults.push(resp.data)
                     })
 
-                    
+
                     const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
 
                     Promise.resolve(gameResult).then(
                         (resp) => {
-                            console.log(resp);
+                            // console.log(resp);
                             players.forEach(player => {
                                 if (player.isGuest) {
                                     dispatch(modifyPlayer({ ...player, gameResult: resp.data }))

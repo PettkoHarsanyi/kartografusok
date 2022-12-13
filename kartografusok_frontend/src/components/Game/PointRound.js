@@ -114,7 +114,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     let B = 0;
 
     if (pointCard1.id === 0 || pointCard2.id === 0) {
-        console.log("Gazdag síkság")
+        // console.log("Gazdag síkság")
 
         let pointsForCard = 0;
         const villageRegions = findIsolated("V", map)
@@ -144,7 +144,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 1 || pointCard2.id === 1) {
-        console.log("Nagyváros")
+        // console.log("Nagyváros")
 
         let pointsForCard = 0;
 
@@ -174,7 +174,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 2 || pointCard2.id === 2) {
-        console.log("Üstvidék")
+        // console.log("Üstvidék")
 
         let pointsForCard = 0;
 
@@ -205,7 +205,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 3 || pointCard2.id === 3) {
-        console.log("Pajzsfal")
+        // console.log("Pajzsfal")
 
         let pointsForCard = 0;
 
@@ -234,7 +234,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 4 || pointCard2.id === 4) {
-        console.log("Elveszett birtok")
+        // console.log("Elveszett birtok")
 
         let pointsForCard = 0;
 
@@ -274,7 +274,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 5 || pointCard2.id === 5) {
-        console.log("Töredezett utak")
+        // console.log("Töredezett utak")
 
         let pointsForCard = 0;
 
@@ -310,7 +310,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 6 || pointCard2.id === 6) {
-        console.log("Kőmelléki erdő")
+        // console.log("Kőmelléki erdő")
 
         let pointsForCard = 0;
 
@@ -344,7 +344,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 7 || pointCard2.id === 7) {
-        console.log("Partmenti terjeszkedés")
+        // console.log("Partmenti terjeszkedés")
 
         let pointsForCard = 0;
 
@@ -368,7 +368,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 8 || pointCard2.id === 8) {
-        console.log("Zöld Gally")
+        // console.log("Zöld Gally")
 
         let pointsForCard = 0;
 
@@ -400,7 +400,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 9 || pointCard2.id === 9) {
-        console.log("Fatorony")
+        // console.log("Fatorony")
 
         let pointsForCard = 0;
 
@@ -432,7 +432,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 10 || pointCard2.id === 10) {
-        console.log("Az arany magtár")
+        // console.log("Az arany magtár")
 
         let pointsForCard = 0;
 
@@ -467,7 +467,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 11 || pointCard2.id === 11) {
-        console.log("Faőrszem")
+        // console.log("Faőrszem")
 
         let pointsForCard = 0;
 
@@ -493,7 +493,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 12 || pointCard2.id === 12) {
-        console.log("Mágusok völgye")
+        // console.log("Mágusok völgye")
 
         let pointsForCard = 0;
 
@@ -526,7 +526,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 13 || pointCard2.id === 13) {
-        console.log("Csatorna tó")
+        // console.log("Csatorna tó")
 
         let pointsForCard = 0;
 
@@ -569,7 +569,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 14 || pointCard2.id === 14) {
-        console.log("Vadközösség")
+        // console.log("Vadközösség")
 
         let pointsForCard = 0;
 
@@ -593,7 +593,7 @@ export const pointRound = (pointCard1, pointCard2, map, originalMap) => {
     }
 
     if (pointCard1.id === 15 || pointCard2.id === 15) {
-        console.log("Határvidék")
+        // console.log("Határvidék")
 
         let pointsForCard = 0;
 
