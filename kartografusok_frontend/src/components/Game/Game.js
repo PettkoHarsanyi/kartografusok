@@ -587,7 +587,7 @@ export default function Game() {
 
 
 
-                    
+
 
 
                 }
@@ -792,53 +792,61 @@ export default function Game() {
 
     const [runOnce, setRunOnce] = useState(0);
 
+    const endGameBeforeTime = () => {
+
+        if (room.leader.id === actualPlayer.id && !actualPlayer.isGuest) {
+            const gameEndDate = new Date();
+            const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
+
+            const validMessages = messages.filter(message => message.id > 0);
+
+            const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
+
+            const validPlayers = players.filter(player => player.id > 0);
+
+            let results = [];
+            players.forEach(player => {
+                if (player.id > 0) {
+                    const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
+                    results.push(postResult(player, player.gamePoints, place))
+
+                    modifyUserPoints(player);
+                }
+            });
+
+            let newResults = []
+            Promise.all(results).then(
+                (responses) => {
+                    responses.forEach(resp => {
+                        newResults.push(resp.data)
+                    })
+
+                    
+                    const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
+
+                    Promise.resolve(gameResult).then(
+                        (resp) => {
+                            console.log(resp);
+                            players.forEach(player => {
+                                if (player.isGuest) {
+                                    dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
+                                }
+                            });
+                        }
+                    )
+
+                }
+            )
+
+        }
+    }
+
     useEffect(() => {
         if (room.gameEnded && runOnce === 0) {
             setRunOnce(1);
             // EREDMÉNY MUTATÁSA
             setBlocksAndTypes([]);
             setGameEnd(true);
-
-            // if (room.leader.id === actualPlayer.id && !actualPlayer.isGuest) {
-            //     const gameEndDate = new Date();
-            //     const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
-
-            //     const validMessages = messages.filter(message => message.id > 0);
-
-            //     const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
-
-            //     const validPlayers = players.filter(player => player.id > 0);
-
-            //     let results = [];
-            //     players.forEach(player => {
-            //         if (player.id > 0) {
-            //             const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
-            //             results.push(postResult(player, player.gamePoints, place))
-
-            //             modifyUserPoints(player);
-            //         }
-            //     });
-
-            //     Promise.all(results).then(
-            //         (responses) => {
-            //             const newResults = responses.map(response => response.data)
-            //             const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
-
-            //             Promise.resolve(gameResult).then(
-            //                 (resp) => {
-            //                     console.log(resp);
-            //                     players.forEach(player => {
-            //                         if (player.isGuest) {
-            //                             dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
-            //                         }
-            //                     });
-            //                 }
-            //             )
-
-            //         }
-            //     )
-
-            // }
         }
     }, [room])
 
@@ -970,6 +978,7 @@ export default function Game() {
                                 e.preventDefault();
                                 if (actualPlayer.id === room.leader.id && !gameEnd) {
                                     dispatch(endGame());
+                                    endGameBeforeTime();
                                     socketApi.closeRoom(room.roomCode, (ack) => { })
                                 }
                                 if (gameEnd) { document.getElementById("gameEndModal").style.display = "flex"; }
