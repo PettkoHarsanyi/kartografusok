@@ -65,7 +65,6 @@ export const wsConnect = () => (dispatch) => {
     const div = authService.getCurrentUser().division
 
     if(user.id === authService.getCurrentUser().id){
-      console.log("Megváltoztatom a te dolgaidat :)");
       authService.refreshAuthenticatedUser(user);
       dispatch(modifyActualPlayer({...user, division: div}));
     }

@@ -474,7 +474,6 @@ export default function Game() {
                 result.stars = stars;
                 playerPoints = playerPoints + result.points
 
-                console.log("Pontozás: Ez most futott le")
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season0Points: result, allStarsGot: stars }))
             }
             if (seasonIndex === 2) {
@@ -720,11 +719,6 @@ export default function Game() {
 
     const postGame = async (duration, results, users, messages) => {
         const validUsers = users.map(mappedUser => ({id: mappedUser.id}))
-        console.log(duration)
-        console.log(results)
-        console.log(validUsers)
-        console.log(messages)
-        
         
         const gameResponse = await axios.post(`api/games`, { duration: duration, results, validUsers, messages }, {
             headers: authHeader()
@@ -841,7 +835,8 @@ export default function Game() {
                 <div className="ActualCardDiv">
                     <ScrollContainer className="CardScrollDiv" id="cardScrollDiv" vertical horizontal={false}>
                         {cards.drawnCards && cards.drawnCards.length > 0 && cards.drawnCards.map((card, index) => {
-                            return (<DrawnCard key={card.id} card={card} index={index} />)
+                            // HA KEY HIBA VAN AKKOR INDEX HELYETT CARD.ID
+                            return (<DrawnCard key={index} card={card} index={index} />)
                         })}
                     </ScrollContainer>
                 </div>

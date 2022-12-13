@@ -417,14 +417,8 @@ export default function Map({ selectedBlock, canBuildAnywhere }) {
 
                                                     if (!isMonsterRound) {
                                                         player = { ...actualPlayer }
-                                                        console.log("NEM MONSTERROUND LERAKÁS TÖRTÉNT")
-                                                        console.log(player);
-                                                        console.log(newMap)
                                                     } else {
                                                         player = { ...players[whose] }
-                                                        console.log("MONSTERROUND LERAKÁS TÖRTÉNT")
-                                                        console.log(player);
-                                                        console.log(newMap)
                                                     }
 
                                                     let mountainNeighbors = [];
@@ -457,7 +451,6 @@ export default function Map({ selectedBlock, canBuildAnywhere }) {
                                                     if (!isMonsterRound) {
                                                         if (card && card.official && card.blocks1 !== null && card.blocks2 !== null) {
                                                             if (card.blocks1 === selectedBlock.blocks || card.blocks1 === rotated90 || card.blocks1 === rotated180 || card.blocks1 === rotated270) {
-                                                                console.log("MOST EZ HOZZÁAD EGYET")
                                                                 // dispatch(modifyPlayer({ ...actualPlayer, map: JSON.stringify(newMap), isReady: true, allStarsGot: actualPlayer.allStarsGot + 1 }))
                                                                 player = { ...player, map: JSON.stringify(newMap), isReady: true, allStarsGot: Math.min(player.allStarsGot + 1,14) }
                                                             } else {
@@ -488,8 +481,6 @@ export default function Map({ selectedBlock, canBuildAnywhere }) {
                                                             player = { ...player, map: JSON.stringify(newMap) }
                                                         }
                                                     }
-
-                                                    console.log(player);
 
                                                     dispatch(modifyPlayer({ ...player }))
 
