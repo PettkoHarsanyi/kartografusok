@@ -281,15 +281,18 @@ export default function Admin() {
         ))
 
         if (selectedFile) {
-
-            await axios.post(`api/users/${selectedUser.id}/upload`, {
-                "file": selectedFile
-            }, {
-                headers: {
-                    ...authHeader(),
-                    "Content-Type": "multipart/form-data",
-                }
-            });
+            try {
+                await axios.post(`api/users/${selectedUser.id}/upload`, {
+                    "file": selectedFile
+                }, {
+                    headers: {
+                        ...authHeader(),
+                        "Content-Type": "multipart/form-data",
+                    }
+                });
+            }catch(error){
+                alert(error.response.data.message);
+            }
         }
 
         const response = await axios.patch(`api/users/${selectedUser.id}`, selectedUser, {
@@ -346,8 +349,8 @@ export default function Admin() {
             if (card.cardType === "EXPLORE") {
                 if (card.duration < 0) {
                     setErrors([...newErrors, "Az időtartam nem lehet kisebb, mint 0"])
-                        newErrors.push("Az időtartam nem lehet kisebb, mint 0")
-                        return false;
+                    newErrors.push("Az időtartam nem lehet kisebb, mint 0")
+                    return false;
                 }
             }
         }
@@ -681,7 +684,7 @@ export default function Admin() {
                                         }
                                         {errors && errors.length > 0 &&
                                             <div style={{ textAlign: "center" }}>
-                                                {errors.map((error,index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
+                                                {errors.map((error, index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
                                             </div>
                                         }
                                     </>
@@ -708,7 +711,7 @@ export default function Admin() {
                                         </div>
                                         {errors && errors.length > 0 &&
                                             <div style={{ textAlign: "center" }}>
-                                                {errors.map((error,index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
+                                                {errors.map((error, index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
                                             </div>
                                         }
                                     </>
@@ -722,7 +725,7 @@ export default function Admin() {
                                         </div>
                                         {errors && errors.length > 0 &&
                                             <div style={{ textAlign: "center" }}>
-                                                {errors.map((error,index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
+                                                {errors.map((error, index) => <div key={index} style={{ marginBottom: "2vh", color: "red" }}>{error}</div>)}
                                             </div>
                                         }
                                     </>

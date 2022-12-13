@@ -516,7 +516,11 @@ export default function Game() {
                 // LOKÁLISAN MÉG NEM JÖTT BE A TÖBBI JÁTÉKOS VÁLTOZÁS, EZÉRT VÉGIG MEGYÜNK RAJTUK
                 const newPlayers = players.map(player => {
                     const seasonResult = pointRound(cards.pointCards[3], cards.pointCards[0], JSON.parse(player.map), JSON.parse(map.blocks))
-                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult }
+                    let stars = Math.min(player.allStarsGot, 14) ?? 0
+                    seasonResult.stars = stars;
+                    seasonResult.points = seasonResult.A + seasonResult.B + stars + seasonResult.monsters;
+
+                    return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult, allStarsGot: stars }
                 })
 
                 if (room.leader.id === actualPlayer.id) {
@@ -720,7 +724,7 @@ export default function Game() {
     const postGame = async (duration, results, users, messages) => {
         const validUsers = users.map(mappedUser => ({id: mappedUser.id}))
         
-        const gameResponse = await axios.post(`api/games`, { duration: duration, results, validUsers, messages }, {
+        const gameResponse = await axios.post(`api/games`, { duration: duration, results, users: validUsers, messages }, {
             headers: authHeader()
         });
         return gameResponse;

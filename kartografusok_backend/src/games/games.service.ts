@@ -82,6 +82,10 @@ export class GamesService {
     async create(gameDto: GameDto): Promise<Game> {
         const game = new Game();
         game.duration = gameDto.duration;
+
+        console.log(gameDto.users);
+
+        gameDto.users.map((user)=>console.log(user));
         
         game.results.set(
             gameDto.results?.map((result)=>{
@@ -93,9 +97,11 @@ export class GamesService {
 
         game.users.set(
             gameDto.users?.map((user)=>{
-                return this.userRepository.getReference(user.id)
+                let theUser = this.userRepository.getReference(user.id)
+                return theUser;
             }) || []
         )
+
         game.messages.set(
             gameDto.messages?.map(message=>this.messageRepository.getReference(message.id),) || [],
         )

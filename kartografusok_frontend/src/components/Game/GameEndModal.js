@@ -36,10 +36,6 @@ export default function GameEndModal({ duration, messages, players }) {
     const [ordered, setOrdered] = useState([]);
 
     useEffect(() => {
-        console.log("PLAYERS")
-        console.log(players);
-        console.log("PLAYERSRESULT")
-        console.log(playersResult)
 
         let newPlayers = playersResult;
         let orderedArray;
@@ -47,7 +43,6 @@ export default function GameEndModal({ duration, messages, players }) {
         players.forEach(player => {
             playersResult.forEach((_player) => {
                 if (_player.id === player.id) {
-                    console.log("Módosítom "+player.name+" game pontjait " + player.gamePoints + "-ra")
                     newPlayers = newPlayers.map(mappedPlayer => mappedPlayer.id === player.id ? player : mappedPlayer)
                 }
 
@@ -55,7 +50,6 @@ export default function GameEndModal({ duration, messages, players }) {
 
             
             if (newPlayers.length === 0 || !newPlayers.some(_player => _player.id === player.id)) {
-                console.log("Hozzáadom " + player.name + "-t")
                 newPlayers = [...newPlayers, player]
             }
         });
@@ -66,11 +60,6 @@ export default function GameEndModal({ duration, messages, players }) {
 
         setPlayersResult(newPlayers);
     }, [players])
-
-    useEffect(()=>{
-        console.log("AZ ORDERED:")
-        console.log(ordered);
-    },[ordered])
 
     const clearState = (e, to) => {
         e.preventDefault();
