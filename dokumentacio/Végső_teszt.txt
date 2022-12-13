@@ -1,0 +1,75 @@
+---------------------------------------------------
+                VÉGSŐ TESZTELÉS
+---------------------------------------------------
+
+o Profil szerkesztés adott profilból ✅
+    - E-mail módosítás ✅
+    - Felhasználónév foglalt ✅
+    - Felhasználónév üres ✅
+    - Felhasználónév rövid ✅
+    - Új jelszó ✅
+    - Új kép - kép formátum ✅
+    - Új kép - másmilyen formátum ✅
+
+o Bejelentkezés ✅
+
+o Regisztráció ✅
+    - Üres adatokkal ✅
+    - Rövid adatokkal ✅
+    - Rövid felhasználónév csak ✅
+    - Rövid játékosnév csak ✅
+    - Rövid jelszó csak ✅ 
+    - Üres jelszó csak ✅
+    - Foglalt név ✅
+
+o Admin felület ✅
+    - Önmaga némítása változás adatbázisban külső ✅
+    - Önmaga némítása változás adatbázisban belső ✅
+    - Önmaga tiltása változás adatbázisban külső ✅
+    - Önmaga tiltása változás adatbázisban belső ✅
+    - Némítás esetén nem tud üzenetet küldeni váróban ✅
+    - Némítás esetén nem tud üzenetet küldeni játékban ✅
+    - Önmaga felhasználónév játékosnév változtatása ✅
+    - Email, pontok változtatása ✅
+    - Kép változtatása ✅
+    - Ilyenkor előző kép törlődik ✅
+    - Rang változtatása ✅
+    - Más játékos nevei ✅
+    - Más játékos változtatásnál a másik játékosnál ✅
+
+o Pályák ✅
+    - Pálya létrehozása ✅
+    - Pálya törlése ✅
+
+o Kártyák ✅
+    - Felfedezéskártya létrehozása név nélkül ✅
+    - Felfedezéskártya létrehozása Forma nélkül ✅
+    - Felfedezéskártya hozzáadása ✅
+    - Törlése ✅
+    - Forma1 és 2 ✅
+    - Típus1 és 2 ✅
+    - Romkártya ✅
+    - Szörnykártya ✅
+    - Ezek törlése ✅
+
+o JÁTÉK
+    o Egyszemélyes ✅
+        - Idő előtt vége pontok ✅
+        - Idő előtt vége üzenetek ✅
+        - Profilban utána megjelenik a meccs ✅
+        - Játék végén pontok ✅
+        - Játék végén üzenetek ✅
+        - Profilban utána megjelenik a meccs ✅
+    o Többszemélyes
+        - Idő előtt vége pontok ✅
+        - Idő előtt vége üzenetek ✅
+        - Profilban utána megjelenik a meccs ✅
+        - Játék végén pontok ✅
+        - Játék végén üzenetek ✅
+    o Vendég
+        - Idő előtt vége pontok egyedül ✅
+        - Idő előtt vége pontok többen ✅
+        - Játék végén pontok egyedül ✅
+        - Játék végén pontok többen ✅
+        - Idő előtt vége üzenetek ✅
+        - Játék végén üzenetek ✅
