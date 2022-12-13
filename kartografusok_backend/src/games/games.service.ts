@@ -83,8 +83,6 @@ export class GamesService {
         const game = new Game();
         game.duration = gameDto.duration;
 
-        console.log(gameDto.users);
-
         gameDto.users.map((user)=>console.log(user));
         
         game.results.set(

@@ -117,7 +117,7 @@ export default function Game() {
     const fitCheck = (_block, _pos) => {
         let block = _block;
         let pos = _pos;
-        
+
         let isMonsterRound = cards.drawnCards[cards.drawnCards.length - 1]?.fieldType1 === "MONSTER";
         let playerMap;
         let whose;
@@ -407,7 +407,7 @@ export default function Game() {
         // console.log("Duration: " + duration);
         // console.log("Évszak hossz: " + actualSeasonCard.duration);
         // console.log("Évszak index: " + seasonIndex);
-        
+
         let over = false;
 
         if (!gameEnd) {
@@ -447,13 +447,15 @@ export default function Game() {
             // várakozás a többi játékos lépésére modal elrejtése.
             document.getElementById("waitingModal").style.visibility = "hidden";
 
-            if(!over){
+            if (!over) {
                 dispatch(drawCard(cards.deck[0]))
             }
 
             dispatch(setPlayersUnReady());
         }
     }
+
+    const [onlyOnce, setOnlyOnce] = useState(0);
 
     useEffect(() => {
         if (cards.drawnCards.length > 0) {
@@ -500,7 +502,8 @@ export default function Game() {
                 dispatch(modifyPlayer({ ...actualPlayer, gamePoints: playerPoints, season2Points: result, allStarsGot: stars }))
             }
 
-            if (seasonIndex === "END" && 6 <= duration) {
+            if (seasonIndex === "END" && 6 <= duration && onlyOnce === 0) {
+                setOnlyOnce(1);
                 // if (seasonIndex === 0 && cards.seasonCards[seasonIndex].duration <= duration && gameEnd === false) {
                 console.log("4. évszak pontozása")
 
@@ -519,6 +522,19 @@ export default function Game() {
                     let stars = Math.min(player.allStarsGot, 14) ?? 0
                     seasonResult.stars = stars;
                     seasonResult.points = seasonResult.A + seasonResult.B + stars + seasonResult.monsters;
+
+                    console.log("EZ MEGY AZ ADATBÁZISBA")
+                    console.log("SEASON0:")
+                    console.log(player.season0Points);
+
+                    console.log("SEASON1:")
+                    console.log(player.season1Points);
+
+                    console.log("SEASON2:")
+                    console.log(player.season2Points);
+
+                    console.log("SEASON3:")
+                    console.log(seasonResult);
 
                     return { ...player, gamePoints: player.gamePoints + seasonResult.points, season3Points: seasonResult, allStarsGot: stars }
                 })
@@ -543,13 +559,36 @@ export default function Game() {
                         }
                     });
 
+                    let newResults = []
                     Promise.all(results).then(
                         (responses) => {
-                            const newResults = responses.map(response => response.data)
-                            postGame(gameDuration, newResults, validPlayers, validMessages);
+                            console.log(responses);
+                            responses.forEach(resp => {
+                                newResults.push(resp.data)
+                            })
 
+
+                            console.log(newResults);
+
+                            const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
+
+                            Promise.resolve(gameResult).then(
+                                (resp) => {
+                                    console.log(resp);
+                                    players.forEach(player => {
+                                        if (player.isGuest) {
+                                            dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
+                                        }
+                                    });
+                                }
+                            )
                         }
                     )
+
+
+
+                    
+
 
                 }
 
@@ -722,8 +761,8 @@ export default function Game() {
     }, [blocksAndTypes])
 
     const postGame = async (duration, results, users, messages) => {
-        const validUsers = users.map(mappedUser => ({id: mappedUser.id}))
-        
+        const validUsers = users.map(mappedUser => ({ id: mappedUser.id }))
+
         const gameResponse = await axios.post(`api/games`, { duration: duration, results, users: validUsers, messages }, {
             headers: authHeader()
         });
@@ -751,52 +790,55 @@ export default function Game() {
             cellindex < JSON.parse(map.blocks).length)
     }
 
+    const [runOnce, setRunOnce] = useState(0);
+
     useEffect(() => {
-        if (room.gameEnded) {
+        if (room.gameEnded && runOnce === 0) {
+            setRunOnce(1);
             // EREDMÉNY MUTATÁSA
             setBlocksAndTypes([]);
             setGameEnd(true);
 
-            if (room.leader.id === actualPlayer.id && !actualPlayer.isGuest) {
-                const gameEndDate = new Date();
-                const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
+            // if (room.leader.id === actualPlayer.id && !actualPlayer.isGuest) {
+            //     const gameEndDate = new Date();
+            //     const gameDuration = Math.round(Math.abs(gameEndDate - gameStartDate) / (60 * 1000))
 
-                const validMessages = messages.filter(message => message.id > 0);
+            //     const validMessages = messages.filter(message => message.id > 0);
 
-                const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
+            //     const orderedArray = players.sort((a, b) => b.gamePoints - a.gamePoints)
 
-                const validPlayers = players.filter(player => player.id > 0);
+            //     const validPlayers = players.filter(player => player.id > 0);
 
-                let results = [];
-                players.forEach(player => {
-                    if (player.id > 0) {
-                        const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
-                        results.push(postResult(player, player.gamePoints, place))
+            //     let results = [];
+            //     players.forEach(player => {
+            //         if (player.id > 0) {
+            //             const place = (orderedArray.findIndex(object => object.id === player.id) + 1)
+            //             results.push(postResult(player, player.gamePoints, place))
 
-                        modifyUserPoints(player);
-                    }
-                });
+            //             modifyUserPoints(player);
+            //         }
+            //     });
 
-                Promise.all(results).then(
-                    (responses) => {
-                        const newResults = responses.map(response => response.data)
-                        const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
+            //     Promise.all(results).then(
+            //         (responses) => {
+            //             const newResults = responses.map(response => response.data)
+            //             const gameResult = postGame(gameDuration, newResults, validPlayers, validMessages);
 
-                        Promise.resolve(gameResult).then(
-                            (resp) => {
-                                console.log(resp);
-                                players.forEach(player => {
-                                    if (player.isGuest) {
-                                        dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
-                                    }
-                                });
-                            }
-                        )
+            //             Promise.resolve(gameResult).then(
+            //                 (resp) => {
+            //                     console.log(resp);
+            //                     players.forEach(player => {
+            //                         if (player.isGuest) {
+            //                             dispatch(modifyPlayer({ ...player, gameResult: resp.data }))
+            //                         }
+            //                     });
+            //                 }
+            //             )
 
-                    }
-                )
+            //         }
+            //     )
 
-            }
+            // }
         }
     }, [room])
 
