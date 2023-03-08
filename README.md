@@ -76,85 +76,85 @@ The three components can start in any order, so it is possible that if the front
 
 <p align="center">
   <img src="látvány/latvany_1.png" />
-  Főképernyő | Main screen
+  <br />Főképernyő | Main screen
 </p>
 <p align="center">
   <img src="látvány/latvany_2.png" />
-  Regisztráció | Registration
+  <br />Regisztráció | Registration
 </p>
 <p align="center">
   <img src="látvány/latvany_3.png" />
-  Bejelentkezett képernyő | Logged in screen
+  <br />Bejelentkezett képernyő | Logged in screen
 </p>
 <p align="center">
   <img src="látvány/latvany_4.png" />
-  Ranglétra | Leaderboard
+  <br />Ranglétra | Leaderboard
 </p>
 <p align="center">
   <img src="látvány/latvany_5.png" />
-  Szabályok | Rules
+  <br />Szabályok | Rules
 </p>
 <p align="center">
   <img src="látvány/latvany_6.png" />
-  Profil oldal | Profile page
+  <br />Profil oldal | Profile page
 </p>
 <p align="center">
   <img src="látvány/latvany_7.png" />
-  Egy felhasználó korábbi meccsei | User's match history
+  <br />Egy felhasználó korábbi meccsei | User's match history
 </p>
 <p align="center">
   <img src="látvány/latvany_8.png" />
-  Felhasználó módosítása | Modify user
+  <br />Felhasználó módosítása | Modify user
 </p>
 <p align="center">
   <img src="látvány/latvany_9.png" />
-  Admin oldal | Admin page
+  <br />Admin oldal | Admin page
 </p>
 <p align="center">
   <img src="látvány/latvany_10.png" />
-  Adminként felhasználó módosítás | Modify user by Admin
+  <br />Adminként felhasználó módosítás | Modify user by Admin
 </p>
 <p align="center">
   <img src="látvány/latvany_11.png" />
-  Adminként pálya hozzáadás, módosítás | Add, modify maps by Admin
+  <br />Adminként pálya hozzáadás, módosítás | Add, modify maps by Admin
 </p>
 <p align="center">
   <img src="látvány/latvany_12.png" />
-  A pálya szerkesztő panel | The map modify panel
+  <br />A pálya szerkesztő panel | The map modify panel
 </p>
 <p align="center">
   <img src="látvány/latvany_13.png" />
-  Adminként kártya hozzáadás | Add cards by Admin
+  <br />Adminként kártya hozzáadás | Add cards by Admin
 </p>
 <p align="center">
   <img src="látvány/latvany_14.png" />
-  A kártya hozzáadó panel | The card add panel
+  <br />A kártya hozzáadó panel | The card add panel
 </p>
 <p align="center">
   <img src="látvány/latvany_15.png" />
-  Szoba létrehozása | Create room
+  <br />Szoba létrehozása | Create room
 </p>
 <p align="center">
   <img src="látvány/latvany_16.png" />
-  Játék eleje, rajzolás | Drawing, the start of a game
+  <br />Játék eleje, rajzolás | Drawing, the start of a game
 </p>
 <p align="center">
   <img src="látvány/latvany_17.png" />
-  A játék | The game
+  <br />A játék | The game
 </p>
 <p align="center">
   <img src="látvány/latvany_18.png" />
-  Pálya a játékon belül | Map of the game
+  <br />Pálya a játékon belül | Map of the game
 </p>
 <p align="center">
   <img src="látvány/latvany_19.png" />
-  Játék vége, pontszámok | End of the game, results
+  <br />Játék vége, pontszámok | End of the game, results
 </p>
 <p align="center">
   <img src="látvány/latvany_20.png" />
-  Adatbázis | Database
+  <br />Adatbázis | Database
 </p>
 <p align="center">
   <img src="látvány/latvany_21.png" />
-  Adatbázis kapcsolatok | Database relations
+  <br />Adatbázis kapcsolatok | Database relations
 </p>
