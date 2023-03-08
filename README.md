@@ -1,6 +1,6 @@
 ﻿# Kartográfusok - magyar
  
-English version below
+English version [below](#cartographers---english).
 
 Heló! Köszöntelek a Kartográfusok társasjáték online megvalósított játékának projektkönyvtárában. Az alkalmazást szakdolgozatom keretein belül készítettem el.
 
