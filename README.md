@@ -4,7 +4,7 @@ English version below
 
 Heló! Köszöntelek a Kartográfusok társasjáték online megvalósított játékának projektkönyvtárában. Az alkalmazást szakdolgozatom keretein belül készítettem el.
 
-> A játék látványképei megtalálhatók a **"látvány"** mappában illetve ezen *markdown* legalján.
+> A játék látványképei megtalálhatók a **"látvány"** mappában illetve ezen *markdown* legalján: [klikk](#látvány--visuals).
 
 # Fájlrendszer
 
@@ -40,7 +40,7 @@ A három komponens nem meghatározott sorrendben indul el, ezért elképzelhető
 
 Hello! Welcome to the project directory of the online implementation of the board game "Cartographers". I developed the application as part of my university thesis.
 
-> The game images can be found in the **"látvány"** folder.
+> The game images can be found in the **"látvány"** folder or at the bottom of this *markdown*: [click](#látvány--visuals)..
 
 # Project directory
 
@@ -72,7 +72,7 @@ The three components can start in any order, so it is possible that if the front
 
 > The React application runs on port 3001, the back-end application on port 3000, and the Socket application on port 3030 by default.
 
-# Látvány / Visuals
+# Látvány | Visuals
 
 <p align="center">
   <img src="látvány/latvany_1.png" />
