@@ -4,7 +4,7 @@ English version below
 
 Heló! Köszöntelek a Kartográfusok társasjáték online megvalósított játékának projektkönyvtárában. Az alkalmazást szakdolgozatom keretein belül készítettem el.
 
-> A játék látványképei megtalálhatók a **"látvány"** mappában.
+> A játék látványképei megtalálhatók a **"látvány"** mappában illetve ezen *markdown* legalján.
 
 # Fájlrendszer
 
@@ -71,3 +71,90 @@ After installing the dependencies, the application can be started by standing in
 The three components can start in any order, so it is possible that if the frontend precedes the backend, for example, the page must be reloaded in the browser for the data (e.g. images) to be displayed correctly.
 
 > The React application runs on port 3001, the back-end application on port 3000, and the Socket application on port 3030 by default.
+
+# Látvány / Visuals
+
+<p align="center">
+  <img src="látvány/latvany_1.png" />
+  Főképernyő | Main screen
+</p>
+<p align="center">
+  <img src="látvány/latvany_2.png" />
+  Regisztráció | Registration
+</p>
+<p align="center">
+  <img src="látvány/latvany_3.png" />
+  Bejelentkezett képernyő | Logged in screen
+</p>
+<p align="center">
+  <img src="látvány/latvany_4.png" />
+  Ranglétra | Leaderboard
+</p>
+<p align="center">
+  <img src="látvány/latvany_5.png" />
+  Szabályok | Rules
+</p>
+<p align="center">
+  <img src="látvány/latvany_6.png" />
+  Profil oldal | Profile page
+</p>
+<p align="center">
+  <img src="látvány/latvany_7.png" />
+  Egy felhasználó korábbi meccsei | User's match history
+</p>
+<p align="center">
+  <img src="látvány/latvany_8.png" />
+  Felhasználó módosítása | Modify user
+</p>
+<p align="center">
+  <img src="látvány/latvany_9.png" />
+  Admin oldal | Admin page
+</p>
+<p align="center">
+  <img src="látvány/latvany_10.png" />
+  Adminként felhasználó módosítás | Modify user by Admin
+</p>
+<p align="center">
+  <img src="látvány/latvany_11.png" />
+  Adminként pálya hozzáadás, módosítás | Add, modify maps by Admin
+</p>
+<p align="center">
+  <img src="látvány/latvany_12.png" />
+  A pálya szerkesztő panel | The map modify panel
+</p>
+<p align="center">
+  <img src="látvány/latvany_13.png" />
+  Adminként kártya hozzáadás | Add cards by Admin
+</p>
+<p align="center">
+  <img src="látvány/latvany_14.png" />
+  A kártya hozzáadó panel | The card add panel
+</p>
+<p align="center">
+  <img src="látvány/latvany_15.png" />
+  Szoba létrehozása | Create room
+</p>
+<p align="center">
+  <img src="látvány/latvany_16.png" />
+  Játék eleje, rajzolás | Drawing, the start of a game
+</p>
+<p align="center">
+  <img src="látvány/latvany_17.png" />
+  A játék | The game
+</p>
+<p align="center">
+  <img src="látvány/latvany_18.png" />
+  Pálya a játékon belül | Map of the game
+</p>
+<p align="center">
+  <img src="látvány/latvany_19.png" />
+  Játék vége, pontszámok | End of the game, results
+</p>
+<p align="center">
+  <img src="látvány/latvany_20.png" />
+  Adatbázis | Database
+</p>
+<p align="center">
+  <img src="látvány/latvany_21.png" />
+  Adatbázis kapcsolatok | Database relations
+</p>
